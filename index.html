@@ -18,6 +18,9 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .brand-text { background: linear-gradient(135deg, #1e3a8a 0%, #0d9488 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Hiệu ứng scroll mượt cho Modal Pitch Deck */
+        .smooth-scroll { scroll-behavior: smooth; }
     </style>
 </head>
 <body class="pb-24">
@@ -70,9 +73,70 @@
     <div id="loading" class="text-center mt-10">
         <div class="loader"></div><p class="text-xs text-gray-500 mt-2">Đang đồng bộ dữ liệu...</p>
     </div>
-    
     <div id="market-grid" class="p-4 grid grid-cols-2 gap-3.5 md:grid-cols-3 lg:grid-cols-4 hidden">
         </div>
+
+    <div class="px-6 pt-4 pb-8 text-center border-t border-gray-200 mt-6 bg-gray-50">
+        <button onclick="openPitchModal()" class="mb-4 inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-teal-500 text-white px-6 py-3 rounded-full text-xs font-bold shadow-lg shadow-teal-500/30 hover:scale-105 transition-transform">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            Xem Mô hình Kinh doanh (Pitch Deck)
+        </button>
+        <p class="text-[10px] text-gray-400 leading-relaxed">
+            Forely là nền tảng khảo sát thu thập dữ liệu người dùng (ICP). Hoạt động tặng Voucher tri ân tuân thủ theo Nghị định 81/2018/NĐ-CP về xúc tiến thương mại. F-Point là điểm thành viên nội bộ, không quy đổi thành tiền mặt.
+        </p>
+    </div>
+
+    <div id="pitch-modal" class="modal">
+        <div class="bg-white w-[95%] max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div class="px-5 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center sticky top-0 z-10">
+                <h2 class="text-lg font-extrabold brand-text flex items-center gap-2">
+                    🚀 Forely Business Model
+                </h2>
+                <button onclick="closeModal('pitch-modal')" class="text-gray-400 hover:text-gray-900 text-2xl font-bold leading-none">&times;</button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto smooth-scroll text-sm text-gray-700 leading-relaxed space-y-6">
+                
+                <section>
+                    <h3 class="text-base font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">1. Định vị & Chiến lược Pháp lý (Vỏ bọc an toàn)</h3>
+                    <p class="mb-2"><strong>Bản chất pháp lý:</strong> Forely đăng ký dưới hình thức <strong>Trang thông tin điện tử tổng hợp (ICP)</strong>, cung cấp tin tức và phân tích dữ liệu. Tuyệt đối không đăng ký dạng "Trò chơi điện tử" (G1-G4) để tránh Nghị định 147/2024/NĐ-CP (cấm game đổi thưởng).</p>
+                    <p><strong>Định vị:</strong> Nền tảng khảo sát ý kiến và dự báo tương lai dựa trên trí tuệ cộng đồng, mang giao diện chuyên nghiệp, minh bạch như một ứng dụng Fintech.</p>
+                </section>
+
+                <hr class="border-gray-100">
+
+                <section>
+                    <h3 class="text-base font-bold text-gray-900 mb-3 border-l-4 border-teal-500 pl-3">2. Luồng luân chuyển Dòng tiền (Cashflow)</h3>
+                    
+                    <ul class="space-y-3 mt-3 list-disc pl-5">
+                        <li><strong>Dòng tiền VÀO (Doanh thu):</strong> Khách hàng thanh toán mua "Gói dịch vụ nội dung/Tin tức đặc quyền". Tự động 100% qua mã VietQR kết hợp Webhook SePay. Hệ thống tặng kèm "Điểm tri ân" (F-Point).</li>
+                        <li><strong>Tương tác (F-Point):</strong> Dùng điểm tham gia trả lời khảo sát, dự báo xu hướng. Kết quả chốt tự động qua máy chủ quét nguồn tin chuẩn (RSS) từ báo chí chính thống.</li>
+                        <li><strong>Dòng tiền RA (Chi phí trả thưởng):</strong> Khách hàng đúng nhận F-Point, quy đổi thành Voucher (Shopee, Grab, thẻ ĐT) qua API của UrBox. Chi phí này hạch toán vào <em>"Chi phí khuyến mại, xúc tiến thương mại"</em> (Nghị định 81/2018/NĐ-CP). Lợi nhuận là chênh lệch giữa tiền bán gói nội dung và chi phí Voucher.</li>
+                    </ul>
+                </section>
+
+                <hr class="border-gray-100">
+
+                <section>
+                    <h3 class="text-base font-bold text-gray-900 mb-3 border-l-4 border-indigo-500 pl-3">3. Cấu trúc Vận hành Tự động (Tech Stack)</h3>
+                    
+
+[Image of serverless architecture cloud computing]
+
+                    <p class="mb-3 mt-3">Sử dụng nền tảng đám mây hiện đại (No-Code/Low-Code) tự động hóa 24/7:</p>
+                    <ul class="space-y-2 list-disc pl-5">
+                        <li><strong>Frontend:</strong> HTML & Tailwind CSS (Xanh Navy/Trắng), lưu trữ phát trực tiếp miễn phí trên Vercel.</li>
+                        <li><strong>Database:</strong> Lưu sổ cái F-Point và dữ liệu trên Supabase/Google Sheets.</li>
+                        <li><strong>Backend Engine:</strong> Firebase Cloud Functions làm nhiệm vụ: (1) Nhận tín hiệu nạp tiền, (2) Quét tin tức RSS xác thực, (3) Gọi API kho quà đối tác xuất mã Voucher.</li>
+                    </ul>
+                </section>
+
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-4">
+                    <p class="font-semibold text-blue-900 italic">"Forely là cỗ máy kiếm tiền tự động từ dịch vụ nội dung số, dùng cơ chế 'Khảo sát nhận Voucher' làm mồi nhử Gamification. Chi phí máy chủ gần như bằng 0 và tuân thủ tuyệt đối pháp luật Việt Nam."</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="login-modal" class="modal">
         <div class="bg-white w-[85%] max-w-sm rounded-2xl p-6 text-center shadow-2xl">
@@ -138,7 +202,6 @@
         let currentCategory = 'Tất cả';
         let selectedEvent = null;
 
-        // Định dạng Ngày/Tháng/Năm (Vì 2 cột có đủ chỗ hiển thị)
         function formatDate(dateString) {
             if (!dateString) return "Vô thời hạn";
             const date = new Date(dateString);
@@ -184,9 +247,7 @@
                     document.getElementById('market-grid').classList.remove('hidden');
                     renderGrid();
                 },
-                error: function() {
-                    alert("Lỗi kết nối CSDL.");
-                }
+                error: function() { alert("Lỗi kết nối CSDL."); }
             });
         }
 
@@ -255,7 +316,6 @@
                 const actionOnClick = e.isActive ? `onclick="handlePredict(${e.id}, 'Đồng ý')"` : "";
                 const actionOnClickNo = e.isActive ? `onclick="handlePredict(${e.id}, 'Phản đối')"` : "";
 
-                // Thiết kế thẻ cân đối (2 cột)
                 return `
                 <div class="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                     <div>
@@ -278,6 +338,9 @@
                 </div>
             `}).join('');
         }
+
+        // HÀM MỞ/ĐÓNG MODAL PITCH DECK
+        function openPitchModal() { document.getElementById('pitch-modal').classList.add('active'); }
 
         function handlePredict(id, type) {
             if (isGuest) document.getElementById('login-modal').classList.add('active');
