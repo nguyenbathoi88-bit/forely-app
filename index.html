@@ -3,137 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORELY - Nền tảng dự báo cộng đồng</title>
+    <title>FORELY - Dự báo cộng đồng</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .page { display: none; }
         .page.active { display: block; }
-        .bg-vibrant { background: linear-gradient(135deg, #14b8a6 0%, #a855f7 100%); }
-        .text-vibrant { background: linear-gradient(135deg, #14b8a6 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .border-vibrant { border-image: linear-gradient(135deg, #14b8a6, #a855f7) 1; }
+        /* Logo Kim cương Dữ liệu */
+        .logo-diamond { background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+        .bg-glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+        .text-gradient { background: linear-gradient(135deg, #0891b2 0%, #7e22ce 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-gradient { background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%); }
     </style>
 </head>
-<body class="bg-[#0b0f1a] min-h-screen pb-28 font-sans text-slate-200">
+<body class="bg-[#f8fafc] min-h-screen pb-32 font-sans text-slate-800">
 
     <div id="home-page" class="page active">
-        <nav class="bg-[#0b0f1a]/90 backdrop-blur-xl p-5 sticky top-0 z-50 flex justify-between items-center border-b border-white/5">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-vibrant rounded-lg rotate-45 flex items-center justify-center shadow-lg shadow-teal-500/20">
-                    <div class="w-3 h-3 bg-white rounded-full rotate-[-45deg]"></div>
-                </div>
-                <h1 class="text-2xl font-black tracking-tighter italic text-white">FORELY</h1>
+        <nav class="bg-white/80 backdrop-blur-md p-5 sticky top-0 z-50 flex justify-between items-center border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 logo-diamond shadow-lg"></div>
+                <h1 class="text-2xl font-black tracking-tighter italic text-gradient">FORELY</h1>
             </div>
-            <div onclick="showPage('portfolio-page')" class="bg-white/5 px-4 py-2 rounded-2xl border border-white/10 flex items-center gap-2">
-                <span class="text-amber-400">💎</span>
-                <span id="header-balance" class="text-xs font-black tracking-widest uppercase">1,250 P</span>
+            <div onclick="showPage('portfolio-page')" class="bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200 flex items-center gap-2 active:scale-95 transition-all">
+                <span class="text-amber-500">💎</span>
+                <span id="header-balance" class="text-xs font-black text-slate-700 tracking-wider">1,250 P</span>
             </div>
         </nav>
 
-        <div class="p-5 space-y-6">
-            <div class="relative overflow-hidden bg-vibrant rounded-[2.5rem] p-6 text-white shadow-2xl">
-                <div class="relative z-10">
-                    <h2 class="text-xl font-black italic mb-1 uppercase tracking-tight">Dự báo tương lai</h2>
-                    <p class="text-white/80 text-[10px] font-bold uppercase tracking-[0.2em]">Cùng cộng đồng tìm ra câu trả lời chính xác nhất</p>
-                </div>
-                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/20 rounded-full blur-2xl"></div>
-            </div>
-
-            <div class="space-y-4">
-                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 ml-2">Sự kiện tiêu biểu</h4>
-                
-                <div class="bg-[#161b2c] rounded-[2rem] p-6 border border-white/5 shadow-xl transition-all active:scale-[0.98]">
-                    <div class="flex items-center gap-2 mb-4 text-[9px] font-black uppercase tracking-widest">
-                        <span class="text-teal-400">📈 Kinh tế</span>
-                        <span class="text-slate-600">•</span>
-                        <span class="text-slate-500 italic">Hạn chót: 30/06</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-6 leading-snug italic">Vốn hóa thị trường tiền mã hóa vượt 5.000 tỷ USD vào năm 2026?</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="handleTrade('CÓ', 100)" class="bg-teal-500/10 border border-teal-500/20 text-teal-400 py-4 rounded-2xl font-black italic hover:bg-teal-500/20 transition-all">DỰ BÁO CÓ</button>
-                        <button onclick="handleTrade('KHÔNG', 100)" class="bg-purple-500/10 border border-purple-500/20 text-purple-400 py-4 rounded-2xl font-black italic hover:bg-purple-500/20 transition-all">DỰ BÁO KHÔNG</button>
-                    </div>
-                </div>
-
-                <div class="bg-[#161b2c] rounded-[2rem] p-6 border border-white/5 shadow-xl transition-all active:scale-[0.98]">
-                    <div class="flex items-center gap-2 mb-4 text-[9px] font-black uppercase tracking-widest">
-                        <span class="text-purple-400">🎤 Giải trí</span>
-                        <span class="text-slate-600">•</span>
-                        <span class="text-teal-500">Đang diễn ra</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-6 leading-tight italic">Nghệ sĩ Việt Nam đạt Top 1 bảng xếp hạng Billboard Global?</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="handleTrade('CÓ', 100)" class="bg-teal-500/10 border border-teal-500/20 text-teal-400 py-4 rounded-2xl font-black italic transition-all">DỰ BÁO CÓ</button>
-                        <button onclick="handleTrade('KHÔNG', 100)" class="bg-purple-500/10 border border-purple-500/20 text-purple-400 py-4 rounded-2xl font-black italic transition-all">DỰ BÁO KHÔNG</button>
-                    </div>
-                </div>
-            </div>
+        <div class="flex gap-2 overflow-x-auto p-4 bg-white no-scrollbar border-b border-slate-100 sticky top-[73px] z-40">
+            <button class="whitespace-nowrap px-6 py-2 rounded-full bg-slate-900 text-white font-bold text-[10px] uppercase tracking-widest shadow-md">Tất cả</button>
+            <button class="whitespace-nowrap px-6 py-2 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] uppercase tracking-widest">Kinh tế</button>
+            <button class="whitespace-nowrap px-6 py-2 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] uppercase tracking-widest">Giải trí</button>
+            <button class="whitespace-nowrap px-6 py-2 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] uppercase tracking-widest">Công nghệ</button>
+            <button class="whitespace-nowrap px-6 py-2 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] uppercase tracking-widest">Thể thao</button>
+            <button class="whitespace-nowrap px-6 py-2 rounded-full bg-slate-100 text-slate-500 font-bold text-[10px] uppercase tracking-widest">Đời sống</button>
         </div>
+
+        <div id="market-container" class="p-5 space-y-6">
+            </div>
     </div>
 
     <div id="portfolio-page" class="page">
-        <nav class="bg-[#0b0f1a] p-5 sticky top-0 z-50 flex items-center border-b border-white/5">
-            <button onclick="showPage('home-page')" class="mr-4 text-2xl text-slate-500">←</button>
-            <h1 class="text-lg font-bold italic uppercase tracking-widest">Trung tâm phần thưởng</h1>
+        <nav class="bg-white p-5 sticky top-0 z-50 flex items-center border-b border-slate-100">
+            <button onclick="showPage('home-page')" class="mr-4 text-2xl text-slate-400">←</button>
+            <h1 class="text-lg font-bold italic uppercase tracking-widest text-slate-800">Kho quà tặng</h1>
         </nav>
         <div class="p-6">
-            <div class="bg-[#161b2c] rounded-[3rem] p-8 text-white border border-white/5 mb-8 text-center">
-                <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2">Số dư hiện tại</p>
-                <h2 id="wallet-balance" class="text-5xl font-black italic tracking-tighter mb-8 text-vibrant">1,250 P</h2>
-                <button class="bg-vibrant w-full py-4 rounded-2xl font-black italic text-sm tracking-widest shadow-lg shadow-teal-500/20">SĂN ĐIỂM NGAY</button>
+            <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-xl mb-8 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-teal-50 rounded-full blur-3xl opacity-50"></div>
+                <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] mb-2">Số dư F-Point</p>
+                <h2 id="wallet-balance" class="text-5xl font-black italic tracking-tighter mb-8 text-gradient">1,250 P</h2>
+                <button class="btn-gradient w-full py-4 rounded-3xl font-black italic text-white shadow-lg shadow-teal-500/30">MUA GÓI ĐIỂM</button>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white/5 p-6 rounded-[2.5rem] border border-white/10 text-center">
-                    <p class="text-xs font-bold text-slate-400 mb-2 italic">Dự báo đúng</p>
-                    <span class="text-2xl font-black italic text-teal-400">12</span>
+                <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm text-center">
+                    <p class="text-3xl mb-2">🎁</p>
+                    <p class="text-[10px] font-bold text-slate-800 italic">Voucher Shopee 100k</p>
+                    <span class="text-teal-600 font-black italic text-xs">10,000 P</span>
                 </div>
-                <div class="bg-white/5 p-6 rounded-[2.5rem] border border-white/10 text-center">
-                    <p class="text-xs font-bold text-slate-400 mb-2 italic">Hạng tuần</p>
-                    <span class="text-2xl font-black italic text-purple-400">#45</span>
+                <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm text-center">
+                    <p class="text-3xl mb-2">🚗</p>
+                    <p class="text-[10px] font-bold text-slate-800 italic">Voucher Grab 50k</p>
+                    <span class="text-purple-600 font-black italic text-xs">5,000 P</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="fixed bottom-6 left-6 right-6 bg-[#161b2c]/90 backdrop-blur-2xl border border-white/10 flex justify-around py-5 rounded-[2.5rem] shadow-2xl z-50">
-        <button onclick="showPage('home-page')" id="n-home" class="text-teal-400 flex flex-col items-center gap-1">
+    <div class="fixed bottom-8 left-8 right-8 bg-white/90 backdrop-blur-2xl border border-slate-200 flex justify-around py-5 rounded-[2.5rem] shadow-2xl z-50">
+        <button onclick="showPage('home-page')" id="n-home" class="flex flex-col items-center gap-1 text-teal-600">
             <span class="text-xl">🧭</span>
             <span class="text-[8px] font-black uppercase tracking-widest">Dự báo</span>
         </button>
-        <button onclick="showPage('portfolio-page')" id="n-wallet" class="text-slate-600 flex flex-col items-center gap-1">
-            <span class="text-xl">💎</span>
-            <span class="text-[8px] font-black uppercase tracking-widest">Phần thưởng</span>
+        <button onclick="showPage('portfolio-page')" id="n-wallet" class="flex flex-col items-center gap-1 text-slate-400">
+            <span class="text-xl">🎁</span>
+            <span class="text-[8px] font-black uppercase tracking-widest">Đổi quà</span>
         </button>
-        <button class="text-slate-600 flex flex-col items-center gap-1">
+        <button onclick="alert('Bảng xếp hạng đang cập nhật!')" class="flex flex-col items-center gap-1 text-slate-400">
             <span class="text-xl">📈</span>
-            <span class="text-[8px] font-black uppercase tracking-widest">Bảng xếp hạng</span>
+            <span class="text-[8px] font-black uppercase tracking-widest">Top VIP</span>
         </button>
     </div>
 
     <script>
         let balance = 1250;
+        
+        // Dữ liệu 20 sự kiện dự báo
+        const events = [
+            { cat: "Kinh tế", title: "Chỉ số VN-Index vượt mốc 1.450 điểm trong Q2/2026?", yes: "6.2k", no: "3.8k" },
+            { cat: "Giải trí", title: "Sơn Tùng M-TP tổ chức concert tại sân vận động Mỹ Đình năm nay?", yes: "8.5k", no: "1.5k" },
+            { cat: "Công nghệ", title: "Việt Nam chính thức cấp phép cho xe tự lái chạy nội đô?", yes: "2.1k", no: "7.9k" },
+            { cat: "Đời sống", title: "Giá vàng SJC giảm xuống dưới 80 triệu/lượng vào tháng tới?", yes: "4.5k", no: "5.5k" },
+            { cat: "Thể thao", title: "Đội tuyển VN lọt vào Chung kết Asian Cup 2026?", yes: "7.0k", no: "3.0k" },
+            { cat: "Kinh tế", title: "Tỷ giá USD/VND vượt mốc 26.000đ vào cuối năm?", yes: "3.2k", no: "6.8k" },
+            { cat: "Công nghệ", title: "OpenAI ra mắt mô hình GPT-6 trước tháng 12/2026?", yes: "9.1k", no: "0.9k" },
+            { cat: "Giải trí", title: "Phim Việt có doanh thu 1.000 tỷ đồng đầu tiên xuất hiện?", yes: "5.5k", no: "4.5k" },
+            { cat: "Thể thao", title: "Việt Nam dẫn đầu bảng tổng sắp huy chương SEA Games 33?", yes: "8.8k", no: "1.2k" },
+            { cat: "Đời sống", title: "Hà Nội khánh thành thêm 2 tuyến Metro mới trong năm nay?", yes: "1.5k", no: "8.5k" },
+            { cat: "Công nghệ", title: "Apple Vision Pro chính thức mở bán tại Apple Store VN?", yes: "6.4k", no: "3.6k" },
+            { cat: "Giải trí", title: "Đen Vâu ra mắt album phòng thu thứ 2 trong quý này?", yes: "7.2k", no: "2.8k" },
+            { cat: "Kinh tế", title: "Lãi suất ngân hàng giảm xuống mức thấp kỷ lục 4%?", yes: "2.9k", no: "7.1k" },
+            { cat: "Thể thao", title: "Quang Hải sang chơi tại giải vô địch quốc gia Nhật Bản (J-League)?", yes: "5.0k", no: "5.0k" },
+            { cat: "Đời sống", title: "Việt Nam lọt Top 10 quốc gia hạnh phúc nhất thế giới?", yes: "4.1k", no: "5.9k" },
+            { cat: "Công nghệ", title: "Mạng 6G bắt đầu được thử nghiệm tại các thành phố lớn?", yes: "1.2k", no: "8.8k" },
+            { cat: "Kinh tế", title: "Giá xăng giảm 3 kỳ liên tiếp trong tháng tới?", yes: "6.0k", no: "4.0k" },
+            { cat: "Giải trí", title: "Chi Pu thắng giải nghệ sĩ châu Á xuất sắc tại Hàn Quốc?", yes: "7.8k", no: "2.2k" },
+            { cat: "Thể thao", title: "Mbappe giành Quả bóng Vàng (Ballon d'Or) năm nay?", yes: "6.7k", no: "3.3k" },
+            { cat: "Đời sống", title: "Thành phố Hồ Chí Minh cấm xe máy tại các quận trung tâm?", yes: "0.5k", no: "9.5k" }
+        ];
+
+        function renderEvents() {
+            const container = document.getElementById('market-container');
+            container.innerHTML = events.map(e => `
+                <div class="bg-white rounded-[2.5rem] p-6 border border-slate-100 shadow-sm active:scale-[0.98] transition-all">
+                    <div class="flex items-center gap-2 mb-4 text-[9px] font-black uppercase tracking-widest">
+                        <span class="text-teal-600">${e.cat}</span>
+                        <span class="text-slate-300">•</span>
+                        <span class="text-slate-400">🔥 Đang dự báo</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-6 leading-snug italic">${e.title}</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="handleTrade('CÓ', 100)" class="bg-slate-50 border border-slate-100 text-teal-600 py-4 rounded-2xl font-black italic shadow-sm active:bg-teal-50">CÓ ${e.yes}</button>
+                        <button onclick="handleTrade('KHÔNG', 100)" class="bg-slate-50 border border-slate-100 text-purple-600 py-4 rounded-2xl font-black italic shadow-sm active:bg-purple-50">KHÔNG ${e.no}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function updateUI() {
             const formatted = balance.toLocaleString() + ' P';
             document.getElementById('header-balance').innerText = formatted;
             document.getElementById('wallet-balance').innerText = formatted;
         }
+
         function handleTrade(type, amount) {
             if (balance >= 100) {
                 balance -= 100;
                 updateUI();
-                alert(`Bạn đã gửi dự báo "${type}". Cảm ơn bạn đã đóng góp trí tuệ cho cộng đồng Forely!`);
-            } else { alert("Số dư không đủ."); }
+                alert(`🎯 Gửi dự báo thành công! Bạn chọn phe "${type}".`);
+            } else { alert("Bạn cần thêm Điểm dự báo!"); }
         }
+
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            document.getElementById('n-home').classList.toggle('text-teal-400', pageId === 'home-page');
-            document.getElementById('n-home').classList.toggle('text-slate-600', pageId !== 'home-page');
-            document.getElementById('n-wallet').classList.toggle('text-purple-400', pageId === 'portfolio-page');
-            document.getElementById('n-wallet').classList.toggle('text-slate-600', pageId !== 'portfolio-page');
+            document.getElementById('n-home').className = (pageId === 'home-page') ? 'flex flex-col items-center gap-1 text-teal-600' : 'flex flex-col items-center gap-1 text-slate-400';
+            document.getElementById('n-wallet').className = (pageId === 'portfolio-page') ? 'flex flex-col items-center gap-1 text-purple-600' : 'flex flex-col items-center gap-1 text-slate-400';
             window.scrollTo(0,0);
         }
+
+        // Khởi tạo 20 sự kiện
+        renderEvents();
+        updateUI();
     </script>
 </body>
 </html>
