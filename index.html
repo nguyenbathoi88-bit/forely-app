@@ -3,117 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORELY - Professional Trading</title>
+    <title>FORELY - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
         .page { display: none; }
         .page.active { display: block; }
         .text-gradient { background: linear-gradient(135deg, #0d9488 0%, #7e22ce 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        /* Modal Style */
-        #confirm-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        #confirm-modal.show { display: flex; }
     </style>
 </head>
-<body class="bg-[#f1f5f9] min-h-screen pb-24 font-sans text-slate-800">
+<body class="bg-[#f1f5f9] min-h-screen font-sans">
 
-    <nav class="bg-white p-3 sticky top-0 z-50 flex justify-between items-center border-b border-slate-200">
-        <div class="flex items-center gap-2">
-            <div class="w-6 h-6 bg-gradient-to-br from-teal-500 to-purple-600 rounded-md flex items-center justify-center rotate-45">
-                <span class="text-white text-[10px] font-black rotate-[-45deg]">F</span>
+    <div id="login-page" class="page active">
+        <div class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-teal-500 to-purple-600 rounded-[2rem] flex items-center justify-center rotate-45 mb-8 shadow-2xl">
+                <span class="text-white text-4xl font-black rotate-[-45deg] italic">F</span>
             </div>
-            <h1 class="text-lg font-black tracking-tighter italic text-gradient uppercase">Forely</h1>
-        </div>
-        <div class="bg-slate-100 px-3 py-1 rounded-full border border-slate-200 flex items-center gap-1.5">
-            <span class="text-[10px]">💎</span>
-            <span id="header-balance" class="text-[10px] font-black text-slate-700">1,250 P</span>
-        </div>
-    </nav>
+            <h1 class="text-4xl font-black italic tracking-tighter text-gradient mb-2 uppercase">Forely</h1>
+            <p class="text-slate-500 text-sm font-medium mb-12">Dự đoán tương lai - Nhận quà giá trị</p>
 
-    <div id="grid-container" class="p-3 grid grid-cols-2 gap-3"></div>
-
-    <div id="confirm-modal">
-        <div class="bg-white w-[85%] rounded-[2rem] p-6 shadow-2xl animate-in fade-in zoom-in duration-300">
-            <h4 id="modal-title" class="text-sm font-bold text-slate-800 mb-4 italic leading-tight"></h4>
-            <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Số điểm dự báo (P)</label>
-                    <input type="number" id="bet-amount" value="100" class="w-full mt-1 bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-xl font-black text-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/20">
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="closeModal()" class="flex-1 py-3 text-xs font-bold text-slate-400">Hủy</button>
-                    <button onclick="executeTrade()" id="confirm-btn" class="flex-1 bg-teal-600 text-white py-3 rounded-xl text-xs font-black italic shadow-lg shadow-teal-100">XÁC NHẬN</button>
-                </div>
+            <div class="w-full space-y-4">
+                <button onclick="fakeLogin('Google')" class="w-full bg-white border border-slate-200 py-4 rounded-2xl flex items-center justify-center gap-3 shadow-sm active:scale-95 transition-all">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5">
+                    <span class="font-bold text-slate-700">Tiếp tục với Google</span>
+                </button>
+                <button onclick="fakeLogin('Facebook')" class="w-full bg-[#1877F2] text-white py-4 rounded-2xl flex items-center justify-center gap-3 shadow-sm active:scale-95 transition-all">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_2023.png" class="w-5 h-5 invert">
+                    <span class="font-bold">Tiếp tục với Facebook</span>
+                </button>
             </div>
+            <p class="mt-8 text-[10px] text-slate-400 px-6 italic">Bằng cách đăng nhập, bạn đồng ý với Điều khoản và mô hình Dự đoán có thưởng của Forely.</p>
+        </div>
+    </div>
+
+    <div id="main-app" class="page">
+        <div class="p-6 text-center">
+            <h2 class="text-xl font-bold">Chào mừng bạn đã quay lại!</h2>
+            <button onclick="location.reload()" class="mt-4 text-teal-600 font-bold underline">Vào sảnh dự báo</button>
         </div>
     </div>
 
     <script>
-        let balance = 1250;
-        let currentEvent = null;
-
-        const categories = ["Kinh tế", "Giải trí", "Công nghệ", "Thể thao"];
-        const samples = ["VN-Index vượt 1.500?", "SJC lên 120 triệu?", "iPhone 18 bỏ sạc?", "Việt Nam dự World Cup?"];
-        
-        const allEvents = Array.from({ length: 50 }, (_, i) => ({
-            id: i + 1,
-            cat: categories[i % categories.length],
-            title: samples[i % samples.length],
-            yes: Math.floor(Math.random() * 90 + 5) + "%",
-            vol: (Math.random() * 5).toFixed(1) + "B P"
-        }));
-
-        function render() {
-            const container = document.getElementById('grid-container');
-            container.innerHTML = allEvents.map(e => `
-                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm active:scale-95 transition-all">
-                    <div class="flex justify-between items-center mb-1.5">
-                        <span class="text-[8px] font-black uppercase text-teal-600">${e.cat}</span>
-                        <span class="text-[8px] text-slate-400 font-bold">${e.vol}</span>
-                    </div>
-                    <h3 class="text-[11px] font-bold text-slate-800 line-clamp-2 mb-3 leading-tight h-7 italic">${e.title}</h3>
-                    <div class="flex gap-1.5">
-                        <button onclick="openModal(${e.id}, 'CÓ')" class="flex-1 bg-teal-50 text-teal-600 text-[9px] font-black py-1.5 rounded-lg border border-teal-100">CÓ ${e.yes}</button>
-                        <button onclick="openModal(${e.id}, 'KHÔNG')" class="flex-1 bg-slate-50 text-slate-400 text-[9px] font-black py-1.5 rounded-lg border border-slate-100 uppercase">Không</button>
-                    </div>
-                </div>
-            `).join('');
+        function fakeLogin(provider) {
+            // Đây là nơi Web3Auth sẽ xử lý thực tế
+            alert(`Đang kết nối với ${provider}...`);
+            setTimeout(() => {
+                document.getElementById('login-page').classList.remove('active');
+                document.getElementById('main-app').classList.add('active');
+            }, 1000);
         }
-
-        function openModal(id, type) {
-            const ev = allEvents.find(x => x.id === id);
-            currentEvent = { ...ev, side: type };
-            document.getElementById('modal-title').innerText = `Bạn dự báo "${type}" cho sự kiện: ${ev.title}`;
-            document.getElementById('confirm-modal').classList.add('show');
-            document.getElementById('bet-amount').focus();
-        }
-
-        function closeModal() {
-            document.getElementById('confirm-modal').classList.remove('show');
-        }
-
-        function executeTrade() {
-            const amount = parseInt(document.getElementById('bet-amount').value);
-            if (amount > balance) {
-                alert("Số dư F-Point không đủ!");
-                return;
-            }
-            if (amount <= 0 || isNaN(amount)) {
-                alert("Vui lòng nhập số điểm hợp lệ!");
-                return;
-            }
-
-            balance -= amount;
-            document.getElementById('header-balance').innerText = balance.toLocaleString() + ' P';
-            closeModal();
-            
-            // Thông báo đẹp hơn thay vì alert
-            alert(`✅ Thành công! Đã dùng ${amount} P để dự báo ${currentEvent.side}.`);
-        }
-
-        render();
     </script>
 </body>
 </html>
