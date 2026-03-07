@@ -14,12 +14,8 @@
         .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
         .modal.active { display: flex; }
         
-        /* Hiệu ứng loading */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid #0f172a; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Disable button style */
-        .btn-disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(100%); }
     </style>
 </head>
 <body class="pb-24">
@@ -124,27 +120,24 @@
     </div>
 
     <script>
-        // LINK GOOGLE SHEETS (Thay link của bạn vào đây)
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREHXHIoKFy_Vhds8sFY8pJzrvcLZItNS2O0hQTy8Z-JJ9TiwFvCYmQgWVyhLVpcyY1IheROL0ljntf/pub?gid=0&single=true&output=csv";
 
         let isGuest = true;
         let balance = 0;
         let allEvents = [];
-        let currentStatusView = 'active'; // 'active' hoặc 'ended'
+        let currentStatusView = 'active';
         let currentCategory = 'Tất cả';
         let selectedEvent = null;
 
-        // XỬ LÝ FORMAT NGÀY THÁNG
         function formatDate(dateString) {
             if (!dateString) return "Không có hạn";
             const date = new Date(dateString);
-            if(isNaN(date)) return dateString; // Nếu format lỗi, trả về nguyên bản gốc
+            if(isNaN(date)) return dateString;
             const day = date.getDate().toString().padStart(2, '0');
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             return `${day}/${month}/${date.getFullYear()}`;
         }
 
-        // TẢI DỮ LIỆU
         function fetchEventsFromGoogleSheets() {
             Papa.parse(GOOGLE_SHEET_CSV_URL, {
                 download: true,
@@ -157,14 +150,14 @@
                         let isExpired = false;
                         if(row.Deadline) {
                             const dlDate = new Date(row.Deadline).getTime();
-                            if(dlDate < now) isExpired = true; // Đã quá hạn
+                            if(dlDate < now) isExpired = true; 
                         }
                         
-                        // Xác định trạng thái cuối cùng
                         let finalActiveStatus = true;
-                        if(row.Status === "Ended" || isExpired) {
-                            finalActiveStatus = false;
-                        }
+                        if(row.Status === "Ended" || isExpired) finalActiveStatus = false;
+
+                        // Xử lý chuỗi kết quả CÓ / KHÔNG
+                        let resultText = row.Result ? row.Result.trim().toLowerCase() : "";
 
                         return {
                             id: index,
@@ -172,8 +165,9 @@
                             title: row.Title,
                             yesRate: parseInt(row.YesRate) || 50,
                             vol: row.Volume || "10M",
-                            deadline: row.Deadline ? formatDate(row.Deadline) : "Không thời hạn",
-                            isActive: finalActiveStatus
+                            deadline: row.Deadline ? formatDate(row.Deadline) : "Không có hạn",
+                            isActive: finalActiveStatus,
+                            result: resultText
                         };
                     });
                     
@@ -182,16 +176,13 @@
                     renderGrid();
                 },
                 error: function() {
-                    alert("Lỗi kết nối CSDL, đang tải bản thử nghiệm.");
+                    alert("Lỗi kết nối CSDL.");
                 }
             });
         }
 
-        // CHUYỂN ĐỔI TAB ĐANG MỞ / LỊCH SỬ
         function setStatusView(status) {
             currentStatusView = status;
-            
-            // Đổi UI của nút toggle
             const btnActive = document.getElementById('tab-active');
             const btnEnded = document.getElementById('tab-ended');
             
@@ -205,25 +196,21 @@
             renderGrid();
         }
 
-        // LỌC CATEGORY
         function filterCat(cat, el) {
             currentCategory = cat;
             document.querySelectorAll('.cat-tab').forEach(t => {
-                t.className = "cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0";
+                t.className = "cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all";
             });
             el.className = "cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all";
             renderGrid();
         }
 
-        // TÌM KIẾM
         function searchEvents() { renderGrid(); }
 
-        // RENDER DANH SÁCH CUỐI CÙNG
         function renderGrid() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const grid = document.getElementById('market-grid');
             
-            // Áp dụng 3 bộ lọc: Trạng thái (Active/Ended) + Category + Search Text
             let filtered = allEvents.filter(e => {
                 const matchStatus = currentStatusView === 'active' ? e.isActive : !e.isActive;
                 const matchCat = currentCategory === 'Tất cả' ? true : e.cat === currentCategory;
@@ -238,7 +225,27 @@
 
             grid.innerHTML = filtered.map((e) => {
                 const noRate = 100 - e.yesRate;
-                const btnClass = e.isActive ? "transition-colors" : "btn-disabled pointer-events-none";
+                
+                // Mặc định style cho nút Đang Mở
+                let yesBtnClass = "bg-[#eff6ff] hover:bg-[#dbeafe] text-[#2563eb] cursor-pointer";
+                let noBtnClass = "bg-[#fef2f2] hover:bg-[#fee2e2] text-[#dc2626] cursor-pointer";
+                let yesIcon = ""; let noIcon = "";
+                
+                // Xử lý nút khi sự kiện Đã Đóng
+                if (!e.isActive) {
+                    yesBtnClass = "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60";
+                    noBtnClass = "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60";
+                    
+                    // Nếu đã có kết quả
+                    if (e.result === "có" || e.result === "yes") {
+                        yesBtnClass = "bg-green-50 text-green-700 border-2 border-green-400 opacity-100 cursor-default shadow-sm";
+                        yesIcon = "🏆 ";
+                    } else if (e.result === "không" || e.result === "no") {
+                        noBtnClass = "bg-green-50 text-green-700 border-2 border-green-400 opacity-100 cursor-default shadow-sm";
+                        noIcon = "🏆 ";
+                    }
+                }
+
                 const actionOnClick = e.isActive ? `onclick="handlePredict(${e.id}, 'Đồng ý')"` : "";
                 const actionOnClickNo = e.isActive ? `onclick="handlePredict(${e.id}, 'Phản đối')"` : "";
 
@@ -247,25 +254,25 @@
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-[10px] font-medium text-gray-500">${e.cat}</span>
-                            <span class="text-[9px] font-bold ${e.isActive ? 'text-blue-500' : 'text-orange-500'}">
-                                ${e.isActive ? '⏳ ' + e.deadline : '🔒 Đã chốt'}
+                            <span class="text-[10px] font-bold ${e.isActive ? 'text-blue-500' : 'text-orange-500'}">
+                                ${e.isActive ? '⏳ ' : '🔒 '}${e.deadline}
                             </span>
                         </div>
-                        <h3 class="text-[11px] font-semibold text-gray-900 line-clamp-3 mb-3 leading-snug h-10">${e.title}</h3>
+                        <h3 class="text-xs font-semibold text-gray-900 line-clamp-3 mb-3 leading-snug">${e.title}</h3>
                     </div>
                     <div class="flex gap-2 mt-auto">
-                        <button ${actionOnClick} class="flex-1 flex flex-col items-center bg-[#eff6ff] text-[#2563eb] py-1.5 rounded-lg ${btnClass}">
-                            <span class="text-[10px] font-bold">CÓ</span><span class="text-xs font-bold">${e.yesRate}%</span>
+                        <button ${actionOnClick} class="flex-1 flex flex-col items-center py-1.5 rounded-lg transition-colors ${yesBtnClass}">
+                            <span class="text-[10px] font-bold">${yesIcon}Có</span><span class="text-xs font-bold">${e.yesRate}%</span>
                         </button>
-                        <button ${actionOnClickNo} class="flex-1 flex flex-col items-center bg-[#fef2f2] text-[#dc2626] py-1.5 rounded-lg ${btnClass}">
-                            <span class="text-[10px] font-bold">KHÔNG</span><span class="text-xs font-bold">${noRate}%</span>
+                        <button ${actionOnClickNo} class="flex-1 flex flex-col items-center py-1.5 rounded-lg transition-colors ${noBtnClass}">
+                            <span class="text-[10px] font-bold">${noIcon}Không</span><span class="text-xs font-bold">${noRate}%</span>
                         </button>
                     </div>
                 </div>
             `}).join('');
         }
 
-        // CÁC HÀM XỬ LÝ MODAL (Login & Trade)
+        // CÁC HÀM XỬ LÝ MODAL
         function handlePredict(id, type) {
             if (isGuest) document.getElementById('login-modal').classList.add('active');
             else openTradeModal(id, type);
