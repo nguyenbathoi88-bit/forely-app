@@ -8,142 +8,296 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
+        // Cấu hình màu sắc chuẩn thương hiệu Fintech
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        indigo: '#1e293b',
-                        cyan: '#38bdf8'
+                        indigo: '#1e293b', // Xanh đậm nền
+                        cyan: '#38bdf8',   // Xanh lơ nổi bật
+                        darkbg: '#0f172a', // Màu nền tổng thể
+                        cardbg: '#1e293b'  // Màu nền thẻ sự kiện
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #0f172a; color: white; }
-       .mobile-container { max-width: 480px; margin: 0 auto; background-color: #1e293b; min-height: 100vh; position: relative; }
+        body { background-color: #0f172a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* Ẩn thanh cuộn nhưng vẫn cho phép vuốt trên điện thoại */
+       .hide-scroll-bar::-webkit-scrollbar { display: none; }
+       .hide-scroll-bar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body>
+<body class="bg-darkbg text-white pb-20">
 
-<div class="mobile-container shadow-2xl overflow-hidden">
-    
-    <header class="bg-indigo p-4 flex justify-between items-center border-b border-gray-700 sticky top-0 z-10">
-        <div class="flex items-center gap-2 text-cyan font-bold text-xl cursor-pointer" onclick="location.reload()">
-            <i class="fa-solid fa-compass"></i> <span>FORELY</span>
+<nav class="sticky top-0 z-40 bg-cardbg border-b border-gray-700 shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="text-cyan font-bold text-2xl flex items-center gap-2 cursor-pointer" onclick="location.reload()">
+            <i class="fa-solid fa-compass"></i> <span class="tracking-wide">FORELY</span>
         </div>
-        <div class="bg-gray-800 rounded-full px-3 py-1 flex items-center gap-2 border border-cyan">
-            <i class="fa-solid fa-coins text-yellow-400"></i>
-            <span id="user-balance" class="font-bold text-sm">100.000 F-Point</span>
-        </div>
-    </header>
-
-    <div class="p-4">
-        <div class="relative">
-            <input type="text" placeholder="Tìm kiếm sự kiện..." class="w-full bg-gray-800 text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan border border-gray-700">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
-        </div>
-    </div>
-
-    <div class="flex overflow-x-auto gap-2 px-4 pb-2 text-sm hide-scroll-bar">
-        <button class="bg-cyan text-indigo font-bold px-4 py-1.5 rounded-full whitespace-nowrap">Tất cả</button>
-        <button class="bg-gray-800 text-gray-300 px-4 py-1.5 rounded-full whitespace-nowrap border border-gray-700">Kinh tế</button>
-        <button class="bg-gray-800 text-gray-300 px-4 py-1.5 rounded-full whitespace-nowrap border border-gray-700">Công nghệ</button>
-        <button class="bg-gray-800 text-gray-300 px-4 py-1.5 rounded-full whitespace-nowrap border border-gray-700">Thể thao</button>
-    </div>
-
-    <div class="p-4 space-y-4 pb-24">
         
-        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <div class="flex justify-between items-start mb-2">
-                <span class="text-xs font-semibold bg-gray-700 text-gray-300 px-2 py-1 rounded">Kinh tế • Nguồn: VnExpress</span>
-                <span class="text-xs text-red-400"><i class="fa-regular fa-clock"></i> Còn 2 ngày</span>
+        <div class="flex items-center gap-4">
+            <div class="hidden md:block relative">
+                <input type="text" id="searchInputDesktop" oninput="handleSearch(this.value)" placeholder="Tìm kiếm sự kiện..." class="bg-gray-800 text-sm text-white rounded-full pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-cyan border border-gray-700 transition-all">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-gray-400"></i>
             </div>
-            <h3 class="font-bold text-lg mb-3 leading-tight">Giá vàng SJC có vượt mốc 90 triệu đồng/lượng vào thứ Sáu tuần này không?</h3>
-            <div class="flex gap-3 mt-4">
-                <button onclick="openModal('Giá vàng SJC vượt 90 triệu', 'CÓ')" class="flex-1 bg-cyan text-indigo font-bold py-2 rounded-lg shadow-lg hover:bg-blue-400 transition">CHỌN CÓ</button>
-                <button onclick="openModal('Giá vàng SJC vượt 90 triệu', 'KHÔNG')" class="flex-1 bg-gray-700 text-white font-bold py-2 rounded-lg shadow-lg hover:bg-gray-600 transition border border-gray-600">CHỌN KHÔNG</button>
-            </div>
-        </div>
-
-        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <div class="flex justify-between items-start mb-2">
-                <span class="text-xs font-semibold bg-gray-700 text-gray-300 px-2 py-1 rounded">Công nghệ • Nguồn: ICTNews</span>
-                <span class="text-xs text-red-400"><i class="fa-regular fa-clock"></i> Còn 5 giờ</span>
-            </div>
-            <h3 class="font-bold text-lg mb-3 leading-tight">Apple có ra mắt iPhone màn hình gập trong sự kiện rạng sáng mai?</h3>
-            <div class="flex gap-3 mt-4">
-                <button onclick="openModal('Apple ra mắt iPhone gập', 'CÓ')" class="flex-1 bg-cyan text-indigo font-bold py-2 rounded-lg shadow-lg hover:bg-blue-400 transition">CHỌN CÓ</button>
-                <button onclick="openModal('Apple ra mắt iPhone gập', 'KHÔNG')" class="flex-1 bg-gray-700 text-white font-bold py-2 rounded-lg shadow-lg hover:bg-gray-600 transition border border-gray-600">CHỌN KHÔNG</button>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="prediction-modal" class="hidden absolute inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
-        <div class="bg-gray-800 w-full rounded-2xl p-5 border border-cyan shadow-2xl">
-            <h2 class="text-xl font-bold text-center mb-1">Xác nhận đóng góp trí tuệ</h2>
-            <p id="modal-event-title" class="text-sm text-gray-400 text-center mb-4 line-clamp-2">Sự kiện...</p>
-            
-            <div class="bg-gray-700 rounded-lg p-3 mb-4 flex justify-between items-center">
-                <span>Lựa chọn của bạn:</span>
-                <span id="modal-choice" class="font-bold text-cyan text-lg">CÓ</span>
-            </div>
-
-            <div class="mb-4">
-                <label class="text-sm text-gray-300 block mb-2">Số điểm F-Point muốn sử dụng:</label>
-                <input type="number" id="invest-amount" value="10000" oninput="calculateReward()" class="w-full bg-gray-900 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan text-lg text-center font-bold">
-            </div>
-
-            <div class="bg-indigo border border-gray-600 rounded-lg p-3 mb-6 text-center">
-                <span class="text-xs text-gray-400 block mb-1">Quà tặng Voucher ước tính nhận được</span>
-                <div class="text-xl font-bold text-yellow-400"><span id="estimated-reward">19.000</span> VNĐ</div>
-            </div>
-
-            <div class="flex gap-3">
-                <button onclick="closeModal()" class="flex-1 py-3 rounded-lg font-bold text-gray-300 bg-gray-700 hover:bg-gray-600">HỦY BỎ</button>
-                <button onclick="submitPrediction()" class="flex-1 py-3 rounded-lg font-bold text-indigo bg-cyan shadow-lg hover:bg-blue-400">XÁC NHẬN</button>
+            <div class="bg-gray-800 rounded-full px-4 py-1.5 flex items-center gap-2 border border-cyan shadow-[0_0_10px_rgba(56,189,248,0.2)]">
+                <i class="fa-solid fa-coins text-yellow-400"></i>
+                <span id="user-balance" class="font-bold text-sm md:text-base">100.000</span>
             </div>
         </div>
     </div>
+</nav>
 
+<div class="md:hidden px-4 py-3 bg-cardbg border-b border-gray-800">
+    <div class="relative">
+        <input type="text" id="searchInputMobile" oninput="handleSearch(this.value)" placeholder="Tìm kiếm sự kiện..." class="w-full bg-gray-800 text-sm text-white rounded-full pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan border border-gray-700">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-gray-400"></i>
+    </div>
+</div>
+
+<main class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+    
+    <aside class="md:col-span-1">
+        <h2 class="hidden md:block text-gray-400 font-semibold mb-3 uppercase text-sm tracking-wider">Chuyên mục</h2>
+        <div class="flex overflow-x-auto md:flex-col gap-2 pb-2 md:pb-0 hide-scroll-bar" id="category-container">
+            </div>
+    </aside>
+
+    <div class="md:col-span-3 space-y-5" id="events-container">
+        </div>
+
+</main>
+
+<div id="prediction-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+    <div class="bg-cardbg w-full max-w-md rounded-2xl p-6 border border-cyan shadow-[0_0_30px_rgba(56,189,248,0.15)] relative transform transition-all">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        
+        <h2 class="text-xl font-bold text-center mb-1">Xác nhận Dự báo</h2>
+        <p id="modal-event-title" class="text-sm text-gray-400 text-center mb-5 line-clamp-2">Tên sự kiện...</p>
+        
+        <div class="bg-gray-800 rounded-xl p-4 mb-5 flex justify-between items-center border border-gray-700">
+            <span class="text-gray-300">Lựa chọn của bạn:</span>
+            <span id="modal-choice" class="font-bold text-xl px-3 py-1 rounded-lg">CÓ</span>
+        </div>
+
+        <div class="mb-5">
+            <div class="flex justify-between text-sm mb-2">
+                <label class="text-gray-300">Số điểm đầu tư:</label>
+                <span class="text-cyan cursor-pointer hover:underline" onclick="setAllIn()">Tất cả (All-in)</span>
+            </div>
+            <div class="relative">
+                <input type="number" id="invest-amount" value="10000" oninput="calculateReward()" class="w-full bg-gray-900 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan text-xl font-bold text-center border border-gray-700">
+                <span class="absolute right-4 top-3.5 text-gray-500 font-semibold">FP</span>
+            </div>
+        </div>
+
+        <div class="bg-indigo border border-cyan border-opacity-30 rounded-xl p-4 mb-6 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan to-transparent opacity-50"></div>
+            <span class="text-xs text-gray-300 block mb-1 uppercase tracking-wider">Quà tặng Voucher ước tính</span>
+            <div class="text-3xl font-bold text-yellow-400 flex justify-center items-center gap-2">
+                <span id="estimated-reward">0</span> <span class="text-sm text-yellow-200">VNĐ</span>
+            </div>
+            <span id="odds-display" class="text-xs text-cyan mt-1 block">Tỷ lệ nhân: x0</span>
+        </div>
+
+        <button onclick="submitPrediction()" class="w-full py-3.5 rounded-xl font-bold text-indigo bg-cyan shadow-[0_4px_15px_rgba(56,189,248,0.4)] hover:bg-blue-400 transition-colors text-lg">
+            XÁC NHẬN VÀ CHỜ KẾT QUẢ
+        </button>
+    </div>
 </div>
 
 <script>
+    // 1. DỮ LIỆU MÔ PHỎNG (DATABASE)
     let currentBalance = 100000;
+    let currentCategory = 'Tất cả';
+    let searchQuery = '';
+    
+    // Lưu trữ tạm thời sự kiện đang được chọn để tính điểm
+    let activeEvent = null;
+    let activeChoice = ''; // 'YES' hoặc 'NO'
 
-    function openModal(title, choice) {
+    const categories =;
+
+    // Danh sách sự kiện phong phú
+    const eventsData =;
+
+    // 2. KHỞI TẠO GIAO DIỆN
+    window.onload = () => {
+        updateBalanceDisplay();
+        renderCategories();
+        renderEvents();
+    };
+
+    function updateBalanceDisplay() {
+        document.getElementById('user-balance').innerText = currentBalance.toLocaleString('vi-VN');
+    }
+
+    // 3. XỬ LÝ DANH MỤC (LỌC)
+    function renderCategories() {
+        const container = document.getElementById('category-container');
+        container.innerHTML = '';
+        
+        categories.forEach(cat => {
+            const isSelected = cat === currentCategory;
+            const btnClass = isSelected 
+               ? 'bg-cyan text-indigo font-bold px-5 py-2 rounded-full whitespace-nowrap shadow-[0_0_10px_rgba(56,189,248,0.3)] transition-all' 
+                : 'bg-gray-800 text-gray-300 hover:text-white px-5 py-2 rounded-full whitespace-nowrap border border-gray-700 hover:border-gray-500 transition-all cursor-pointer';
+            
+            const btn = document.createElement('button');
+            btn.className = btnClass;
+            btn.innerText = cat;
+            btn.onclick = () => {
+                currentCategory = cat;
+                renderCategories(); // Vẽ lại màu nút
+                renderEvents();     // Lọc lại sự kiện
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    // 4. TÌM KIẾM
+    function handleSearch(value) {
+        searchQuery = value.toLowerCase();
+        // Đồng bộ chữ giữa 2 ô tìm kiếm (mobile & desktop)
+        document.getElementById('searchInputDesktop').value = value;
+        document.getElementById('searchInputMobile').value = value;
+        renderEvents();
+    }
+
+    // 5. HIỂN THỊ DANH SÁCH SỰ KIỆN
+    function renderEvents() {
+        const container = document.getElementById('events-container');
+        container.innerHTML = '';
+
+        // Lọc dữ liệu theo Category và Search
+        const filteredEvents = eventsData.filter(e => {
+            const matchCategory = currentCategory === 'Tất cả' || e.category === currentCategory;
+            const matchSearch = e.title.toLowerCase().includes(searchQuery);
+            return matchCategory && matchSearch;
+        });
+
+        if(filteredEvents.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-16 bg-gray-800 rounded-2xl border border-gray-700 flex flex-col items-center">
+                    <i class="fa-regular fa-folder-open text-4xl text-gray-500 mb-3"></i>
+                    <p class="text-gray-400">Không tìm thấy sự kiện nào phù hợp.</p>
+                </div>`;
+            return;
+        }
+
+        // Vẽ từng thẻ sự kiện
+        filteredEvents.forEach(e => {
+            const card = document.createElement('div');
+            card.className = 'bg-cardbg rounded-2xl p-5 border border-gray-700 hover:border-cyan transition-colors shadow-sm hover:shadow-[0_0_15px_rgba(56,189,248,0.1)]';
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-semibold bg-gray-700 text-cyan px-2.5 py-1 rounded-md uppercase tracking-wide">${e.category}</span>
+                        <span class="text-xs text-gray-400 flex items-center gap-1"><i class="fa-solid fa-users"></i> ${e.participants.toLocaleString()}</span>
+                    </div>
+                    <span class="text-xs font-medium text-red-400 bg-red-400 bg-opacity-10 px-2.5 py-1 rounded-md flex items-center gap-1">
+                        <i class="fa-regular fa-clock"></i> ${e.time}
+                    </span>
+                </div>
+                
+                <h3 class="font-bold text-lg md:text-xl mb-2 leading-snug text-gray-100">${e.title}</h3>
+                <p class="text-sm text-gray-400 mb-5"><i class="fa-solid fa-link text-xs"></i> Nguồn xác thực: <span class="text-gray-300">${e.source}</span></p>
+                
+                <div class="grid grid-cols-2 gap-3 md:gap-4">
+                    <button onclick="openModal(${e.id}, 'YES')" class="group relative overflow-hidden bg-gray-800 border border-gray-600 rounded-xl py-3 hover:border-green-400 transition-all text-center">
+                        <div class="absolute inset-0 bg-green-400 opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                        <span class="block font-bold text-gray-300 group-hover:text-white mb-1">CÓ (YES)</span>
+                        <span class="block text-sm text-green-400 font-semibold">Tỷ lệ: x${e.oddsYes.toFixed(2)}</span>
+                    </button>
+                    
+                    <button onclick="openModal(${e.id}, 'NO')" class="group relative overflow-hidden bg-gray-800 border border-gray-600 rounded-xl py-3 hover:border-red-400 transition-all text-center">
+                        <div class="absolute inset-0 bg-red-400 opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                        <span class="block font-bold text-gray-300 group-hover:text-white mb-1">KHÔNG (NO)</span>
+                        <span class="block text-sm text-red-400 font-semibold">Tỷ lệ: x${e.oddsNo.toFixed(2)}</span>
+                    </button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // 6. XỬ LÝ CỬA SỔ DỰ BÁO (MODAL)
+    function openModal(eventId, choice) {
+        activeEvent = eventsData.find(e => e.id === eventId);
+        activeChoice = choice;
+
+        document.getElementById('modal-event-title').innerText = activeEvent.title;
+        
+        const choiceEl = document.getElementById('modal-choice');
+        if(choice === 'YES') {
+            choiceEl.innerText = 'CÓ (YES)';
+            choiceEl.className = 'font-bold text-lg px-3 py-1 rounded-lg bg-green-400 bg-opacity-20 text-green-400 border border-green-400';
+        } else {
+            choiceEl.innerText = 'KHÔNG (NO)';
+            choiceEl.className = 'font-bold text-lg px-3 py-1 rounded-lg bg-red-400 bg-opacity-20 text-red-400 border border-red-400';
+        }
+
         document.getElementById('prediction-modal').classList.remove('hidden');
-        document.getElementById('modal-event-title').innerText = title;
-        document.getElementById('modal-choice').innerText = choice;
+        document.body.style.overflow = 'hidden'; // Khóa cuộn trang nền
+        
+        // Reset input và tính toán lại
+        document.getElementById('invest-amount').value = 10000;
         calculateReward();
     }
 
     function closeModal() {
         document.getElementById('prediction-modal').classList.add('hidden');
+        document.body.style.overflow = 'auto'; // Mở lại cuộn trang
+        activeEvent = null;
+    }
+
+    function setAllIn() {
+        document.getElementById('invest-amount').value = currentBalance;
+        calculateReward();
     }
 
     function calculateReward() {
-        let amount = document.getElementById('invest-amount').value;
-        // Giả lập tính toán: phần thưởng = điểm đầu tư x 1.9 (tỷ lệ demo)
-        let reward = Math.floor(amount * 1.9); 
+        if(!activeEvent) return;
+        
+        let amount = parseInt(document.getElementById('invest-amount').value) || 0;
+        let odds = activeChoice === 'YES'? activeEvent.oddsYes : activeEvent.oddsNo;
+        
+        let reward = Math.floor(amount * odds); 
+        
         document.getElementById('estimated-reward').innerText = reward.toLocaleString('vi-VN');
+        document.getElementById('odds-display').innerText = `Tỷ lệ nhân: x${odds.toFixed(2)} (Bao gồm gốc)`;
     }
 
+    // 7. GỬI DỰ BÁO
     function submitPrediction() {
         let amount = parseInt(document.getElementById('invest-amount').value);
         
+        if (isNaN(amount) || amount <= 0) {
+            alert('Vui lòng nhập số điểm hợp lệ!');
+            return;
+        }
+        
         if(amount > currentBalance) {
-            alert('Bạn không đủ F-Point! Vui lòng nạp thêm.');
+            alert('Bạn không đủ F-Point! Vui lòng nạp thêm qua mã VietQR.');
             return;
         }
 
-        // Trừ điểm
+        // Trừ điểm và cập nhật giao diện
         currentBalance -= amount;
-        document.getElementById('user-balance').innerText = currentBalance.toLocaleString('vi-VN') + ' F-Point';
+        updateBalanceDisplay();
         
+        // Tăng số lượng người tham gia mô phỏng
+        activeEvent.participants += 1;
+        renderEvents(); 
+
         closeModal();
-        alert('Ghi nhận thành công! Hệ thống sẽ chốt kết quả và trả Voucher khi sự kiện kết thúc.');
+        
+        // Hiển thị thông báo thành công (Có thể thay bằng thư viện Toast đẹp hơn)
+        setTimeout(() => {
+            alert(`🎉 Ghi nhận thành công!\nBạn đã dùng ${amount.toLocaleString('vi-VN')} FP dự báo cho sự kiện này.\nHệ thống sẽ tự động đối soát và trả Voucher khi sự kiện kết thúc.`);
+        }, 300);
     }
 </script>
 
