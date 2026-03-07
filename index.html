@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forely - Nền tảng Khảo sát & Dữ liệu Cộng đồng</title>
+    <title>Forely - Khảo sát & Tin Tức</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
@@ -11,6 +11,7 @@
         body { font-family: 'Inter', sans-serif; background-color: #f7f9fa; color: #111827; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal.active { display: flex; }
         
@@ -19,14 +20,16 @@
         
         .brand-text { background: linear-gradient(135deg, #1e3a8a 0%, #0d9488 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Hiệu ứng scroll mượt cho Modal Pitch Deck */
-        .smooth-scroll { scroll-behavior: smooth; }
+        /* Chuyển trang mượt mà */
+        .page-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .page-active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="pb-24">
 
     <nav class="bg-white/95 backdrop-blur-md px-4 py-3 sticky top-0 z-50 flex justify-between items-center border-b border-gray-100 shadow-sm">
-        <div onclick="goHome()" class="flex items-center gap-2.5 cursor-pointer hover:opacity-90 transition-opacity">
+        <div onclick="switchPage('home')" class="flex items-center gap-2.5 cursor-pointer hover:opacity-90 transition-opacity">
             <svg width="32" height="32" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="forelyBrand" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -46,96 +49,48 @@
         </div>
     </nav>
 
-    <div class="bg-white sticky top-[60px] z-40 border-b border-gray-200">
-        <div class="px-4 pt-3 pb-2">
-            <div class="relative mb-3">
-                <input type="text" id="search-input" oninput="searchEvents()" placeholder="Tìm kiếm khảo sát..." class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 pl-10 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/20">
-                <span class="absolute left-3.5 top-3 text-gray-400 text-sm">🔍</span>
-            </div>
-            
-            <div class="flex gap-2 bg-gray-100 p-1.5 rounded-lg">
-                <button onclick="setStatusView('active')" id="tab-active" class="flex-1 py-1.5 text-xs font-bold rounded-md bg-white text-gray-900 shadow-sm transition-all">🟢 Đang mở</button>
-                <button onclick="setStatusView('ended')" id="tab-ended" class="flex-1 py-1.5 text-xs font-bold rounded-md bg-transparent text-gray-500 transition-all">⏳ Lịch sử</button>
-            </div>
-        </div>
-
-        <div class="flex gap-2 overflow-x-auto px-4 pb-3 no-scrollbar">
-            <button onclick="filterCat('Tất cả', this)" class="cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all">Tất cả</button>
-            <button onclick="filterCat('Kinh tế vĩ mô', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Kinh tế vĩ mô</button>
-            <button onclick="filterCat('Chính sách', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Chính sách</button>
-            <button onclick="filterCat('Giải trí - Xã hội', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Giải trí - Xã hội</button>
-            <button onclick="filterCat('Hạ tầng - BĐS', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Hạ tầng - BĐS</button>
-            <button onclick="filterCat('Công nghệ', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Công nghệ</button>
-            <button onclick="filterCat('Thể thao', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Thể thao</button>
-        </div>
-    </div>
-
-    <div id="loading" class="text-center mt-10">
-        <div class="loader"></div><p class="text-xs text-gray-500 mt-2">Đang đồng bộ dữ liệu...</p>
-    </div>
-    <div id="market-grid" class="p-4 grid grid-cols-2 gap-3.5 md:grid-cols-3 lg:grid-cols-4 hidden">
-        </div>
-
-    <div class="px-6 pt-4 pb-8 text-center border-t border-gray-200 mt-6 bg-gray-50">
-        <button onclick="openPitchModal()" class="mb-4 inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-teal-500 text-white px-6 py-3 rounded-full text-xs font-bold shadow-lg shadow-teal-500/30 hover:scale-105 transition-transform">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-            Xem Mô hình Kinh doanh (Pitch Deck)
-        </button>
-        <p class="text-[10px] text-gray-400 leading-relaxed">
-            Forely là nền tảng khảo sát thu thập dữ liệu người dùng (ICP). Hoạt động tặng Voucher tri ân tuân thủ theo Nghị định 81/2018/NĐ-CP về xúc tiến thương mại. F-Point là điểm thành viên nội bộ, không quy đổi thành tiền mặt.
-        </p>
-    </div>
-
-    <div id="pitch-modal" class="modal">
-        <div class="bg-white w-[95%] max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            <div class="px-5 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center sticky top-0 z-10">
-                <h2 class="text-lg font-extrabold brand-text flex items-center gap-2">
-                    🚀 Forely Business Model
-                </h2>
-                <button onclick="closeModal('pitch-modal')" class="text-gray-400 hover:text-gray-900 text-2xl font-bold leading-none">&times;</button>
-            </div>
-            
-            <div class="p-6 overflow-y-auto smooth-scroll text-sm text-gray-700 leading-relaxed space-y-6">
+    <div id="page-home" class="page-section page-active">
+        <div class="bg-white sticky top-[60px] z-40 border-b border-gray-200">
+            <div class="px-4 pt-3 pb-2">
+                <div class="relative mb-3">
+                    <input type="text" id="search-input" oninput="searchEvents()" placeholder="Tìm kiếm khảo sát..." class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 pl-10 pr-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/20">
+                    <span class="absolute left-3.5 top-3 text-gray-400 text-sm">🔍</span>
+                </div>
                 
-                <section>
-                    <h3 class="text-base font-bold text-gray-900 mb-2 border-l-4 border-blue-500 pl-3">1. Định vị & Chiến lược Pháp lý (Vỏ bọc an toàn)</h3>
-                    <p class="mb-2"><strong>Bản chất pháp lý:</strong> Forely đăng ký dưới hình thức <strong>Trang thông tin điện tử tổng hợp (ICP)</strong>, cung cấp tin tức và phân tích dữ liệu. Tuyệt đối không đăng ký dạng "Trò chơi điện tử" (G1-G4) để tránh Nghị định 147/2024/NĐ-CP (cấm game đổi thưởng).</p>
-                    <p><strong>Định vị:</strong> Nền tảng khảo sát ý kiến và dự báo tương lai dựa trên trí tuệ cộng đồng, mang giao diện chuyên nghiệp, minh bạch như một ứng dụng Fintech.</p>
-                </section>
-
-                <hr class="border-gray-100">
-
-                <section>
-                    <h3 class="text-base font-bold text-gray-900 mb-3 border-l-4 border-teal-500 pl-3">2. Luồng luân chuyển Dòng tiền (Cashflow)</h3>
-                    
-                    <ul class="space-y-3 mt-3 list-disc pl-5">
-                        <li><strong>Dòng tiền VÀO (Doanh thu):</strong> Khách hàng thanh toán mua "Gói dịch vụ nội dung/Tin tức đặc quyền". Tự động 100% qua mã VietQR kết hợp Webhook SePay. Hệ thống tặng kèm "Điểm tri ân" (F-Point).</li>
-                        <li><strong>Tương tác (F-Point):</strong> Dùng điểm tham gia trả lời khảo sát, dự báo xu hướng. Kết quả chốt tự động qua máy chủ quét nguồn tin chuẩn (RSS) từ báo chí chính thống.</li>
-                        <li><strong>Dòng tiền RA (Chi phí trả thưởng):</strong> Khách hàng đúng nhận F-Point, quy đổi thành Voucher (Shopee, Grab, thẻ ĐT) qua API của UrBox. Chi phí này hạch toán vào <em>"Chi phí khuyến mại, xúc tiến thương mại"</em> (Nghị định 81/2018/NĐ-CP). Lợi nhuận là chênh lệch giữa tiền bán gói nội dung và chi phí Voucher.</li>
-                    </ul>
-                </section>
-
-                <hr class="border-gray-100">
-
-                <section>
-                    <h3 class="text-base font-bold text-gray-900 mb-3 border-l-4 border-indigo-500 pl-3">3. Cấu trúc Vận hành Tự động (Tech Stack)</h3>
-                    
-
-[Image of serverless architecture cloud computing]
-
-                    <p class="mb-3 mt-3">Sử dụng nền tảng đám mây hiện đại (No-Code/Low-Code) tự động hóa 24/7:</p>
-                    <ul class="space-y-2 list-disc pl-5">
-                        <li><strong>Frontend:</strong> HTML & Tailwind CSS (Xanh Navy/Trắng), lưu trữ phát trực tiếp miễn phí trên Vercel.</li>
-                        <li><strong>Database:</strong> Lưu sổ cái F-Point và dữ liệu trên Supabase/Google Sheets.</li>
-                        <li><strong>Backend Engine:</strong> Firebase Cloud Functions làm nhiệm vụ: (1) Nhận tín hiệu nạp tiền, (2) Quét tin tức RSS xác thực, (3) Gọi API kho quà đối tác xuất mã Voucher.</li>
-                    </ul>
-                </section>
-
-                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mt-4">
-                    <p class="font-semibold text-blue-900 italic">"Forely là cỗ máy kiếm tiền tự động từ dịch vụ nội dung số, dùng cơ chế 'Khảo sát nhận Voucher' làm mồi nhử Gamification. Chi phí máy chủ gần như bằng 0 và tuân thủ tuyệt đối pháp luật Việt Nam."</p>
+                <div class="flex gap-2 bg-gray-100 p-1.5 rounded-lg">
+                    <button onclick="setStatusView('active')" id="tab-active" class="flex-1 py-1.5 text-xs font-bold rounded-md bg-white text-gray-900 shadow-sm transition-all">🟢 Đang mở</button>
+                    <button onclick="setStatusView('ended')" id="tab-ended" class="flex-1 py-1.5 text-xs font-bold rounded-md bg-transparent text-gray-500 transition-all">⏳ Lịch sử</button>
                 </div>
             </div>
+
+            <div class="flex gap-2 overflow-x-auto px-4 pb-3 no-scrollbar">
+                <button onclick="filterCat('Tất cả', this)" class="cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all">Tất cả</button>
+                <button onclick="filterCat('Kinh tế vĩ mô', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Kinh tế vĩ mô</button>
+                <button onclick="filterCat('Chính sách', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Chính sách</button>
+                <button onclick="filterCat('Giải trí - Xã hội', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Giải trí</button>
+                <button onclick="filterCat('Hạ tầng - BĐS', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Bất động sản</button>
+                <button onclick="filterCat('Công nghệ', this)" class="cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0">Công nghệ</button>
+            </div>
         </div>
+
+        <div id="loading" class="text-center mt-10">
+            <div class="loader"></div><p class="text-xs text-gray-500 mt-2">Đang đồng bộ dữ liệu...</p>
+        </div>
+        <div id="market-grid" class="p-4 grid grid-cols-2 gap-3.5 md:grid-cols-3 lg:grid-cols-4 hidden"></div>
+    </div>
+
+    <div id="page-news" class="page-section bg-white min-h-screen">
+        <div class="px-4 py-4 border-b border-gray-100 bg-gray-50">
+            <h2 class="text-lg font-bold text-gray-900">Tin tức thị trường</h2>
+            <p class="text-xs text-gray-500">Cập nhật liên tục từ VnExpress</p>
+        </div>
+        
+        <div id="news-loading" class="text-center mt-10 hidden">
+            <div class="loader"></div><p class="text-xs text-gray-500 mt-2">Đang tải tin mới nhất...</p>
+        </div>
+
+        <div id="news-container" class="p-4 flex flex-col gap-4">
+            </div>
     </div>
 
     <div id="login-modal" class="modal">
@@ -179,36 +134,118 @@
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-3 z-50">
-        <button onclick="goHome()" class="flex flex-col items-center gap-1 text-gray-900">
-            <span class="text-lg">🧭</span><span class="text-[10px] font-semibold">Khảo sát</span>
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2 z-50">
+        <button onclick="switchPage('home')" id="nav-home" class="flex flex-col items-center gap-1 w-1/4 py-1 text-teal-600 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="text-[10px] font-bold">Khảo sát</span>
         </button>
-        <button onclick="alert('Tính năng Nạp điểm đang nâng cấp')" class="flex flex-col items-center gap-1 text-gray-400">
-            <span class="text-lg">💳</span><span class="text-[10px] font-semibold">Nạp</span>
+        <button onclick="switchPage('news')" id="nav-news" class="flex flex-col items-center gap-1 w-1/4 py-1 text-gray-400 hover:text-gray-900 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            <span class="text-[10px] font-bold">Tin tức</span>
         </button>
-        <button onclick="alert('Kho Voucher sẽ sớm ra mắt!')" class="flex flex-col items-center gap-1 text-gray-400">
-            <span class="text-lg">🎁</span><span class="text-[10px] font-semibold">Quà</span>
+        <button onclick="alert('Tính năng Nạp điểm đang nâng cấp')" class="flex flex-col items-center gap-1 w-1/4 py-1 text-gray-400 hover:text-gray-900 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span class="text-[10px] font-bold">Nạp</span>
+        </button>
+        <button onclick="alert('Kho Voucher sẽ sớm ra mắt!')" class="flex flex-col items-center gap-1 w-1/4 py-1 text-gray-400 hover:text-gray-900 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><rect x="16" y="14" width="4" height="4" rx="1"/></svg>
+            <span class="text-[10px] font-bold">Quà</span>
         </button>
     </div>
 
     <script>
-        // LINK GOOGLE SHEETS
+        // --- CẤU HÌNH API ---
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREHXHIoKFy_Vhds8sFY8pJzrvcLZItNS2O0hQTy8Z-JJ9TiwFvCYmQgWVyhLVpcyY1IheROL0ljntf/pub?gid=0&single=true&output=csv";
+        
+        // Link RSS của VnExpress (Kinh doanh) -> Đã được bọc qua RSS2JSON để website có thể đọc được
+        const VNEXPRESS_RSS_URL = "https://vnexpress.net/rss/kinh-doanh.rss";
+        const RSS_TO_JSON_API = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(VNEXPRESS_RSS_URL)}`;
 
+        // --- TRẠNG THÁI ---
         let isGuest = true;
         let balance = 0;
         let allEvents = [];
         let currentStatusView = 'active';
         let currentCategory = 'Tất cả';
         let selectedEvent = null;
+        let newsLoaded = false;
 
+        // --- CHUYỂN TRANG (TAB NAV) ---
+        function switchPage(pageId) {
+            // Đổi giao diện
+            document.getElementById('page-home').classList.remove('page-active');
+            document.getElementById('page-news').classList.remove('page-active');
+            document.getElementById('page-' + pageId).classList.add('page-active');
+            window.scrollTo(0,0);
+
+            // Đổi màu icon dưới Bottom Nav
+            document.getElementById('nav-home').className = "flex flex-col items-center gap-1 w-1/4 py-1 transition-colors " + (pageId === 'home' ? "text-teal-600" : "text-gray-400");
+            document.getElementById('nav-news').className = "flex flex-col items-center gap-1 w-1/4 py-1 transition-colors " + (pageId === 'news' ? "text-teal-600" : "text-gray-400");
+
+            // Tải tin tức nếu mở tab News lần đầu
+            if (pageId === 'news' && !newsLoaded) {
+                fetchNews();
+            }
+        }
+
+        // --- TẢI TIN TỨC TỪ BÁO (RSS) ---
+        function fetchNews() {
+            document.getElementById('news-loading').classList.remove('hidden');
+            
+            fetch(RSS_TO_JSON_API)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('news-loading').classList.add('hidden');
+                    if (data.status === 'ok') {
+                        renderNews(data.items);
+                        newsLoaded = true;
+                    } else {
+                        document.getElementById('news-container').innerHTML = '<p class="text-sm text-center text-gray-500">Tạm thời không thể lấy tin tức.</p>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('news-loading').classList.add('hidden');
+                    document.getElementById('news-container').innerHTML = '<p class="text-sm text-center text-gray-500">Lỗi kết nối khi lấy tin tức.</p>';
+                });
+        }
+
+        function renderNews(articles) {
+            const container = document.getElementById('news-container');
+            // Lấy 15 bài mới nhất
+            const topArticles = articles.slice(0, 15);
+            
+            container.innerHTML = topArticles.map(article => {
+                // Rút trích ảnh từ chuỗi description của RSS nếu có
+                let imageUrl = "";
+                const imgMatch = article.description.match(/src\s*=\s*"(.+?)"/);
+                if (imgMatch) imageUrl = imgMatch[1];
+
+                const dateObj = new Date(article.pubDate);
+                const timeString = `${dateObj.getHours()}:${dateObj.getMinutes().toString().padStart(2, '0')} - ${dateObj.getDate()}/${dateObj.getMonth() + 1}`;
+
+                return `
+                <a href="${article.link}" target="_blank" class="block bg-white border border-gray-100 p-3 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex gap-3">
+                        ${imageUrl ? `<img src="${imageUrl}" alt="news" class="w-24 h-20 object-cover rounded-lg shrink-0">` : ''}
+                        <div class="flex flex-col justify-between">
+                            <h3 class="text-xs font-bold text-gray-900 leading-snug line-clamp-2">${article.title}</h3>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="bg-teal-50 text-teal-600 text-[9px] font-bold px-1.5 py-0.5 rounded">VnExpress</span>
+                                <span class="text-[10px] text-gray-400">${timeString}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                `;
+            }).join('');
+        }
+
+        // --- CÁC HÀM XỬ LÝ KHẢO SÁT (Giữ nguyên như cũ) ---
         function formatDate(dateString) {
             if (!dateString) return "Vô thời hạn";
             const date = new Date(dateString);
             if(isNaN(date)) return dateString;
-            const day = date.getDate().toString().padStart(2, '0');
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            return `${day}/${month}/${date.getFullYear()}`; 
+            return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`; 
         }
 
         function fetchEventsFromGoogleSheets() {
@@ -218,18 +255,13 @@
                 skipEmptyLines: true,
                 complete: function(results) {
                     const now = new Date().getTime();
-
                     allEvents = results.data.filter(row => row.Title).map((row, index) => {
                         let isExpired = false;
                         if(row.Deadline) {
-                            const dlDate = new Date(row.Deadline).getTime();
-                            if(dlDate < now) isExpired = true; 
+                            if(new Date(row.Deadline).getTime() < now) isExpired = true; 
                         }
-                        
                         let finalActiveStatus = true;
                         if(row.Status === "Ended" || isExpired) finalActiveStatus = false;
-
-                        let resultText = row.Result ? row.Result.trim().toLowerCase() : "";
 
                         return {
                             id: index,
@@ -239,38 +271,26 @@
                             vol: row.Volume || "10M",
                             deadline: row.Deadline ? formatDate(row.Deadline) : "Vô thời hạn",
                             isActive: finalActiveStatus,
-                            result: resultText
+                            result: row.Result ? row.Result.trim().toLowerCase() : ""
                         };
                     });
-                    
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('market-grid').classList.remove('hidden');
                     renderGrid();
-                },
-                error: function() { alert("Lỗi kết nối CSDL."); }
+                }
             });
         }
 
         function setStatusView(status) {
             currentStatusView = status;
-            const btnActive = document.getElementById('tab-active');
-            const btnEnded = document.getElementById('tab-ended');
-            
-            if(status === 'active') {
-                btnActive.className = "flex-1 py-1.5 text-xs font-bold rounded-md bg-white text-gray-900 shadow-sm transition-all";
-                btnEnded.className = "flex-1 py-1.5 text-xs font-bold rounded-md bg-transparent text-gray-500 transition-all";
-            } else {
-                btnActive.className = "flex-1 py-1.5 text-xs font-bold rounded-md bg-transparent text-gray-500 transition-all";
-                btnEnded.className = "flex-1 py-1.5 text-xs font-bold rounded-md bg-white text-gray-900 shadow-sm transition-all";
-            }
+            document.getElementById('tab-active').className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all " + (status === 'active' ? "bg-white text-gray-900 shadow-sm" : "bg-transparent text-gray-500");
+            document.getElementById('tab-ended').className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all " + (status === 'ended' ? "bg-white text-gray-900 shadow-sm" : "bg-transparent text-gray-500");
             renderGrid();
         }
 
         function filterCat(cat, el) {
             currentCategory = cat;
-            document.querySelectorAll('.cat-tab').forEach(t => {
-                t.className = "cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all";
-            });
+            document.querySelectorAll('.cat-tab').forEach(t => t.className = "cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all");
             el.className = "cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all";
             renderGrid();
         }
@@ -280,12 +300,10 @@
         function renderGrid() {
             const term = document.getElementById('search-input').value.toLowerCase();
             const grid = document.getElementById('market-grid');
-            
             let filtered = allEvents.filter(e => {
-                const matchStatus = currentStatusView === 'active' ? e.isActive : !e.isActive;
-                const matchCat = currentCategory === 'Tất cả' ? true : e.cat === currentCategory;
-                const matchSearch = e.title.toLowerCase().includes(term) || e.cat.toLowerCase().includes(term);
-                return matchStatus && matchCat && matchSearch;
+                return (currentStatusView === 'active' ? e.isActive : !e.isActive) &&
+                       (currentCategory === 'Tất cả' ? true : e.cat === currentCategory) &&
+                       (e.title.toLowerCase().includes(term) || e.cat.toLowerCase().includes(term));
             });
 
             if(filtered.length === 0) {
@@ -295,7 +313,6 @@
 
             grid.innerHTML = filtered.map((e) => {
                 const noRate = 100 - e.yesRate;
-                
                 let yesBtnClass = "bg-[#eff6ff] hover:bg-[#dbeafe] text-[#2563eb] cursor-pointer";
                 let noBtnClass = "bg-[#fef2f2] hover:bg-[#fee2e2] text-[#dc2626] cursor-pointer";
                 let yesIcon = ""; let noIcon = "";
@@ -303,35 +320,24 @@
                 if (!e.isActive) {
                     yesBtnClass = "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60";
                     noBtnClass = "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60";
-                    
-                    if (e.result === "có" || e.result === "yes") {
-                        yesBtnClass = "bg-teal-50 text-teal-700 border border-teal-400 opacity-100 cursor-default shadow-sm";
-                        yesIcon = "🏆 ";
-                    } else if (e.result === "không" || e.result === "no") {
-                        noBtnClass = "bg-teal-50 text-teal-700 border border-teal-400 opacity-100 cursor-default shadow-sm";
-                        noIcon = "🏆 ";
-                    }
+                    if (e.result === "có" || e.result === "yes") { yesBtnClass = "bg-teal-50 text-teal-700 border border-teal-400 opacity-100 cursor-default shadow-sm"; yesIcon = "🏆 "; } 
+                    else if (e.result === "không" || e.result === "no") { noBtnClass = "bg-teal-50 text-teal-700 border border-teal-400 opacity-100 cursor-default shadow-sm"; noIcon = "🏆 "; }
                 }
-
-                const actionOnClick = e.isActive ? `onclick="handlePredict(${e.id}, 'Đồng ý')"` : "";
-                const actionOnClickNo = e.isActive ? `onclick="handlePredict(${e.id}, 'Phản đối')"` : "";
 
                 return `
                 <div class="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                     <div>
                         <div class="flex justify-between items-center mb-2.5">
                             <span class="text-[10px] font-medium text-gray-500 truncate pr-2 w-1/2">${e.cat}</span>
-                            <span class="text-[10px] font-bold ${e.isActive ? 'text-teal-600' : 'text-orange-500'} whitespace-nowrap">
-                                ${e.isActive ? '⏳' : '🔒'} ${e.deadline}
-                            </span>
+                            <span class="text-[10px] font-bold ${e.isActive ? 'text-teal-600' : 'text-orange-500'} whitespace-nowrap">${e.isActive ? '⏳' : '🔒'} ${e.deadline}</span>
                         </div>
                         <h3 class="text-xs font-semibold text-gray-900 line-clamp-3 mb-4 leading-snug h-12">${e.title}</h3>
                     </div>
                     <div class="flex gap-2 mt-auto">
-                        <button ${actionOnClick} class="flex-1 flex justify-between items-center px-2.5 py-2 rounded-lg transition-colors ${yesBtnClass}">
+                        <button ${e.isActive ? `onclick="handlePredict(${e.id}, 'Đồng ý')"` : ""} class="flex-1 flex justify-between items-center px-2.5 py-2 rounded-lg transition-colors ${yesBtnClass}">
                             <span class="text-[11px] font-bold">${yesIcon}Có</span><span class="text-xs font-bold">${e.yesRate}%</span>
                         </button>
-                        <button ${actionOnClickNo} class="flex-1 flex justify-between items-center px-2.5 py-2 rounded-lg transition-colors ${noBtnClass}">
+                        <button ${e.isActive ? `onclick="handlePredict(${e.id}, 'Phản đối')"` : ""} class="flex-1 flex justify-between items-center px-2.5 py-2 rounded-lg transition-colors ${noBtnClass}">
                             <span class="text-[11px] font-bold">${noIcon}Không</span><span class="text-xs font-bold">${noRate}%</span>
                         </button>
                     </div>
@@ -339,60 +345,24 @@
             `}).join('');
         }
 
-        // HÀM MỞ/ĐÓNG MODAL PITCH DECK
-        function openPitchModal() { document.getElementById('pitch-modal').classList.add('active'); }
-
-        function handlePredict(id, type) {
-            if (isGuest) document.getElementById('login-modal').classList.add('active');
-            else openTradeModal(id, type);
-        }
-
+        // --- CÁC HÀM MODAL CHUNG ---
+        function handlePredict(id, type) { if (isGuest) document.getElementById('login-modal').classList.add('active'); else openTradeModal(id, type); }
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
-
-        function doLogin() {
-            isGuest = false; balance = 5000; closeModal('login-modal');
-            document.getElementById('auth-area').innerHTML = `<div class="bg-gray-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-gray-200"><span class="text-xs">💎</span><span class="text-[13px] font-bold text-gray-900">${balance.toLocaleString()} P</span></div>`;
-        }
-
+        function doLogin() { isGuest = false; balance = 5000; closeModal('login-modal'); document.getElementById('auth-area').innerHTML = `<div class="bg-gray-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-gray-200"><span class="text-xs">💎</span><span class="text-[13px] font-bold text-gray-900">${balance.toLocaleString()} P</span></div>`; }
         function openTradeModal(id, type) {
             selectedEvent = allEvents.find(e => e.id === id);
             const badge = document.getElementById('modal-side-badge');
             const btn = document.getElementById('btn-confirm');
-            
-            if(type === 'Đồng ý') {
-                badge.innerText = 'Bình chọn: CÓ'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-blue-600';
-                btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-blue-600 hover:bg-blue-700';
-            } else {
-                badge.innerText = 'Bình chọn: KHÔNG'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-red-600';
-                btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-red-600 hover:bg-red-700';
-            }
-            document.getElementById('modal-title').innerText = selectedEvent.title;
-            document.getElementById('modal-balance').innerText = balance.toLocaleString() + ' P';
-            document.getElementById('trade-modal').classList.add('active');
-            calculatePrize();
+            if(type === 'Đồng ý') { badge.innerText = 'Bình chọn: CÓ'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-blue-600'; btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-blue-600 hover:bg-blue-700'; } 
+            else { badge.innerText = 'Bình chọn: KHÔNG'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-red-600'; btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-red-600 hover:bg-red-700'; }
+            document.getElementById('modal-title').innerText = selectedEvent.title; document.getElementById('modal-balance').innerText = balance.toLocaleString() + ' P'; document.getElementById('trade-modal').classList.add('active'); calculatePrize();
         }
+        function calculatePrize() { const amt = parseInt(document.getElementById('input-amount').value) || 0; const p = document.getElementById('prize-estimate'); if(amt < 500) p.innerText = "Thẻ nạp 10k"; else if(amt < 2000) p.innerText = "Grab 50k"; else p.innerText = "Shopee 200k"; }
+        function confirmTrade() { const amt = parseInt(document.getElementById('input-amount').value); if(amt > balance) { alert("Không đủ điểm!"); return; } balance -= amt; document.getElementById('auth-area').innerHTML = `<div class="bg-gray-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-gray-200"><span class="text-xs">💎</span><span class="text-[13px] font-bold text-gray-900">${balance.toLocaleString()} P</span></div>`; closeModal('trade-modal'); alert("Gửi nhận định thành công!"); }
 
-        function calculatePrize() {
-            const amt = parseInt(document.getElementById('input-amount').value) || 0;
-            const p = document.getElementById('prize-estimate');
-            if(amt < 500) p.innerText = "Thẻ nạp 10k"; else if(amt < 2000) p.innerText = "Grab 50k"; else p.innerText = "Shopee 200k";
-        }
+        function goHome() { switchPage('home'); document.getElementById('search-input').value = ''; setStatusView('active'); filterCat('Tất cả', document.querySelector('.cat-tab')); }
 
-        function confirmTrade() {
-            const amt = parseInt(document.getElementById('input-amount').value);
-            if(amt > balance) { alert("Không đủ điểm!"); return; }
-            balance -= amt;
-            document.getElementById('auth-area').innerHTML = `<div class="bg-gray-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-gray-200"><span class="text-xs">💎</span><span class="text-[13px] font-bold text-gray-900">${balance.toLocaleString()} P</span></div>`;
-            closeModal('trade-modal'); alert("Gửi nhận định thành công!");
-        }
-
-        function goHome() {
-            document.getElementById('search-input').value = '';
-            setStatusView('active');
-            filterCat('Tất cả', document.querySelector('.cat-tab'));
-            window.scrollTo(0,0);
-        }
-
+        // Khởi động
         window.onload = fetchEventsFromGoogleSheets;
     </script>
 </body>
