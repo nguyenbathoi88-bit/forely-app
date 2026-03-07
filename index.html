@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORELY - Forecast Market</title>
+    <title>FORELY - Professional Forecast Market</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -11,8 +11,13 @@
         .page.active { display: block; }
         .logo-diamond { background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
         .text-gradient { background: linear-gradient(135deg, #0891b2 0%, #7e22ce 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .btn-gradient { background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%); }
-        .tab-active { background-color: #0f172a !important; color: white !important; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2); }
+        .tab-active { background-color: #0f172a !important; color: white !important; }
+        
+        /* Biểu đồ nến đơn giản bằng CSS */
+        .chart-container { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding: 10px; border-bottom: 1px solid #f1f5f9; }
+        .candle { width: 12px; background: #14b8a6; border-radius: 2px; position: relative; }
+        .candle.red { background: #ef4444; }
+        .wick { position: absolute; width: 2px; height: 140%; background: inherit; left: 50%; transform: translateX(-50%); bottom: -20%; opacity: 0.3; }
     </style>
 </head>
 <body class="bg-[#f8fafc] min-h-screen pb-32 font-sans text-slate-800">
@@ -29,68 +34,120 @@
             </div>
         </nav>
 
-        <div class="flex gap-2 overflow-x-auto p-4 bg-white no-scrollbar border-b border-slate-100 sticky top-[73px] z-40">
-            <button onclick="filterEvents('Tất cả', this)" class="category-tab tab-active whitespace-nowrap px-6 py-2.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Tất cả</button>
-            <button onclick="filterEvents('Kinh tế', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Kinh tế</button>
-            <button onclick="filterEvents('Giải trí', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Giải trí</button>
-            <button onclick="filterEvents('Công nghệ', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Công nghệ</button>
-            <button onclick="filterEvents('Thể thao', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Thể thao</button>
-            <button onclick="filterEvents('Đời sống', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-slate-100 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Đời sống</button>
+        <div class="px-5 pt-4">
+            <div class="relative">
+                <input type="text" id="search-input" oninput="searchEvents()" placeholder="Tìm kiếm sự kiện..." class="w-full bg-white border border-slate-200 rounded-2xl py-3 px-11 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all">
+                <span class="absolute left-4 top-3.5">🔍</span>
+            </div>
+        </div>
+
+        <div class="flex gap-2 overflow-x-auto p-4 bg-white/50 no-scrollbar border-b border-slate-100 sticky top-[73px] z-40">
+            <button onclick="filterEvents('Tất cả', this)" class="category-tab tab-active whitespace-nowrap px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Tất cả</button>
+            <button onclick="filterEvents('Kinh tế', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Kinh tế</button>
+            <button onclick="filterEvents('Giải trí', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Giải trí</button>
+            <button onclick="filterEvents('Công nghệ', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Công nghệ</button>
         </div>
 
         <div id="market-container" class="p-5 space-y-5"></div>
     </div>
 
+    <div id="detail-page" class="page">
+        <nav class="bg-white p-5 sticky top-0 z-50 flex items-center border-b border-slate-100">
+            <button onclick="showPage('home-page')" class="mr-4 text-2xl text-slate-400">←</button>
+            <h1 class="text-sm font-bold text-slate-800 italic uppercase">Biến động thị trường</h1>
+        </nav>
+        
+        <div class="p-6 bg-white">
+            <div id="detail-content">
+                </div>
+            
+            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-8 mb-4">Lịch sử niềm tin (24h)</h4>
+            <div class="chart-container">
+                <div class="candle h-[40%]"><div class="wick"></div></div>
+                <div class="candle h-[55%]"><div class="wick"></div></div>
+                <div class="candle red h-[45%]"><div class="wick"></div></div>
+                <div class="candle h-[70%]"><div class="wick"></div></div>
+                <div class="candle h-[85%]"><div class="wick"></div></div>
+                <div class="candle red h-[60%]"><div class="wick"></div></div>
+                <div class="candle h-[90%]"><div class="wick"></div></div>
+            </div>
+            
+            <div class="mt-8 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                <p class="text-[10px] text-slate-500 italic leading-relaxed text-center">
+                    Dữ liệu được tổng hợp từ trí tuệ đám đông và xác thực qua các nguồn tin chính thống tại Việt Nam.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <div class="fixed bottom-8 left-8 right-8 bg-white/90 backdrop-blur-2xl border border-slate-200 flex justify-around py-5 rounded-[2.5rem] shadow-2xl z-50">
-        <button class="text-teal-600 flex flex-col items-center gap-1"><span class="text-xl">🧭</span><span class="text-[8px] font-black uppercase">Dự báo</span></button>
+        <button onclick="showPage('home-page')" class="text-teal-600 flex flex-col items-center gap-1"><span class="text-xl">🧭</span><span class="text-[8px] font-black uppercase">Dự báo</span></button>
         <button onclick="alert('Tính năng đổi quà sắp ra mắt')" class="text-slate-400 flex flex-col items-center gap-1"><span class="text-xl">🎁</span><span class="text-[8px] font-black uppercase">Đổi quà</span></button>
-        <button class="text-slate-400 flex flex-col items-center gap-1"><span class="text-xl">📈</span><span class="text-[8px] font-black uppercase">Bảng xếp hạng</span></button>
+        <button class="text-slate-400 flex flex-col items-center gap-1"><span class="text-xl">📈</span><span class="text-[8px] font-black uppercase">Hạng</span></button>
     </div>
 
     <script>
         let balance = 1250;
         const events = [
-            { cat: "Kinh tế", title: "VN-Index vượt mốc 1.450 điểm trong Q2/2026?", yes: "62%", vol: "1.2B P" },
-            { cat: "Giải trí", title: "Sơn Tùng M-TP tổ chức concert tại Mỹ Đình năm nay?", yes: "85%", vol: "850M P" },
-            { cat: "Công nghệ", title: "Việt Nam chính thức cấp phép cho xe taxi tự lái?", yes: "21%", vol: "320M P" },
-            { cat: "Đời sống", title: "Giá vàng SJC xuống dưới 80 triệu/lượng tháng tới?", yes: "45%", vol: "2.5B P" },
-            { cat: "Thể thao", title: "Việt Nam vô địch AFF Cup 2026?", yes: "75%", vol: "4.1B P" },
-            { cat: "Kinh tế", title: "Tỷ giá USD/VND vượt mốc 26.000đ cuối năm?", yes: "32%", vol: "1.1B P" },
-            { cat: "Giải trí", title: "Anh Trai Say Hi mùa 2 có quán quân từ miền Bắc?", yes: "55%", vol: "600M P" },
-            { cat: "Công nghệ", title: "Apple Store vật lý đầu tiên khai trương tại HN?", yes: "68%", vol: "920M P" }
+            { id: 1, cat: "Kinh tế", title: "VN-Index vượt mốc 1.450 điểm trong Q2/2026?", yes: "62%", vol: "1.2B P" },
+            { id: 2, cat: "Giải trí", title: "Sơn Tùng M-TP tổ chức concert tại Mỹ Đình năm nay?", yes: "85%", vol: "850M P" },
+            { id: 3, cat: "Công nghệ", title: "Việt Nam chính thức cấp phép cho xe taxi tự lái?", yes: "21%", vol: "320M P" },
+            { id: 4, cat: "Đời sống", title: "Giá vàng SJC xuống dưới 80 triệu/lượng tháng tới?", yes: "45%", vol: "2.5B P" }
         ];
 
-        function renderEvents(filter = "Tất cả") {
+        function renderEvents(data = events) {
             const container = document.getElementById('market-container');
-            const filtered = filter === "Tất cả" ? events : events.filter(e => e.cat === filter);
-            
-            container.innerHTML = filtered.map(e => `
-                <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm transition-all active:scale-[0.98]">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-teal-600 bg-teal-50 px-2 py-1 rounded-md">${e.cat}</span>
-                        <span class="text-[10px] font-bold text-slate-400 italic">Volume: ${e.vol}</span>
+            container.innerHTML = data.map(e => `
+                <div onclick="openDetail(${e.id})" class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm transition-all active:scale-[0.98]">
+                    <div class="flex justify-between items-center mb-4 text-[10px] font-black uppercase tracking-widest text-teal-600">
+                        <span class="bg-teal-50 px-2 py-1 rounded-md">${e.cat}</span>
+                        <span class="text-slate-400 italic">Vol: ${e.vol}</span>
                     </div>
                     <h3 class="text-lg font-bold text-slate-800 mb-6 leading-tight italic">${e.title}</h3>
-                    <div class="flex gap-3 items-center">
-                        <button onclick="trade()" class="flex-1 bg-teal-50 border border-teal-100 text-teal-600 py-3 rounded-xl font-black italic">CÓ ${e.yes}</button>
-                        <button onclick="trade()" class="flex-1 bg-purple-50 border border-purple-100 text-purple-600 py-3 rounded-xl font-black italic">KHÔNG</button>
+                    <div class="flex gap-3">
+                        <div class="flex-1 bg-slate-50 border border-slate-100 text-teal-600 py-3 rounded-xl font-black italic text-center">CÓ ${e.yes}</div>
+                        <div class="flex-1 bg-slate-50 border border-slate-100 text-purple-600 py-3 rounded-xl font-black italic text-center">KHÔNG</div>
                     </div>
                 </div>
             `).join('');
         }
 
+        function searchEvents() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = events.filter(e => e.title.toLowerCase().includes(term));
+            renderEvents(filtered);
+        }
+
         function filterEvents(category, el) {
             document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('tab-active'));
             el.classList.add('tab-active');
-            renderEvents(category);
+            const filtered = category === "Tất cả" ? events : events.filter(e => e.cat === category);
+            renderEvents(filtered);
         }
 
-        function trade() {
-            if(balance >= 100) {
-                balance -= 100;
-                document.getElementById('header-balance').innerText = balance.toLocaleString() + ' P';
-                alert("Dự báo thành công! -100 P");
-            } else { alert("Hết điểm rồi!"); }
+        function openDetail(id) {
+            const event = events.find(e => e.id === id);
+            document.getElementById('detail-content').innerHTML = `
+                <span class="text-[10px] font-black text-teal-600 uppercase mb-2 block tracking-widest">${event.cat}</span>
+                <h2 class="text-2xl font-bold text-slate-800 italic leading-tight mb-4">${event.title}</h2>
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Xác suất CÓ</p>
+                        <p class="text-4xl font-black text-teal-600 italic">${event.yes}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Khối lượng</p>
+                        <p class="text-xl font-black text-slate-800 italic">${event.vol}</p>
+                    </div>
+                </div>
+            `;
+            showPage('detail-page');
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
         }
 
         renderEvents();
