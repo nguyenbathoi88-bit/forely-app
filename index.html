@@ -169,6 +169,15 @@
     </div>
 
     <div id="page-news" class="page-section bg-slate-50 min-h-screen">
+    <div class="sticky top-[54px] z-30 bg-white border-b border-slate-100">
+        <div class="p-4 pb-2 font-black text-lg brand-gradient" data-i18n="news_title">Tin tức thị trường</div>
+        
+        <div id="news-tabs-container" class="flex gap-2 overflow-x-auto px-4 pb-4 no-scrollbar">
+            </div>
+    </div>
+    
+    <div id="news-container" class="p-4 flex flex-col gap-4"></div>
+</div>
         <div class="p-4 bg-white border-b font-bold text-lg" data-i18n="news_title">Tin tức nóng hổi</div>
         <div id="news-container" class="p-4 flex flex-col gap-4"></div>
     </div>
@@ -256,6 +265,23 @@
         
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        // ==========================================
+// 1. APP CONFIGURATION - CHỈ SỬA Ở ĐÂY
+// ==========================================
+const APP_CONFIG = {
+    // Thêm hoặc bớt nguồn báo ở đây
+    newsSources: [
+        { id: 'vn_biz', name: 'VnExpress Kinh doanh', url: 'https://vnexpress.net/rss/kinh-doanh.rss' },
+        { id: 'vn_tech', name: 'VnExpress Số hóa', url: 'https://vnexpress.net/rss/so-hoa.rss' },
+        { id: 'tt_biz', name: 'Tuổi Trẻ Kinh tế', url: 'https://tuoitre.vn/rss/kinh-doanh.rss' },
+        { id: 'vnn_ict', name: 'VietNamNet Công nghệ', url: 'https://vietnamnet.vn/rss/cong-nghe.rss' }
+    ],
+    // Tỷ lệ quy đổi điểm (Ví dụ nạp 10k được bao nhiêu P)
+    conversionRate: 1, 
+    defaultLang: localStorage.getItem('lang') || 'vi'
+};
+
+let currentNewsSource = APP_CONFIG.newsSources[0].url;
 
         // --- 2. MULTI-LANG ---
         const i18n = {
@@ -415,16 +441,58 @@
 
         // --- 8. NEWS, REWARDS, TRADE ---
         function fetchNews() {
-            fetch('https://api.rss2json.com/v1/api.json?rss_url=https://vnexpress.net/rss/kinh-doanh.rss').then(r=>r.json()).then(d=>{
-                document.getElementById('news-container').innerHTML = d.items.slice(0,12).map(i => {
-                    let img = i.description.match(/src\s*=\s*"(.+?)"/);
-                    return `<a href="${i.link}" target="_blank" class="flex gap-4 bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
-                        ${img ? `<img src="${img[1]}" class="w-20 h-16 object-cover rounded-xl shrink-0">` : ''}
-                        <div class="flex flex-col justify-between py-0.5"><h4 class="text-xs font-bold text-slate-800 line-clamp-2 leading-tight">${i.title}</h4><span class="text-[9px] font-black text-blue-500 uppercase">VnExpress</span></div>
-                    </a>`;
-                }).join('');
-            });
-        }
+        // HÀM TẠO CÁC NÚT CHỌN BÁO
+function renderNewsTabs() {
+    const container = document.getElementById('news-tabs-container');
+    if (!container) return;
+    
+    container.innerHTML = APP_CONFIG.newsSources.map(source => `
+        <button onclick="changeNewsSource('${source.url}', this)" 
+            class="news-tab-btn shrink-0 px-4 py-2 rounded-xl text-[11px] font-bold transition-all
+            ${source.url === currentNewsSource ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-100'}">
+            ${source.name}
+        </button>
+    `).join('');
+}
+
+// HÀM ĐỔI NGUỒN TIN
+function changeNewsSource(url, el) {
+    currentNewsSource = url;
+    document.querySelectorAll('.news-tab-btn').forEach(b => {
+        b.className = "news-tab-btn shrink-0 px-4 py-2 rounded-xl text-[11px] font-bold bg-white text-slate-500 border border-slate-100";
+    });
+    el.className = "news-tab-btn shrink-0 px-4 py-2 rounded-xl text-[11px] font-bold bg-blue-600 text-white shadow-md";
+    fetchNews(); 
+}
+
+// HÀM TẢI TIN TỪ RSS2JSON
+function fetchNews() {
+    const container = document.getElementById('news-container');
+    container.innerHTML = '<div class="loader"></div>';
+    
+    fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(currentNewsSource)}`)
+    .then(r => r.json())
+    .then(d => {
+        if(d.status !== 'ok') throw new Error();
+        container.innerHTML = d.items.slice(0, 15).map(i => {
+            let img = i.thumbnail || (i.description.match(/src\s*=\s*"(.+?)"/) ? i.description.match(/src\s*=\s*"(.+?)"/)[1] : "");
+            return `
+            <a href="${i.link}" target="_blank" class="flex gap-4 bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                ${img ? `<img src="${img}" class="w-24 h-20 object-cover rounded-xl shrink-0 shadow-inner">` : ''}
+                <div class="flex flex-col justify-between py-0.5">
+                    <h4 class="text-[13px] font-bold text-slate-800 line-clamp-2 leading-tight">${i.title}</h4>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-black text-blue-500 uppercase">${d.feed.title.split(' - ')[0]}</span>
+                        <span class="text-[9px] text-slate-400 font-medium">${new Date(i.pubDate).toLocaleDateString('vi-VN')}</span>
+                    </div>
+                </div>
+            </a>`;
+        }).join('');
+    })
+    .catch(() => {
+        container.innerHTML = '<p class="text-center text-xs text-slate-400 py-10">Không thể tải tin. Thử nguồn khác nhé!</p>';
+    });
+}
 
         function renderRewards() {
             const gifts = [{n:"Thẻ cào 20k", p:20000, i:"📱"},{n:"Voucher Grab", p:50000, i:"🍔"},{n:"Shopee 100k", p:100000, i:"🛍️"},{n:"CGV Cinema", p:120000, i:"🎬"}];
