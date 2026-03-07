@@ -1,176 +1,151 @@
-const functions = require('firebase-functions');
-const express = require('express');
-const Parser = require('rss-parser');
-const axios = require('axios');
-const { createClient } = require('@supabase/supabase-js');
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forely - Trí tuệ cộng đồng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        indigo: '#1e293b',
+                        cyan: '#38bdf8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: white; }
+       .mobile-container { max-width: 480px; margin: 0 auto; background-color: #1e293b; min-height: 100vh; position: relative; }
+    </style>
+</head>
+<body>
 
-const app = express();
-app.use(express.json());
+<div class="mobile-container shadow-2xl overflow-hidden">
+    
+    <header class="bg-indigo p-4 flex justify-between items-center border-b border-gray-700 sticky top-0 z-10">
+        <div class="flex items-center gap-2 text-cyan font-bold text-xl cursor-pointer" onclick="location.reload()">
+            <i class="fa-solid fa-compass"></i> <span>FORELY</span>
+        </div>
+        <div class="bg-gray-800 rounded-full px-3 py-1 flex items-center gap-2 border border-cyan">
+            <i class="fa-solid fa-coins text-yellow-400"></i>
+            <span id="user-balance" class="font-bold text-sm">100.000 F-Point</span>
+        </div>
+    </header>
 
-// 1. Cấu hình cơ sở dữ liệu Supabase (Thay bằng thông tin thật của bạn sau)
-const SUPABASE_URL = 'https://xyzcompany.supabase.co';
-const SUPABASE_KEY = 'YOUR_ANON_KEY';
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    <div class="p-4">
+        <div class="relative">
+            <input type="text" placeholder="Tìm kiếm sự kiện..." class="w-full bg-gray-800 text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan border border-gray-700">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
+        </div>
+    </div>
 
-const parser = new Parser();
+    <div class="flex overflow-x-auto gap-2 px-4 pb-2 text-sm hide-scroll-bar">
+        <button class="bg-cyan text-indigo font-bold px-4 py-1.5 rounded-full whitespace-nowrap">Tất cả</button>
+        <button class="bg-gray-800 text-gray-300 px-4 py-1.5 rounded-full whitespace-nowrap border border-gray-700">Kinh tế</button>
+        <button class="bg-gray-800 text-gray-300 px-4 py-1.5 rounded-full whitespace-nowrap border border-gray-700">Công nghệ</button>
+        <button class="bg-gray-800 text-gray-300 px-4 py-1.5 rounded-full whitespace-nowrap border border-gray-700">Thể thao</button>
+    </div>
 
-/**
- * [LUỒNG 1] NHẬN WEBHOOK TỪ SEPAY (Nạp F-Point tự động)
- */
-app.post('/webhooks/sepay', async (req, res) => {
-    try {
-        const transaction = req.body;
+    <div class="p-4 space-y-4 pb-24">
         
-        // Trích xuất mã giao dịch
-        const transferContent = transaction.content; 
-        const transferAmount = transaction.transferAmount |
+        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-xs font-semibold bg-gray-700 text-gray-300 px-2 py-1 rounded">Kinh tế • Nguồn: VnExpress</span>
+                <span class="text-xs text-red-400"><i class="fa-regular fa-clock"></i> Còn 2 ngày</span>
+            </div>
+            <h3 class="font-bold text-lg mb-3 leading-tight">Giá vàng SJC có vượt mốc 90 triệu đồng/lượng vào thứ Sáu tuần này không?</h3>
+            <div class="flex gap-3 mt-4">
+                <button onclick="openModal('Giá vàng SJC vượt 90 triệu', 'CÓ')" class="flex-1 bg-cyan text-indigo font-bold py-2 rounded-lg shadow-lg hover:bg-blue-400 transition">CHỌN CÓ</button>
+                <button onclick="openModal('Giá vàng SJC vượt 90 triệu', 'KHÔNG')" class="flex-1 bg-gray-700 text-white font-bold py-2 rounded-lg shadow-lg hover:bg-gray-600 transition border border-gray-600">CHỌN KHÔNG</button>
+            </div>
+        </div>
 
-| transaction.amount;
+        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-xs font-semibold bg-gray-700 text-gray-300 px-2 py-1 rounded">Công nghệ • Nguồn: ICTNews</span>
+                <span class="text-xs text-red-400"><i class="fa-regular fa-clock"></i> Còn 5 giờ</span>
+            </div>
+            <h3 class="font-bold text-lg mb-3 leading-tight">Apple có ra mắt iPhone màn hình gập trong sự kiện rạng sáng mai?</h3>
+            <div class="flex gap-3 mt-4">
+                <button onclick="openModal('Apple ra mắt iPhone gập', 'CÓ')" class="flex-1 bg-cyan text-indigo font-bold py-2 rounded-lg shadow-lg hover:bg-blue-400 transition">CHỌN CÓ</button>
+                <button onclick="openModal('Apple ra mắt iPhone gập', 'KHÔNG')" class="flex-1 bg-gray-700 text-white font-bold py-2 rounded-lg shadow-lg hover:bg-gray-600 transition border border-gray-600">CHỌN KHÔNG</button>
+            </div>
+        </div>
 
-        // Xử lý cộng điểm dựa trên nội dung chuyển khoản tại đây
-        console.log(`Nhận được ${transferAmount} VND với nội dung: ${transferContent}`);
+    </div>
 
-        // BẮT BUỘC: Trả về HTTP 200 và chuỗi JSON báo thành công để SePay không gửi lại lệnh
-        res.status(200).json({ success: true, message: "Đã xử lý giao dịch" });
-    } catch (error) {
-        console.error("Lỗi Webhook:", error);
-        // Vẫn trả về 200 kèm báo lỗi nội bộ để hệ thống SePay ghi nhận đã kết nối
-        res.status(200).json({ success: true, message: "Lỗi xử lý điểm, đã ghi log" });
+    <div id="prediction-modal" class="hidden absolute inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-800 w-full rounded-2xl p-5 border border-cyan shadow-2xl">
+            <h2 class="text-xl font-bold text-center mb-1">Xác nhận đóng góp trí tuệ</h2>
+            <p id="modal-event-title" class="text-sm text-gray-400 text-center mb-4 line-clamp-2">Sự kiện...</p>
+            
+            <div class="bg-gray-700 rounded-lg p-3 mb-4 flex justify-between items-center">
+                <span>Lựa chọn của bạn:</span>
+                <span id="modal-choice" class="font-bold text-cyan text-lg">CÓ</span>
+            </div>
+
+            <div class="mb-4">
+                <label class="text-sm text-gray-300 block mb-2">Số điểm F-Point muốn sử dụng:</label>
+                <input type="number" id="invest-amount" value="10000" oninput="calculateReward()" class="w-full bg-gray-900 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan text-lg text-center font-bold">
+            </div>
+
+            <div class="bg-indigo border border-gray-600 rounded-lg p-3 mb-6 text-center">
+                <span class="text-xs text-gray-400 block mb-1">Quà tặng Voucher ước tính nhận được</span>
+                <div class="text-xl font-bold text-yellow-400"><span id="estimated-reward">19.000</span> VNĐ</div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 py-3 rounded-lg font-bold text-gray-300 bg-gray-700 hover:bg-gray-600">HỦY BỎ</button>
+                <button onclick="submitPrediction()" class="flex-1 py-3 rounded-lg font-bold text-indigo bg-cyan shadow-lg hover:bg-blue-400">XÁC NHẬN</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let currentBalance = 100000;
+
+    function openModal(title, choice) {
+        document.getElementById('prediction-modal').classList.remove('hidden');
+        document.getElementById('modal-event-title').innerText = title;
+        document.getElementById('modal-choice').innerText = choice;
+        calculateReward();
     }
-});
 
-/**
- * [LUỒNG 2] ORACLE LẤY DỮ LIỆU TIN TỨC VNEXPRESS (Hợp thức hóa Trang thông tin)
- */
-app.get('/oracle/news', async (req, res) => {
-    try {
-        // Quét dữ liệu tự động từ chuyên mục Kinh Tế của VnExpress
-        const feed = await parser.parseURL('https://vnexpress.net/rss/kinh-te.rss');
+    function closeModal() {
+        document.getElementById('prediction-modal').classList.add('hidden');
+    }
+
+    function calculateReward() {
+        let amount = document.getElementById('invest-amount').value;
+        // Giả lập tính toán: phần thưởng = điểm đầu tư x 1.9 (tỷ lệ demo)
+        let reward = Math.floor(amount * 1.9); 
+        document.getElementById('estimated-reward').innerText = reward.toLocaleString('vi-VN');
+    }
+
+    function submitPrediction() {
+        let amount = parseInt(document.getElementById('invest-amount').value);
         
-        const newsList = feed.items.map(item => ({
-            title: item.title,
-            link: item.link,
-            pubDate: item.pubDate
-        }));
+        if(amount > currentBalance) {
+            alert('Bạn không đủ F-Point! Vui lòng nạp thêm.');
+            return;
+        }
 
-        res.status(200).json({ success: true, count: newsList.length, data: newsList });
-    } catch (error) {
-        res.status(500).json({ success: false, error: "Không thể kết nối đến nguồn báo chí" });
-    }
-});
-
-/**
- * [LUỒNG 3] CỔNG ĐỔI THƯỞNG VOUCHER QUA URBOX API
- */
-app.post('/rewards/redeem', async (req, res) => {
-    try {
-        const { userId, voucherSku } = req.body;
-
-        // Địa chỉ môi trường thử nghiệm (Staging) của UrBox API
-        const urboxDevUrl = "https://devapi.urbox.vn/2.0/cart/cartPayVoucher";
-
-        // Logic gọi API lấy mã quà (Đã đóng gói giả lập)
-        // const response = await axios.post(urboxDevUrl, { sku: voucherSku,... });
-
-        res.status(200).json({ 
-            success: true, 
-            message: "Đổi quà thành công", 
-            voucher_code: "FORELY-DEMO-VOUCHER-9999" 
-        });
-    } catch (error) {
-        res.status(502).json({ success: false, error: "Hệ thống đối tác quà tặng đang bảo trì" });
-    }
-});
-
-// Đóng gói toàn bộ ứng dụng Express vào Firebase Cloud Functions
-exports.forelyApi = functions.https.onRequest(app);
-const functions = require('firebase-functions');
-const express = require('express');
-const Parser = require('rss-parser');
-const axios = require('axios');
-const { createClient } = require('@supabase/supabase-js');
-
-const app = express();
-app.use(express.json());
-
-// 1. Cấu hình cơ sở dữ liệu Supabase (Thay bằng thông tin thật của bạn sau)
-const SUPABASE_URL = 'https://xyzcompany.supabase.co';
-const SUPABASE_KEY = 'YOUR_ANON_KEY';
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const parser = new Parser();
-
-/**
- * [LUỒNG 1] NHẬN WEBHOOK TỪ SEPAY (Nạp F-Point tự động)
- */
-app.post('/webhooks/sepay', async (req, res) => {
-    try {
-        const transaction = req.body;
+        // Trừ điểm
+        currentBalance -= amount;
+        document.getElementById('user-balance').innerText = currentBalance.toLocaleString('vi-VN') + ' F-Point';
         
-        // Trích xuất mã giao dịch
-        const transferContent = transaction.content; 
-        const transferAmount = transaction.transferAmount |
-
-| transaction.amount;
-
-        // Xử lý cộng điểm dựa trên nội dung chuyển khoản tại đây
-        console.log(`Nhận được ${transferAmount} VND với nội dung: ${transferContent}`);
-
-        // BẮT BUỘC: Trả về HTTP 200 và chuỗi JSON báo thành công để SePay không gửi lại lệnh
-        res.status(200).json({ success: true, message: "Đã xử lý giao dịch" });
-    } catch (error) {
-        console.error("Lỗi Webhook:", error);
-        // Vẫn trả về 200 kèm báo lỗi nội bộ để hệ thống SePay ghi nhận đã kết nối
-        res.status(200).json({ success: true, message: "Lỗi xử lý điểm, đã ghi log" });
+        closeModal();
+        alert('Ghi nhận thành công! Hệ thống sẽ chốt kết quả và trả Voucher khi sự kiện kết thúc.');
     }
-});
+</script>
 
-/**
- * [LUỒNG 2] ORACLE LẤY DỮ LIỆU TIN TỨC VNEXPRESS (Hợp thức hóa Trang thông tin)
- */
-app.get('/oracle/news', async (req, res) => {
-    try {
-        // Quét dữ liệu tự động từ chuyên mục Kinh Tế của VnExpress
-        const feed = await parser.parseURL('https://vnexpress.net/rss/kinh-te.rss');
-        
-        const newsList = feed.items.map(item => ({
-            title: item.title,
-            link: item.link,
-            pubDate: item.pubDate
-        }));
-
-        res.status(200).json({ success: true, count: newsList.length, data: newsList });
-    } catch (error) {
-        res.status(500).json({ success: false, error: "Không thể kết nối đến nguồn báo chí" });
-    }
-});
-
-/**
- * [LUỒNG 3] CỔNG ĐỔI THƯỞNG VOUCHER QUA URBOX API
- */
-app.post('/rewards/redeem', async (req, res) => {
-    try {
-        const { userId, voucherSku } = req.body;
-
-        // Địa chỉ môi trường thử nghiệm (Staging) của UrBox API
-        const urboxDevUrl = "https://devapi.urbox.vn/2.0/cart/cartPayVoucher";
-
-        // Logic gọi API lấy mã quà (Đã đóng gói giả lập)
-        // const response = await axios.post(urboxDevUrl, { sku: voucherSku,... });
-
-        res.status(200).json({ 
-            success: true, 
-            message: "Đổi quà thành công", 
-            voucher_code: "FORELY-DEMO-VOUCHER-9999" 
-        });
-    } catch (error) {
-        res.status(502).json({ success: false, error: "Hệ thống đối tác quà tặng đang bảo trì" });
-    }
-});
-
-// Đóng gói toàn bộ ứng dụng Express vào Firebase Cloud Functions
-exports.forelyApi = functions.https.onRequest(app);
-node_modules/
-.env
-.env.local
-.DS_Store
+</body>
+</html>
