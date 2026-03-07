@@ -315,4 +315,15 @@
         function doLogin() { isGuest = false; balance = 5000; closeModal('login-modal'); updateBalanceUI(); }
         function openTradeModal(id, type) {
             selectedEvent = allEvents.find(e => e.id === id); const badge = document.getElementById('modal-side-badge'); const btn = document.getElementById('btn-confirm');
-            if(type === 'Đồng ý') { badge.innerText = 'Bình chọn: CÓ'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-blue-600'; btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-blue-600 hover:bg-blue-700'; }
+            if(type === 'Đồng ý') { badge.innerText = 'Bình chọn: CÓ'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-blue-600'; btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-blue-600 hover:bg-blue-700'; } 
+            else { badge.innerText = 'Bình chọn: KHÔNG'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-red-600'; btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-red-600 hover:bg-red-700'; }
+            document.getElementById('modal-title').innerText = selectedEvent.title; document.getElementById('modal-balance').innerText = balance.toLocaleString() + ' P'; document.getElementById('trade-modal').classList.add('active'); calculatePrize();
+        }
+        function calculatePrize() { const amt = parseInt(document.getElementById('input-amount').value) || 0; const p = document.getElementById('prize-estimate'); if(amt < 500) p.innerText = "Thẻ nạp 10k"; else if(amt < 2000) p.innerText = "Grab 50k"; else p.innerText = "Shopee 200k"; }
+        function confirmTrade() { const amt = parseInt(document.getElementById('input-amount').value); if(amt > balance) { alert("Không đủ điểm!"); return; } balance -= amt; updateBalanceUI(); closeModal('trade-modal'); alert("Gửi nhận định thành công!"); }
+        function goHome() { switchPage('home'); document.getElementById('search-input').value = ''; setStatusView('active'); filterCat('Tất cả', document.querySelector('.cat-tab')); window.scrollTo(0,0); }
+
+        window.onload = fetchEventsFromGoogleSheets;
+    </script>
+</body>
+</html>
