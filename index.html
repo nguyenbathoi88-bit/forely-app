@@ -173,7 +173,9 @@
 
         // Lọc dữ liệu theo Category và Search
         const filteredEvents = eventsData.filter(e => {
-            const matchCategory = currentCategory === 'Tất cả' || e.category === currentCategory;
+            const matchCategory = currentCategory === 'Tất cả' |
+
+| e.category === currentCategory;
             const matchSearch = e.title.toLowerCase().includes(searchQuery);
             return matchCategory && matchSearch;
         });
@@ -261,7 +263,9 @@
     function calculateReward() {
         if(!activeEvent) return;
         
-        let amount = parseInt(document.getElementById('invest-amount').value) || 0;
+        let amount = parseInt(document.getElementById('invest-amount').value) |
+
+| 0;
         let odds = activeChoice === 'YES'? activeEvent.oddsYes : activeEvent.oddsNo;
         
         let reward = Math.floor(amount * odds); 
@@ -274,7 +278,9 @@
     function submitPrediction() {
         let amount = parseInt(document.getElementById('invest-amount').value);
         
-        if (isNaN(amount) || amount <= 0) {
+        if (isNaN(amount) |
+
+| amount <= 0) {
             alert('Vui lòng nhập số điểm hợp lệ!');
             return;
         }
