@@ -10,6 +10,11 @@
         .page { display: none; }
         .page.active { display: block; }
         .active-nav { color: #0d9488; transform: scale(1.1); font-weight: 900; }
+        .money-change { animation: highlight 0.5s ease-out; }
+        @keyframes highlight {
+            0% { color: #ef4444; transform: scale(1.2); }
+            100% { color: #0d9488; transform: scale(1); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen pb-24 font-sans">
@@ -17,21 +22,32 @@
     <div id="home-page" class="page active">
         <nav class="bg-white p-4 sticky top-0 z-50 flex justify-between items-center border-b border-gray-100 shadow-sm">
             <h1 class="text-2xl font-black text-teal-600 italic tracking-tighter">FORELY</h1>
-            <div onclick="showPage('portfolio-page')" class="bg-teal-50 px-3 py-1.5 rounded-full border border-teal-100 flex items-center gap-2">
-                <span class="text-xs font-bold text-teal-700">1,250,000đ</span>
+            <div onclick="showPage('portfolio-page')" class="bg-teal-50 px-3 py-1.5 rounded-full border border-teal-100 flex items-center gap-2 active:scale-95 transition-all">
+                <span id="header-balance" class="text-xs font-bold text-teal-700">1,250,000đ</span>
             </div>
         </nav>
+
         <div class="p-4 space-y-4">
             <div class="bg-teal-600 rounded-[2.5rem] p-6 text-white shadow-lg shadow-teal-100 mb-6">
-                <h2 class="text-xl font-black italic mb-2">Hôm nay bạn dự báo gì?</h2>
-                <p class="text-teal-100 text-xs opacity-80">Có 5 kèo mới đang chờ bạn quyết định.</p>
+                <h2 class="text-xl font-black italic mb-2">Bạn chọn phe nào?</h2>
+                <p class="text-teal-100 text-xs opacity-80 italic underline">Mỗi dự báo đúng nhận x1.5 tài sản.</p>
             </div>
-            <div onclick="showPage('portfolio-page')" class="bg-white rounded-[2rem] p-5 border border-gray-100 shadow-sm">
-                <span class="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-1 rounded-md uppercase">Hot</span>
-                <h3 class="font-bold text-gray-800 mt-2 italic">Giá vàng SJC có chạm mốc 100 triệu?</h3>
+
+            <div class="bg-white rounded-[2rem] p-5 border border-gray-100 shadow-sm">
+                <span class="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-1 rounded-md uppercase">Kinh tế</span>
+                <h3 class="font-bold text-gray-800 mt-2 italic leading-tight text-lg">Giá vàng SJC vượt mốc 95 triệu/lượng trước 30/06?</h3>
                 <div class="flex gap-2 mt-4 text-white text-xs font-black italic">
-                    <div class="flex-1 bg-teal-600 py-3 rounded-xl text-center">CÓ 6.5k</div>
-                    <div class="flex-1 bg-red-500 py-3 rounded-xl text-center">KHÔNG 3.5k</div>
+                    <button onclick="handleTrade('CÓ', 6500, 'Giá vàng SJC...')" class="flex-1 bg-teal-600 py-4 rounded-2xl active:scale-95 transition-all shadow-md shadow-teal-100">ĐỒNG Ý 6.5k</button>
+                    <button onclick="handleTrade('KHÔNG', 3500, 'Giá vàng SJC...')" class="flex-1 bg-red-500 py-4 rounded-2xl active:scale-95 transition-all shadow-md shadow-red-100">PHẢN ĐỐI 3.5k</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] p-5 border border-gray-100 shadow-sm">
+                <span class="text-[10px] font-black text-purple-600 bg-purple-50 px-2 py-1 rounded-md uppercase">Giải trí</span>
+                <h3 class="font-bold text-gray-800 mt-2 italic leading-tight text-lg">Sơn Tùng M-TP ra mắt MV mới trong tháng này?</h3>
+                <div class="flex gap-2 mt-4 text-white text-xs font-black italic">
+                    <button onclick="handleTrade('CÓ', 7200, 'MV Sơn Tùng...')" class="flex-1 bg-teal-600 py-4 rounded-2xl active:scale-95 transition-all shadow-md shadow-teal-100">ĐỒNG Ý 7.2k</button>
+                    <button onclick="handleTrade('KHÔNG', 2800, 'MV Sơn Tùng...')" class="flex-1 bg-red-500 py-4 rounded-2xl active:scale-95 transition-all shadow-md shadow-red-100">PHẢN ĐỐI 2.8k</button>
                 </div>
             </div>
         </div>
@@ -43,49 +59,41 @@
             <h1 class="text-lg font-bold flex-1 text-center italic">Ví Tiên Tri</h1>
         </nav>
         <div class="p-6">
-            <div class="bg-gray-900 rounded-[2.5rem] p-8 text-white mb-6">
-                <p class="text-gray-400 text-xs uppercase font-bold tracking-widest mb-2">Số dư ví</p>
-                <h2 class="text-4xl font-black italic mb-8">1,250,000đ</h2>
-                <button onclick="alert('Tính năng nạp tiền đang bảo trì nâng cấp!')" class="w-full bg-teal-500 py-4 rounded-2xl font-black italic shadow-lg shadow-teal-900/50">NẠP TIỀN QUA VIETQR</button>
+            <div class="bg-gray-900 rounded-[2.5rem] p-8 text-white mb-6 shadow-2xl">
+                <p class="text-gray-400 text-xs uppercase font-bold tracking-widest mb-2">Số dư khả dụng</p>
+                <h2 id="wallet-balance" class="text-4xl font-black italic mb-8 tracking-tighter">1,250,000đ</h2>
+                <div class="flex gap-3">
+                    <button onclick="alert('Tính năng Nạp tiền đang nâng cấp!')" class="flex-1 bg-teal-500 py-4 rounded-2xl font-black italic">NẠP TIỀN</button>
+                    <button class="flex-1 bg-gray-800 py-4 rounded-2xl font-black italic text-gray-500">RÚT TIỀN</button>
+                </div>
+            </div>
+
+            <h3 class="font-black text-xs text-gray-400 uppercase tracking-[0.2em] mb-4">Lịch sử dự báo</h3>
+            <div id="history-list" class="space-y-3">
+                <p class="text-center text-gray-400 italic text-sm py-10">Chưa có giao dịch nào...</p>
             </div>
         </div>
     </div>
 
     <div id="profile-page" class="page">
         <nav class="bg-white p-4 sticky top-0 z-50 border-b border-gray-100">
-            <h1 class="text-lg font-bold text-center italic">Bảng Xếp Hạng</h1>
+            <h1 class="text-lg font-bold text-center italic text-teal-600 tracking-widest">TOP TIÊN TRI</h1>
         </nav>
         <div class="p-6">
-            <div class="flex items-center gap-4 mb-8 p-4 bg-white rounded-3xl border border-gray-100">
-                <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center text-2xl">👤</div>
-                <div>
-                    <h4 class="font-black text-gray-800 italic text-lg">Bạn (User_88)</h4>
-                    <p class="text-xs text-gray-500 font-bold uppercase">Hạng: 1,204</p>
-                </div>
-            </div>
-
-            <h3 class="font-black text-xs text-gray-400 uppercase tracking-[0.2em] mb-4">Top cao thủ</h3>
-            <div class="space-y-3">
-                <div class="flex items-center justify-between p-4 bg-amber-50 rounded-2xl border border-amber-100">
-                    <div class="flex items-center gap-3">
-                        <span class="text-lg font-black text-amber-600">1</span>
-                        <span class="font-bold text-gray-700">Shark_Thanh</span>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-5 bg-amber-50 rounded-[2rem] border border-amber-100">
+                    <div class="flex items-center gap-4">
+                        <span class="text-2xl">🥇</span>
+                        <span class="font-black text-gray-800 italic">Shark_Thanh</span>
                     </div>
-                    <span class="font-black text-amber-600 italic">+89tr</span>
+                    <span class="font-black text-amber-600">+89.4M</span>
                 </div>
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                    <div class="flex items-center gap-3">
-                        <span class="text-lg font-black text-gray-400">2</span>
-                        <span class="font-bold text-gray-700">Admin_Forely</span>
+                <div class="flex items-center justify-between p-5 bg-white rounded-[2rem] border border-gray-100">
+                    <div class="flex items-center gap-4">
+                        <span class="text-xl font-bold text-gray-300">#2</span>
+                        <span class="font-bold text-gray-700 italic">DauTu_GenZ</span>
                     </div>
-                    <span class="font-black text-gray-400 italic">+45tr</span>
-                </div>
-                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                    <div class="flex items-center gap-3">
-                        <span class="text-lg font-black text-gray-400">3</span>
-                        <span class="font-bold text-gray-700">DauTu_2026</span>
-                    </div>
-                    <span class="font-black text-gray-400 italic">+32tr</span>
+                    <span class="font-bold text-teal-600">+12.5M</span>
                 </div>
             </div>
         </div>
@@ -98,6 +106,55 @@
     </div>
 
     <script>
+        // QUẢN LÝ SỐ DƯ (TRONG TRÌNH DUYỆT)
+        let balance = 1250000;
+        let history = [];
+
+        function formatMoney(amount) {
+            return amount.toLocaleString('vi-VN') + 'đ';
+        }
+
+        function updateUI() {
+            const headerBal = document.getElementById('header-balance');
+            const walletBal = document.getElementById('wallet-balance');
+            
+            headerBal.innerText = formatMoney(balance);
+            walletBal.innerText = formatMoney(balance);
+            
+            // Hiệu ứng nháy số tiền
+            headerBal.classList.add('money-change');
+            walletBal.classList.add('money-change');
+            setTimeout(() => {
+                headerBal.classList.remove('money-change');
+                walletBal.classList.remove('money-change');
+            }, 500);
+
+            // Cập nhật lịch sử
+            const historyList = document.getElementById('history-list');
+            if (history.length > 0) {
+                historyList.innerHTML = history.map(item => `
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                        <div>
+                            <p class="text-[10px] font-black uppercase text-teal-600">${item.type}</p>
+                            <p class="text-sm font-bold text-gray-800 italic">${item.name}</p>
+                        </div>
+                        <p class="font-black text-red-500">-${formatMoney(item.amount)}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function handleTrade(type, amount, name) {
+            if (balance >= amount) {
+                balance -= amount;
+                history.unshift({ type, amount, name });
+                updateUI();
+                alert(`Thành công! Bạn đã đặt ${type} cho kèo "${name}".`);
+            } else {
+                alert("Số dư không đủ! Vui lòng nạp thêm tiền.");
+            }
+        }
+
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
