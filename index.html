@@ -9,172 +9,108 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .page { display: none; }
         .page.active { display: block; }
-        .chart-bar { transition: height 1s ease-in-out; }
+        .active-nav { color: #0d9488; transform: scale(1.2); }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen pb-24 font-sans">
 
     <div id="home-page" class="page active">
         <nav class="bg-white p-4 sticky top-0 z-50 flex justify-between items-center border-b border-gray-100 shadow-sm">
-            <h1 class="text-2xl font-black text-teal-600 italic tracking-tighter uppercase font-serif">Forely</h1>
+            <h1 class="text-2xl font-black text-teal-600 italic tracking-tighter uppercase">Forely</h1>
             <button onclick="showPage('portfolio-page')" class="bg-teal-50 px-4 py-1.5 rounded-full border border-teal-100 flex items-center gap-2">
                 <span class="text-sm font-bold text-teal-700">1,250,000đ</span>
             </button>
         </nav>
 
-        <div class="flex gap-4 overflow-x-auto p-4 bg-white no-scrollbar border-b border-gray-100">
-            <button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-teal-600 text-white font-bold text-sm">🔥 Tất cả</button>
-            <button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-gray-100 text-gray-500 font-bold text-sm">📈 Kinh tế</button>
-            <button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-gray-100 text-gray-500 font-bold text-sm">🎤 Giải trí</button>
-            <button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-gray-100 text-gray-500 font-bold text-sm">⚽ Thể thao</button>
-        </div>
-
-        <div class="p-4 space-y-4" id="market-list">
-            <div onclick="openDetail('Giá vàng SJC vượt mốc 95 triệu/lượng trước 30/06?', '6.5k', '3.5k', 'Kinh tế', '65%', 'VnExpress')" class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 active:scale-95 transition-transform">
+        <div class="p-4 space-y-4">
+            <div onclick="showPage('detail-page')" class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 active:scale-95 transition-transform">
                 <div class="flex justify-between items-center mb-3">
-                    <span class="bg-amber-100 text-amber-700 text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider">Kinh tế</span>
-                    <span class="text-green-500 text-[10px] font-bold">● 1.2k người tham gia</span>
+                    <span class="bg-amber-100 text-amber-700 text-[10px] font-black px-2 py-1 rounded-md uppercase">Kinh tế</span>
+                    <span class="text-green-500 text-[10px] font-bold italic underline">Xem chi tiết ></span>
                 </div>
                 <h3 class="text-lg font-bold text-gray-800 mb-5 leading-snug italic">Giá vàng SJC vượt mốc 95 triệu/lượng trước 30/06?</h3>
-                <div class="flex gap-2">
-                    <div class="flex-1 bg-teal-600 text-white py-3 rounded-xl text-center font-black italic">CÓ 6.5k</div>
-                    <div class="flex-1 bg-red-50 text-red-500 border border-red-100 py-3 rounded-xl text-center font-black italic">KHÔNG 3.5k</div>
+                <div class="flex gap-2 text-white font-black italic">
+                    <div class="flex-1 bg-teal-600 py-3 rounded-xl text-center">CÓ 6.5k</div>
+                    <div class="flex-1 bg-red-400 py-3 rounded-xl text-center opacity-40 uppercase text-xs pt-4">Không 3.5k</div>
                 </div>
             </div>
-
-            <div onclick="openDetail('Sơn Tùng M-TP ra mắt MV mới trong tháng này?', '7.2k', '2.8k', 'Giải trí', '72%', 'YouTube Official')" class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 active:scale-95 transition-transform">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="bg-purple-100 text-purple-700 text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider">Giải trí</span>
-                    <span class="text-green-500 text-[10px] font-bold">● Hot Trending</span>
-                </div>
-                <h3 class="text-lg font-bold text-gray-800 mb-5 leading-snug italic">Sơn Tùng M-TP ra mắt MV mới trong tháng này?</h3>
-                <div class="flex gap-2">
-                    <div class="flex-1 bg-teal-600 text-white py-3 rounded-xl text-center font-black italic">CÓ 7.2k</div>
-                    <div class="flex-1 bg-red-50 text-red-500 border border-red-100 py-3 rounded-xl text-center font-black italic">KHÔNG 2.8k</div>
-                </div>
+            <div class="p-4 bg-teal-50 rounded-2xl border border-teal-100 text-teal-800 text-sm italic text-center">
+                Bấm vào thẻ để xem thêm 4 kèo khác và thử nạp tiền!
             </div>
-
-            <div onclick="openDetail('Chỉ số VN-Index vượt 1.300 điểm vào cuối tuần sau?', '4.8k', '5.2k', 'Chứng khoán', '48%', 'Vietstock')" class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 active:scale-95 transition-transform">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="bg-blue-100 text-blue-700 text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider">Chứng khoán</span>
-                    <span class="text-gray-400 text-[10px] font-bold">● Đang tranh luận</span>
-                </div>
-                <h3 class="text-lg font-bold text-gray-800 mb-5 leading-snug italic">Chỉ số VN-Index vượt 1.300 điểm vào cuối tuần sau?</h3>
-                <div class="flex gap-2">
-                    <div class="flex-1 bg-teal-600 text-white py-3 rounded-xl text-center font-black italic">CÓ 4.8k</div>
-                    <div class="flex-1 bg-red-50 text-red-500 border border-red-100 py-3 rounded-xl text-center font-black italic">KHÔNG 5.2k</div>
-                </div>
-            </div>
-
-            <div onclick="openDetail('Việt Nam thắng Thái Lan trong trận giao hữu tới?', '8.5k', '1.5k', 'Thể thao', '85%', 'VFF Official')" class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 active:scale-95 transition-transform">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="bg-red-100 text-red-700 text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider">Thể thao</span>
-                    <span class="text-green-500 text-[10px] font-bold">● Cực sôi động</span>
-                </div>
-                <h3 class="text-lg font-bold text-gray-800 mb-5 leading-snug italic">Việt Nam thắng Thái Lan trong trận giao hữu tới?</h3>
-                <div class="flex gap-2">
-                    <div class="flex-1 bg-teal-600 text-white py-3 rounded-xl text-center font-black italic">CÓ 8.5k</div>
-                    <div class="flex-1 bg-red-50 text-red-500 border border-red-100 py-3 rounded-xl text-center font-black italic">KHÔNG 1.5k</div>
-                </div>
-            </div>
-
-            <div onclick="openDetail('iPhone 17 sẽ bỏ hoàn toàn cổng sạc vật lý?', '3.0k', '7.0k', 'Công nghệ', '30%', 'Bloomberg')" class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 active:scale-95 transition-transform">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="bg-gray-100 text-gray-700 text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider">Công nghệ</span>
-                    <span class="text-gray-400 text-[10px] font-bold">● Dự báo xa</span>
-                </div>
-                <h3 class="text-lg font-bold text-gray-800 mb-5 leading-snug italic">iPhone 17 sẽ bỏ hoàn toàn cổng sạc vật lý?</h3>
-                <div class="flex gap-2">
-                    <div class="flex-1 bg-teal-600 text-white py-3 rounded-xl text-center font-black italic">CÓ 3.0k</div>
-                    <div class="flex-1 bg-red-50 text-red-500 border border-red-100 py-3 rounded-xl text-center font-black italic">KHÔNG 7.0k</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="detail-page" class="page">
-        <nav class="bg-white p-4 sticky top-0 z-50 flex items-center border-b border-gray-100">
-            <button onclick="showPage('home-page')" class="mr-4 text-2xl text-gray-400">←</button>
-            <h1 id="detail-nav-title" class="text-sm font-bold text-gray-800 truncate">Dự báo chi tiết</h1>
-        </nav>
-        
-        <div class="p-5 bg-white">
-            <span id="detail-category" class="bg-teal-100 text-teal-700 text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-wider mb-3 inline-block">Danh mục</span>
-            <h2 id="detail-title" class="text-2xl font-black text-gray-800 mb-6 italic leading-tight">Tiêu đề kèo dự báo</h2>
-            
-            <div class="h-44 flex items-end gap-2 mb-8 border-b border-gray-100 pb-2">
-                <div class="flex-1 bg-teal-50 rounded-t-lg h-[40%]"></div>
-                <div class="flex-1 bg-teal-100 rounded-t-lg h-[60%]"></div>
-                <div class="flex-1 bg-teal-200 rounded-t-lg h-[35%]"></div>
-                <div class="flex-1 bg-teal-400 rounded-t-lg h-[80%]"></div>
-                <div class="flex-1 bg-teal-600 rounded-t-lg h-[65%] animate-pulse"></div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4 mb-8">
-                <div class="bg-gray-50 p-4 rounded-3xl">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Xác suất CÓ</p>
-                    <p id="detail-prob" class="text-2xl font-black text-teal-600 italic">--%</p>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-3xl">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Nguồn xác thực</p>
-                    <p id="detail-source" class="text-sm font-bold text-gray-800 truncate italic">--</p>
-                </div>
-            </div>
-
-            <div class="space-y-4 mb-32">
-                <h4 class="font-bold text-gray-800 uppercase text-[10px] tracking-[0.2em]">Tại sao lại có con số này?</h4>
-                <div class="p-5 bg-teal-50 rounded-[2rem] text-sm italic text-teal-900 leading-relaxed border border-teal-100">
-                    Dựa trên dữ liệu từ 2,500 chuyên gia và trí tuệ đám đông, xác suất này phản ánh niềm tin hiện tại của thị trường Việt Nam về sự kiện này.
-                </div>
-            </div>
-        </div>
-
-        <div class="fixed bottom-0 w-full bg-white p-5 border-t border-gray-100 flex gap-4 shadow-[0_-15px_30px_rgba(0,0,0,0.08)]">
-            <button onclick="confirmBet('CÓ')" class="flex-1 bg-teal-600 text-white font-black py-4 rounded-2xl shadow-lg shadow-teal-100 active:scale-95 transition-transform italic">ĐỒNG Ý</button>
-            <button onclick="confirmBet('KHÔNG')" class="flex-1 bg-red-500 text-white font-black py-4 rounded-2xl shadow-lg shadow-red-100 active:scale-95 transition-transform italic">PHẢN ĐỐI</button>
         </div>
     </div>
 
     <div id="portfolio-page" class="page">
         <nav class="bg-white p-4 sticky top-0 z-50 flex items-center border-b border-gray-100">
             <button onclick="showPage('home-page')" class="mr-4 text-2xl text-gray-400">←</button>
-            <h1 class="text-lg font-bold text-gray-800 text-center flex-1 italic">Tài sản Tiên tri</h1>
+            <h1 class="text-lg font-bold text-gray-800 text-center flex-1 italic tracking-tight">Tài sản Tiên tri</h1>
         </nav>
+        
         <div class="p-8 bg-teal-600 text-white m-4 rounded-[3rem] shadow-2xl shadow-teal-100 relative overflow-hidden">
-            <div class="absolute top-[-20px] right-[-20px] w-32 h-32 bg-teal-500 rounded-full opacity-50"></div>
-            <p class="text-teal-100 text-xs font-bold uppercase tracking-widest mb-2 opacity-80">Tổng số dư</p>
-            <h2 class="text-4xl font-black mb-10 italic">1,250,000 đ</h2>
+            <p class="text-teal-100 text-xs font-bold uppercase tracking-widest mb-2 opacity-80 italic">Số dư khả dụng</p>
+            <h2 class="text-4xl font-black mb-10 italic tracking-tighter">1,250,000 đ</h2>
             <div class="flex gap-3">
-                <button onclick="alert('Tính năng nạp tiền qua VietQR đang chờ kết nối API!')" class="flex-1 bg-white text-teal-600 font-black py-4 rounded-2xl text-sm shadow-xl active:scale-95 transition-all">NẠP TIỀN</button>
-                <button class="flex-1 bg-teal-500 text-white border border-teal-400 font-black py-4 rounded-2xl text-sm active:scale-95 transition-all">RÚT TIỀN</button>
+                <button onclick="showPage('deposit-page')" class="flex-1 bg-white text-teal-600 font-black py-4 rounded-2xl text-sm shadow-xl active:scale-95 transition-all">NẠP TIỀN</button>
+                <button class="flex-1 bg-teal-500 text-white border border-teal-400 font-black py-4 rounded-2xl text-sm opacity-50">RÚT TIỀN</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="deposit-page" class="page">
+        <nav class="bg-white p-4 sticky top-0 z-50 flex items-center border-b border-gray-100">
+            <button onclick="showPage('portfolio-page')" class="mr-4 text-2xl text-gray-400">←</button>
+            <h1 class="text-lg font-bold text-gray-800 text-center flex-1 italic">Nạp tiền tự động</h1>
+        </nav>
+        
+        <div class="p-6 text-center">
+            <h4 class="text-gray-800 font-bold mb-2">Quét mã VietQR để nạp</h4>
+            <p class="text-xs text-gray-500 mb-6 italic">Tiền sẽ được cộng tự động vào ví sau 30 giây</p>
+            
+            <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 inline-block mb-6">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Forely_Deposit_User123" class="w-48 h-48 mx-auto grayscale opacity-50" alt="QR Nạp tiền">
+                <div class="mt-4 p-2 bg-gray-50 rounded-lg text-xs font-mono text-gray-500">
+                    Nội dung: <span class="text-teal-600 font-bold">FORELY 123456</span>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-left">
+                <div class="flex items-start gap-3 p-4 bg-teal-50 rounded-2xl">
+                    <div class="bg-teal-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] mt-0.5">1</div>
+                    <p class="text-xs text-teal-900 font-medium">Mở ứng dụng Ngân hàng (VCB, MB, Techcom...) và quét mã QR.</p>
+                </div>
+                <div class="flex items-start gap-3 p-4 bg-teal-50 rounded-2xl">
+                    <div class="bg-teal-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] mt-0.5">2</div>
+                    <p class="text-xs text-teal-900 font-medium">Giữ nguyên nội dung chuyển khoản để hệ thống cộng điểm tự động.</p>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="fixed bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-gray-100 flex justify-around py-5 rounded-t-[2.5rem] shadow-[0_-10px_20px_rgba(0,0,0,0.02)] text-2xl">
-        <button onclick="showPage('home-page')" class="text-teal-600">🏠</button>
-        <button onclick="showPage('portfolio-page')" class="text-gray-300">📊</button>
-        <button class="text-gray-300">👤</button>
+        <button onclick="showPage('home-page')" id="nav-home" class="active-nav">🏠</button>
+        <button onclick="showPage('portfolio-page')" id="nav-wallet" class="text-gray-300">📊</button>
+        <button class="text-gray-300 opacity-50">👤</button>
     </div>
 
     <script>
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
+            
+            // Cập nhật icon navigation
+            document.getElementById('nav-home').classList.remove('active-nav');
+            document.getElementById('nav-wallet').classList.remove('active-nav');
+            document.getElementById('nav-home').classList.add('text-gray-300');
+            document.getElementById('nav-wallet').classList.add('text-gray-300');
+
+            if(pageId === 'home-page') {
+                document.getElementById('nav-home').classList.add('active-nav');
+                document.getElementById('nav-home').classList.remove('text-gray-300');
+            } else if(pageId === 'portfolio-page' || pageId === 'deposit-page') {
+                document.getElementById('nav-wallet').classList.add('active-nav');
+                document.getElementById('nav-wallet').classList.remove('text-gray-300');
+            }
             window.scrollTo(0,0);
-        }
-
-        function openDetail(title, yes, no, cat, prob, source) {
-            document.getElementById('detail-title').innerText = title;
-            document.getElementById('detail-nav-title').innerText = title;
-            document.getElementById('detail-category').innerText = cat;
-            document.getElementById('detail-prob').innerText = prob;
-            document.getElementById('detail-source').innerText = source;
-            showPage('detail-page');
-        }
-
-        function confirmBet(type) {
-            alert("Xác nhận dự báo: " + type + ". (Hệ thống đang kết nối Smart Contract trên mạng Base...)");
         }
     </script>
 </body>
