@@ -8,59 +8,58 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
-        // Cấu hình màu sắc chuẩn thương hiệu Fintech
+        // Cấu hình tông màu Xanh Đậm và Trắng
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        indigo: '#1e293b', // Xanh đậm nền
-                        cyan: '#38bdf8',   // Xanh lơ nổi bật
-                        darkbg: '#0f172a', // Màu nền tổng thể
-                        cardbg: '#1e293b'  // Màu nền thẻ sự kiện
+                        primary: '#1e3a8a',    // Xanh đậm Navy (Đại diện cho uy tín Fintech)
+                        secondary: '#3b82f6',  // Xanh dương sáng (Điểm nhấn)
+                        surface: '#f8fafc',    // Trắng xám nền (Giúp thẻ nội dung nổi bật)
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #0f172a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        /* Ẩn thanh cuộn nhưng vẫn cho phép vuốt trên điện thoại */
-       .hide-scroll-bar::-webkit-scrollbar { display: none; }
-       .hide-scroll-bar { -ms-overflow-style: none; scrollbar-width: none; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* Ẩn thanh cuộn để giao diện giống App di động */
+      .hide-scroll-bar::-webkit-scrollbar { display: none; }
+      .hide-scroll-bar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-darkbg text-white pb-20">
+<body class="bg-surface text-slate-800 pb-20">
 
-<nav class="sticky top-0 z-40 bg-cardbg border-b border-gray-700 shadow-lg">
+<nav class="sticky top-0 z-40 bg-primary shadow-md">
     <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div class="text-cyan font-bold text-2xl flex items-center gap-2 cursor-pointer" onclick="location.reload()">
-            <i class="fa-solid fa-compass"></i> <span class="tracking-wide">FORELY</span>
+        <div class="text-white font-bold text-2xl flex items-center gap-2 cursor-pointer" onclick="location.reload()">
+            <i class="fa-solid fa-compass text-secondary"></i> <span class="tracking-wide">FORELY</span>
         </div>
         
         <div class="flex items-center gap-4">
             <div class="hidden md:block relative">
-                <input type="text" id="searchInputDesktop" oninput="handleSearch(this.value)" placeholder="Tìm kiếm sự kiện..." class="bg-gray-800 text-sm text-white rounded-full pl-10 pr-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-cyan border border-gray-700 transition-all">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-gray-400"></i>
+                <input type="text" id="searchInputDesktop" oninput="handleSearch(this.value)" placeholder="Tìm kiếm sự kiện..." class="bg-white/10 text-sm text-white placeholder-blue-200 rounded-full pl-10 pr-4 py-2 w-64 focus:outline-none focus:bg-white focus:text-slate-900 focus:placeholder-slate-400 transition-all border border-blue-800">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-blue-300" id="searchIconDesktop"></i>
             </div>
-            <div class="bg-gray-800 rounded-full px-4 py-1.5 flex items-center gap-2 border border-cyan shadow-[0_0_10px_rgba(56,189,248,0.2)]">
-                <i class="fa-solid fa-coins text-yellow-400"></i>
-                <span id="user-balance" class="font-bold text-sm md:text-base">100.000</span>
+            <div class="bg-white rounded-full px-4 py-1.5 flex items-center gap-2 shadow-sm border border-slate-200">
+                <i class="fa-solid fa-coins text-yellow-500"></i>
+                <span id="user-balance" class="font-bold text-primary text-sm md:text-base">100.000</span>
             </div>
         </div>
     </div>
 </nav>
 
-<div class="md:hidden px-4 py-3 bg-cardbg border-b border-gray-800">
+<div class="md:hidden px-4 py-3 bg-white border-b border-slate-200 shadow-sm sticky top-[60px] z-30">
     <div class="relative">
-        <input type="text" id="searchInputMobile" oninput="handleSearch(this.value)" placeholder="Tìm kiếm sự kiện..." class="w-full bg-gray-800 text-sm text-white rounded-full pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-cyan border border-gray-700">
-        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-gray-400"></i>
+        <input type="text" id="searchInputMobile" oninput="handleSearch(this.value)" placeholder="Tìm kiếm nhanh..." class="w-full bg-slate-100 text-sm text-slate-800 rounded-full pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-secondary border border-slate-300">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3 text-slate-400"></i>
     </div>
 </div>
 
 <main class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-4 gap-6">
     
     <aside class="md:col-span-1">
-        <h2 class="hidden md:block text-gray-400 font-semibold mb-3 uppercase text-sm tracking-wider">Chuyên mục</h2>
+        <h2 class="hidden md:block text-slate-500 font-bold mb-4 uppercase text-sm tracking-wider">Bộ lọc chuyên mục</h2>
         <div class="flex overflow-x-auto md:flex-col gap-2 pb-2 md:pb-0 hide-scroll-bar" id="category-container">
             </div>
     </aside>
@@ -70,60 +69,57 @@
 
 </main>
 
-<div id="prediction-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
-    <div class="bg-cardbg w-full max-w-md rounded-2xl p-6 border border-cyan shadow-[0_0_30px_rgba(56,189,248,0.15)] relative transform transition-all">
-        <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+<div id="prediction-modal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+    <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl relative transform transition-all border border-slate-100">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
         
-        <h2 class="text-xl font-bold text-center mb-1">Xác nhận Dự báo</h2>
-        <p id="modal-event-title" class="text-sm text-gray-400 text-center mb-5 line-clamp-2">Tên sự kiện...</p>
+        <h2 class="text-2xl font-bold text-slate-900 text-center mb-1">Xác nhận Dự báo</h2>
+        <p id="modal-event-title" class="text-sm text-slate-500 text-center mb-5 line-clamp-2">Tên sự kiện...</p>
         
-        <div class="bg-gray-800 rounded-xl p-4 mb-5 flex justify-between items-center border border-gray-700">
-            <span class="text-gray-300">Lựa chọn của bạn:</span>
+        <div class="bg-slate-50 rounded-xl p-4 mb-5 flex justify-between items-center border border-slate-200">
+            <span class="text-slate-600 font-medium">Lựa chọn của bạn:</span>
             <span id="modal-choice" class="font-bold text-xl px-3 py-1 rounded-lg">CÓ</span>
         </div>
 
         <div class="mb-5">
             <div class="flex justify-between text-sm mb-2">
-                <label class="text-gray-300">Số điểm đầu tư:</label>
-                <span class="text-cyan cursor-pointer hover:underline" onclick="setAllIn()">Tất cả (All-in)</span>
+                <label class="text-slate-600 font-medium">Số điểm FP đầu tư:</label>
+                <span class="text-secondary font-semibold cursor-pointer hover:underline" onclick="setAllIn()">Tất cả (All-in)</span>
             </div>
             <div class="relative">
-                <input type="number" id="invest-amount" value="10000" oninput="calculateReward()" class="w-full bg-gray-900 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan text-xl font-bold text-center border border-gray-700">
-                <span class="absolute right-4 top-3.5 text-gray-500 font-semibold">FP</span>
+                <input type="number" id="invest-amount" value="10000" oninput="calculateReward()" class="w-full bg-white text-slate-900 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary text-xl font-bold text-center border-2 border-slate-200 transition-all">
+                <span class="absolute right-4 top-3.5 text-slate-400 font-bold">FP</span>
             </div>
         </div>
 
-        <div class="bg-indigo border border-cyan border-opacity-30 rounded-xl p-4 mb-6 text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan to-transparent opacity-50"></div>
-            <span class="text-xs text-gray-300 block mb-1 uppercase tracking-wider">Quà tặng Voucher ước tính</span>
-            <div class="text-3xl font-bold text-yellow-400 flex justify-center items-center gap-2">
-                <span id="estimated-reward">0</span> <span class="text-sm text-yellow-200">VNĐ</span>
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-center relative overflow-hidden">
+            <span class="text-xs text-blue-600 font-bold block mb-1 uppercase tracking-wider">Quà tặng Voucher ước tính</span>
+            <div class="text-3xl font-black text-secondary flex justify-center items-center gap-1">
+                <span id="estimated-reward">0</span> <span class="text-lg text-blue-500">VNĐ</span>
             </div>
-            <span id="odds-display" class="text-xs text-cyan mt-1 block">Tỷ lệ nhân: x0</span>
+            <span id="odds-display" class="text-xs text-slate-500 mt-2 block font-medium">Tỷ lệ nhân: x0 (Bao gồm gốc)</span>
         </div>
 
-        <button onclick="submitPrediction()" class="w-full py-3.5 rounded-xl font-bold text-indigo bg-cyan shadow-[0_4px_15px_rgba(56,189,248,0.4)] hover:bg-blue-400 transition-colors text-lg">
-            XÁC NHẬN VÀ CHỜ KẾT QUẢ
+        <button onclick="submitPrediction()" class="w-full py-3.5 rounded-xl font-bold text-white bg-primary shadow-lg shadow-blue-900/30 hover:bg-blue-800 transition-colors text-lg">
+            XÁC NHẬN ĐẦU TƯ
         </button>
     </div>
 </div>
 
 <script>
-    // 1. DỮ LIỆU MÔ PHỎNG (DATABASE)
+    // --- DỮ LIỆU MÔ PHỎNG ---
     let currentBalance = 100000;
     let currentCategory = 'Tất cả';
     let searchQuery = '';
-    
-    // Lưu trữ tạm thời sự kiện đang được chọn để tính điểm
     let activeEvent = null;
-    let activeChoice = ''; // 'YES' hoặc 'NO'
+    let activeChoice = '';
 
     const categories =;
 
-    // Danh sách sự kiện phong phú
+    // Bổ sung nhiều sự kiện đa dạng hơn
     const eventsData =;
 
-    // 2. KHỞI TẠO GIAO DIỆN
+    // --- KHỞI TẠO GIAO DIỆN ---
     window.onload = () => {
         updateBalanceDisplay();
         renderCategories();
@@ -134,44 +130,43 @@
         document.getElementById('user-balance').innerText = currentBalance.toLocaleString('vi-VN');
     }
 
-    // 3. XỬ LÝ DANH MỤC (LỌC)
+    // --- LOGIC RENDER DANH MỤC LỌC ---
     function renderCategories() {
         const container = document.getElementById('category-container');
         container.innerHTML = '';
         
         categories.forEach(cat => {
             const isSelected = cat === currentCategory;
+            // Áp dụng class sáng màu
             const btnClass = isSelected 
-               ? 'bg-cyan text-indigo font-bold px-5 py-2 rounded-full whitespace-nowrap shadow-[0_0_10px_rgba(56,189,248,0.3)] transition-all' 
-                : 'bg-gray-800 text-gray-300 hover:text-white px-5 py-2 rounded-full whitespace-nowrap border border-gray-700 hover:border-gray-500 transition-all cursor-pointer';
+              ? 'bg-primary text-white font-bold px-5 py-2.5 md:py-3 rounded-full md:rounded-xl whitespace-nowrap shadow-md transition-all' 
+                : 'bg-white text-slate-600 hover:text-primary hover:bg-slate-50 px-5 py-2.5 md:py-3 rounded-full md:rounded-xl whitespace-nowrap border border-slate-300 transition-all cursor-pointer font-medium shadow-sm';
             
             const btn = document.createElement('button');
             btn.className = btnClass;
             btn.innerText = cat;
             btn.onclick = () => {
                 currentCategory = cat;
-                renderCategories(); // Vẽ lại màu nút
-                renderEvents();     // Lọc lại sự kiện
+                renderCategories();
+                renderEvents();
             };
             container.appendChild(btn);
         });
     }
 
-    // 4. TÌM KIẾM
+    // --- LOGIC TÌM KIẾM ---
     function handleSearch(value) {
         searchQuery = value.toLowerCase();
-        // Đồng bộ chữ giữa 2 ô tìm kiếm (mobile & desktop)
         document.getElementById('searchInputDesktop').value = value;
         document.getElementById('searchInputMobile').value = value;
         renderEvents();
     }
 
-    // 5. HIỂN THỊ DANH SÁCH SỰ KIỆN
+    // --- LOGIC RENDER DANH SÁCH SỰ KIỆN ---
     function renderEvents() {
         const container = document.getElementById('events-container');
         container.innerHTML = '';
 
-        // Lọc dữ liệu theo Category và Search
         const filteredEvents = eventsData.filter(e => {
             const matchCategory = currentCategory === 'Tất cả' |
 
@@ -182,42 +177,41 @@
 
         if(filteredEvents.length === 0) {
             container.innerHTML = `
-                <div class="text-center py-16 bg-gray-800 rounded-2xl border border-gray-700 flex flex-col items-center">
-                    <i class="fa-regular fa-folder-open text-4xl text-gray-500 mb-3"></i>
-                    <p class="text-gray-400">Không tìm thấy sự kiện nào phù hợp.</p>
+                <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 flex flex-col items-center shadow-sm">
+                    <i class="fa-regular fa-folder-open text-5xl text-slate-300 mb-4"></i>
+                    <p class="text-slate-500 font-medium text-lg">Không tìm thấy sự kiện nào phù hợp.</p>
+                    <p class="text-slate-400 text-sm mt-1">Vui lòng thử từ khóa khác.</p>
                 </div>`;
             return;
         }
 
-        // Vẽ từng thẻ sự kiện
         filteredEvents.forEach(e => {
             const card = document.createElement('div');
-            card.className = 'bg-cardbg rounded-2xl p-5 border border-gray-700 hover:border-cyan transition-colors shadow-sm hover:shadow-[0_0_15px_rgba(56,189,248,0.1)]';
+            // Thẻ màu trắng, bóng mờ
+            card.className = 'bg-white rounded-2xl p-5 md:p-6 border border-slate-200 hover:border-secondary hover:shadow-lg transition-all duration-300 shadow-sm group';
             card.innerHTML = `
-                <div class="flex justify-between items-start mb-3">
+                <div class="flex justify-between items-start mb-4">
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-semibold bg-gray-700 text-cyan px-2.5 py-1 rounded-md uppercase tracking-wide">${e.category}</span>
-                        <span class="text-xs text-gray-400 flex items-center gap-1"><i class="fa-solid fa-users"></i> ${e.participants.toLocaleString()}</span>
+                        <span class="text-xs font-bold bg-blue-50 text-secondary border border-blue-100 px-3 py-1.5 rounded-md uppercase tracking-wide">${e.category}</span>
+                        <span class="text-xs text-slate-500 font-medium flex items-center gap-1.5 bg-slate-50 px-2.5 py-1.5 rounded-md border border-slate-100"><i class="fa-solid fa-users text-slate-400"></i> ${e.participants.toLocaleString()} FP</span>
                     </div>
-                    <span class="text-xs font-medium text-red-400 bg-red-400 bg-opacity-10 px-2.5 py-1 rounded-md flex items-center gap-1">
+                    <span class="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm">
                         <i class="fa-regular fa-clock"></i> ${e.time}
                     </span>
                 </div>
                 
-                <h3 class="font-bold text-lg md:text-xl mb-2 leading-snug text-gray-100">${e.title}</h3>
-                <p class="text-sm text-gray-400 mb-5"><i class="fa-solid fa-link text-xs"></i> Nguồn xác thực: <span class="text-gray-300">${e.source}</span></p>
+                <h3 class="font-bold text-lg md:text-xl mb-2 leading-snug text-slate-900 group-hover:text-primary transition-colors">${e.title}</h3>
+                <p class="text-sm text-slate-500 mb-6 font-medium"><i class="fa-solid fa-check-double text-emerald-500 mr-1"></i> Xác thực bởi: <span class="text-slate-700 underline decoration-slate-300 underline-offset-2">${e.source}</span></p>
                 
                 <div class="grid grid-cols-2 gap-3 md:gap-4">
-                    <button onclick="openModal(${e.id}, 'YES')" class="group relative overflow-hidden bg-gray-800 border border-gray-600 rounded-xl py-3 hover:border-green-400 transition-all text-center">
-                        <div class="absolute inset-0 bg-green-400 opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                        <span class="block font-bold text-gray-300 group-hover:text-white mb-1">CÓ (YES)</span>
-                        <span class="block text-sm text-green-400 font-semibold">Tỷ lệ: x${e.oddsYes.toFixed(2)}</span>
+                    <button onclick="openModal(${e.id}, 'YES')" class="relative overflow-hidden bg-primary border-2 border-primary rounded-xl py-3 hover:bg-blue-800 hover:border-blue-800 transition-all text-center shadow-md">
+                        <span class="block font-black text-white mb-0.5 text-lg">CÓ</span>
+                        <span class="block text-sm text-blue-200 font-medium">Tỷ lệ: x${e.oddsYes.toFixed(2)}</span>
                     </button>
                     
-                    <button onclick="openModal(${e.id}, 'NO')" class="group relative overflow-hidden bg-gray-800 border border-gray-600 rounded-xl py-3 hover:border-red-400 transition-all text-center">
-                        <div class="absolute inset-0 bg-red-400 opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                        <span class="block font-bold text-gray-300 group-hover:text-white mb-1">KHÔNG (NO)</span>
-                        <span class="block text-sm text-red-400 font-semibold">Tỷ lệ: x${e.oddsNo.toFixed(2)}</span>
+                    <button onclick="openModal(${e.id}, 'NO')" class="relative overflow-hidden bg-white border-2 border-slate-300 rounded-xl py-3 hover:bg-slate-50 hover:border-slate-400 transition-all text-center shadow-sm">
+                        <span class="block font-black text-slate-700 mb-0.5 text-lg">KHÔNG</span>
+                        <span class="block text-sm text-slate-500 font-medium">Tỷ lệ: x${e.oddsNo.toFixed(2)}</span>
                     </button>
                 </div>
             `;
@@ -225,7 +219,7 @@
         });
     }
 
-    // 6. XỬ LÝ CỬA SỔ DỰ BÁO (MODAL)
+    // --- LOGIC XỬ LÝ POPUP ---
     function openModal(eventId, choice) {
         activeEvent = eventsData.find(e => e.id === eventId);
         activeChoice = choice;
@@ -235,23 +229,22 @@
         const choiceEl = document.getElementById('modal-choice');
         if(choice === 'YES') {
             choiceEl.innerText = 'CÓ (YES)';
-            choiceEl.className = 'font-bold text-lg px-3 py-1 rounded-lg bg-green-400 bg-opacity-20 text-green-400 border border-green-400';
+            choiceEl.className = 'font-bold text-lg px-4 py-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200';
         } else {
             choiceEl.innerText = 'KHÔNG (NO)';
-            choiceEl.className = 'font-bold text-lg px-3 py-1 rounded-lg bg-red-400 bg-opacity-20 text-red-400 border border-red-400';
+            choiceEl.className = 'font-bold text-lg px-4 py-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-300';
         }
 
         document.getElementById('prediction-modal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Khóa cuộn trang nền
+        document.body.style.overflow = 'hidden'; 
         
-        // Reset input và tính toán lại
         document.getElementById('invest-amount').value = 10000;
         calculateReward();
     }
 
     function closeModal() {
         document.getElementById('prediction-modal').classList.add('hidden');
-        document.body.style.overflow = 'auto'; // Mở lại cuộn trang
+        document.body.style.overflow = 'auto'; 
         activeEvent = null;
     }
 
@@ -274,7 +267,6 @@
         document.getElementById('odds-display').innerText = `Tỷ lệ nhân: x${odds.toFixed(2)} (Bao gồm gốc)`;
     }
 
-    // 7. GỬI DỰ BÁO
     function submitPrediction() {
         let amount = parseInt(document.getElementById('invest-amount').value);
         
@@ -286,24 +278,21 @@
         }
         
         if(amount > currentBalance) {
-            alert('Bạn không đủ F-Point! Vui lòng nạp thêm qua mã VietQR.');
+            alert('Bạn không đủ F-Point! Vui lòng nạp thêm qua VietQR.');
             return;
         }
 
-        // Trừ điểm và cập nhật giao diện
         currentBalance -= amount;
         updateBalanceDisplay();
         
-        // Tăng số lượng người tham gia mô phỏng
-        activeEvent.participants += 1;
+        activeEvent.participants += Math.floor(amount/1000); // Tăng volume điểm giả lập
         renderEvents(); 
 
         closeModal();
         
-        // Hiển thị thông báo thành công (Có thể thay bằng thư viện Toast đẹp hơn)
         setTimeout(() => {
-            alert(`🎉 Ghi nhận thành công!\nBạn đã dùng ${amount.toLocaleString('vi-VN')} FP dự báo cho sự kiện này.\nHệ thống sẽ tự động đối soát và trả Voucher khi sự kiện kết thúc.`);
-        }, 300);
+            alert(`✅ GHI NHẬN THÀNH CÔNG!\n\nBạn đã đầu tư ${amount.toLocaleString('vi-VN')} FP vào sự kiện này.\nVoucher sẽ tự động cộng vào tài khoản nếu dự báo chính xác.`);
+        }, 200);
     }
 </script>
 
