@@ -1,168 +1,124 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forely - Future Insights</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfcfd; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+const express = require('express');
+const Parser = require('rss-parser');
+const axios = require('axios');
+
+const app = express();
+app.use(express.json());
+
+// Khởi tạo thư viện đọc RSS cho tính năng Oracle
+const parser = new Parser();
+
+/**
+ * 1. CỔNG NHẬN WEBHOOK TỪ SEPAY / CASSO (AUTO CASH-IN)
+ * Mục đích: Tự động cộng F-Point ngay khi người dùng chuyển khoản VietQR mua gói nội dung.
+ */
+app.post('/api/v1/webhooks/bank', async (req, res) => {
+    try {
+        const transaction = req.body;
         
-        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal.active { display: flex; }
-
-        .forecast-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .forecast-card:active { transform: scale(0.97); }
+        // Trích xuất nội dung chuyển khoản và số tiền từ payload của webhook
+        const transferContent = transaction.content; // VD: "FORELY 8X9A2"
+        const transferAmount = transaction.amount;
         
-        /* Hiệu ứng nhấn logo */
-        .logo-btn:active { transform: scale(0.95); transition: 0.1s; }
-    </style>
-</head>
-<body class="pb-28">
-
-    <nav class="bg-white/90 backdrop-blur-md p-4 sticky top-0 z-50 flex justify-between items-center border-b border-slate-100">
-        <div onclick="goHome()" class="flex items-center gap-3 cursor-pointer logo-btn">
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="40" height="40" rx="10" fill="#1e293b"/>
-                <circle cx="20" cy="20" r="14" stroke="#38bdf8" stroke-width="2" stroke-dasharray="2 2"/>
-                <path d="M20 10L24 20L20 18L16 20L20 10Z" fill="white"/>
-                <path d="M20 30L16 20L20 22L24 20L20 30Z" fill="#64748b"/>
-            </svg>
-            <h1 class="text-xl font-extrabold text-[#1e293b] tracking-tight">Forely</h1>
-        </div>
-        <div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-2xl border border-slate-100">
-            <span class="text-xs">💎</span>
-            <span id="balance" class="text-xs font-bold text-slate-700 uppercase tracking-tighter">5,000 P</span>
-        </div>
-    </nav>
-
-    <div class="bg-white sticky top-[65px] z-40 border-b border-slate-50">
-        <div class="px-4 pt-3">
-            <div class="relative">
-                <input type="text" id="search-input" oninput="searchEvents()" placeholder="Tìm kiếm sự kiện..." class="w-full bg-slate-50 border border-slate-100 rounded-xl py-2 px-10 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/10">
-                <span class="absolute left-4 top-2.5 opacity-30 text-xs">🔍</span>
-            </div>
-        </div>
-        <div class="flex gap-2 overflow-x-auto p-4 no-scrollbar">
-            <button onclick="filter('Tất cả', this)" id="default-tab" class="tab bg-[#1e293b] text-white px-5 py-2 rounded-xl text-[11px] font-bold uppercase shrink-0">Tất cả</button>
-            <button onclick="filter('Kinh tế', this)" class="tab bg-white text-slate-400 border border-slate-100 px-5 py-2 rounded-xl text-[11px] font-bold uppercase shrink-0">Kinh tế</button>
-            <button onclick="filter('Giải trí', this)" class="tab bg-white text-slate-400 border border-slate-100 px-5 py-2 rounded-xl text-[11px] font-bold uppercase shrink-0">Giải trí</button>
-            <button onclick="filter('Công nghệ', this)" class="tab bg-white text-slate-400 border border-slate-100 px-5 py-2 rounded-xl text-[11px] font-bold uppercase shrink-0">Công nghệ</button>
-        </div>
-    </div>
-
-    <div id="market-grid" class="p-4 grid grid-cols-2 gap-4"></div>
-
-    <div id="trade-modal" class="modal">
-        <div class="bg-white w-[90%] max-w-sm rounded-[2.5rem] p-8 shadow-2xl scale-100 border border-slate-50">
-            <p id="modal-side" class="text-[10px] font-black uppercase tracking-[0.2em] mb-2"></p>
-            <h3 id="modal-title" class="text-lg font-bold text-slate-900 mb-6 leading-tight italic"></h3>
+        // Logic: Tìm mã người dùng dựa trên nội dung chuyển khoản
+        const userId = extractUserIdFromContent(transferContent);
+        
+        if (userId) {
+            // Quy đổi số tiền nạp sang F-Point (VD: 10.000 VNĐ = 10.000 F-Point)
+            const fPointsToAdd = calculateFPoints(transferAmount);
             
-            <div class="bg-slate-50 p-5 rounded-3xl mb-6">
-                <div class="flex justify-between items-center mb-3 text-[10px] font-bold text-slate-400 uppercase">
-                    <span>Số điểm đầu tư</span>
-                    <span class="text-[#1e293b]">F-Point</span>
-                </div>
-                <input type="number" id="input-amount" value="100" class="w-full bg-transparent text-4xl font-black text-[#1e293b] focus:outline-none" oninput="calculatePrize()">
-            </div>
+            // Cập nhật sổ cái Supabase (Giao dịch ACID)
+            await supabase.rpc('add_fpoint_balance', { 
+                user_id: userId, 
+                points: fPointsToAdd 
+            });
+            console.log(`Đã cộng ${fPointsToAdd} F-Point cho user ${userId}`);
+        }
+        
+        // Trả về 200 OK để hệ thống báo nhận thành công
+        res.status(200).json({ success: true, message: "Webhook processed" });
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
-            <div class="bg-indigo-50/50 p-4 rounded-2xl mb-8 flex items-center justify-between">
-                <span class="text-sm">🎁</span>
-                <p id="prize-estimate" class="text-xs font-bold text-indigo-700 italic">Quà tặng: Thẻ nạp 10k</p>
-                <span></span>
-            </div>
-
-            <div class="flex gap-4">
-                <button onclick="closeModal()" class="flex-1 py-2 text-xs font-bold text-slate-300 uppercase">Hủy</button>
-                <button onclick="confirmTrade()" class="flex-1 bg-[#1e293b] text-white py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest">Xác nhận</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let balance = 5000;
-        let selectedEvent = null;
-        const categories = ["Kinh tế", "Giải trí", "Công nghệ", "Thể thao"];
-        const titles = ["VN-Index chạm 1550?", "Giá Vàng giảm mạnh?", "iPhone bỏ cổng sạc?", "Show âm nhạc mới?", "Lãi suất giảm tiếp?", "Hãng xe điện về VN?"];
-
-        const allEvents = Array.from({ length: 100 }, (_, i) => ({
-            id: i,
-            cat: categories[i % categories.length],
-            title: titles[i % titles.length] + " #" + (i + 1),
-            yesRate: Math.floor(Math.random() * 60 + 20),
-            vol: (Math.random() * 5 + 1).toFixed(1) + "M P"
+/**
+ * 2. CỔNG ORACLE CẬP NHẬT TIN TỨC VÀ KẾT QUẢ DỰ BÁO
+ * Mục đích: Biến ứng dụng thành một Trang thông tin điện tử tổng hợp hợp pháp.
+ */
+app.get('/api/v1/news/fetch-oracle', async (req, res) => {
+    try {
+        // Lấy dữ liệu RSS từ các chuyên mục của báo điện tử (VD: Kinh tế VnExpress)
+        const feedUrl = 'https://vnexpress.net/rss/kinh-te.rss';
+        const feed = await parser.parseURL(feedUrl);
+        
+        const newsList = feed.items.map(item => ({
+            title: item.title,
+            link: item.link,
+            pubDate: item.pubDate,
+            snippet: item.contentSnippet
         }));
 
-        function render(data = allEvents) {
-            const grid = document.getElementById('market-grid');
-            grid.innerHTML = data.map(e => `
-                <div class="forecast-card bg-white p-4 rounded-[1.8rem] border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.03)]">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="text-[8px] font-bold uppercase text-slate-300 tracking-widest">${e.cat}</span>
-                        <span class="text-[8px] font-bold text-indigo-300 italic">${e.vol}</span>
-                    </div>
-                    <h3 class="text-[11px] font-bold text-slate-800 line-clamp-2 mb-4 leading-snug h-8 italic">${e.title}</h3>
-                    <div class="flex flex-col gap-2">
-                        <button onclick="openModal(${e.id}, 'CÓ')" class="w-full bg-[#f0fdfa] text-[#0d9488] text-[9px] font-bold py-2 rounded-xl border border-[#ccfbf1] uppercase tracking-tighter active:bg-[#ccfbf1]">CÓ ${e.yesRate}%</button>
-                        <button onclick="openModal(${e.id}, 'KHÔNG')" class="w-full bg-[#fff1f2] text-[#e11d48] text-[9px] font-bold py-2 rounded-xl border border-[#ffe4e6] uppercase tracking-tighter active:bg-[#ffe4e6]">KHÔNG</button>
-                    </div>
-                </div>
-            `).join('');
+        // Lưu bản tin vào Database để hiển thị Frontend
+        // Các câu hỏi dự báo (khảo sát) sẽ được đính kèm vào các bài báo này
+        await supabase.from('news_articles').upsert(newsList);
+
+        res.status(200).json({ 
+            success: true, 
+            message: "Đã đồng bộ tin tức Oracle thành công", 
+            data: newsList.length 
+        });
+    } catch (error) {
+        res.status(500).json({ error: "Lỗi kết nối Oracle" });
+    }
+});
+
+/**
+ * 3. CỔNG OFF-RAMP: ĐỔI F-POINT LẤY VOUCHER QUA API
+ * Mục đích: Tặng thưởng cho khách hàng thông qua đối tác kho quà thay vì tiền mặt.
+ */
+app.post('/api/v1/rewards/redeem', async (req, res) => {
+    const { userId, voucherSku, requiredPoints } = req.body;
+
+    try {
+        // Bước 1: Trừ điểm F-Point trong Database trước (Đảm bảo an toàn giao dịch)
+        const deduction = await supabase.rpc('deduct_fpoint_balance', { 
+            user_id: userId, 
+            points: requiredPoints 
+        });
+
+        if (!deduction.success) {
+            return res.status(400).json({ error: "Số dư F-Point không đủ" });
         }
 
-        function goHome() {
-            document.getElementById('search-input').value = '';
-            filter('Tất cả', document.getElementById('default-tab'));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        // Bước 2: Gọi API sang nền tảng đối tác kho quà (VD: UrBox) để xuất mã Voucher
+        const urboxApiUrl = "https://api.urbox.vn/v1/gift/issue"; // Giả lập Endpoint
+        const urboxResponse = await axios.post(urboxApiUrl, {
+            sku: voucherSku,
+            merchant_id: process.env.URBOX_MERCHANT_ID,
+            secret_key: process.env.URBOX_SECRET_KEY
+        });
 
-        function searchEvents() {
-            const term = document.getElementById('search-input').value.toLowerCase();
-            const filtered = allEvents.filter(e => e.title.toLowerCase().includes(term) || e.cat.toLowerCase().includes(term));
-            render(filtered);
-        }
+        const voucherCode = urboxResponse.data.voucher_code;
 
-        function filter(cat, el) {
-            document.querySelectorAll('.tab').forEach(t => {
-                t.className = "tab bg-white text-slate-400 border border-slate-100 px-5 py-2 rounded-xl text-[11px] font-bold uppercase shrink-0";
-            });
-            el.className = "tab bg-[#1e293b] text-white px-5 py-2 rounded-xl text-[11px] font-bold uppercase shrink-0 shadow-lg shadow-indigo-900/10";
-            const data = cat === 'Tất cả' ? allEvents : allEvents.filter(e => e.cat === cat);
-            render(data);
-        }
+        // Bước 3: Trả mã Voucher về cho màn hình điện thoại người dùng
+        res.status(200).json({ 
+            success: true, 
+            voucher: voucherCode,
+            message: "Đổi thưởng thành công! Quà tặng của bạn đã sẵn sàng."
+        });
 
-        function openModal(id, type) {
-            selectedEvent = { ...allEvents[id], side: type };
-            document.getElementById('modal-side').innerText = `Dự báo: ${type}`;
-            document.getElementById('modal-side').className = `text-[10px] font-black uppercase tracking-[0.2em] mb-2 ${type === 'CÓ' ? 'text-teal-500' : 'text-rose-500'}`;
-            document.getElementById('modal-title').innerText = selectedEvent.title;
-            document.getElementById('trade-modal').classList.add('active');
-            calculatePrize();
-        }
+    } catch (error) {
+        // Nếu API đối tác lỗi, tự động hoàn điểm (Auto-refund) lại cho người dùng
+        await supabase.rpc('add_fpoint_balance', { user_id: userId, points: requiredPoints });
+        res.status(502).json({ error: "Lỗi cổng quà tặng, đã hoàn điểm cho bạn." });
+    }
+});
 
-        function closeModal() { document.getElementById('trade-modal').classList.remove('active'); }
+// Khởi động Server
+const PORT = process.env.PORT |
 
-        function calculatePrize() {
-            const amt = parseInt(document.getElementById('input-amount').value) || 0;
-            const prizeEl = document.getElementById('prize-estimate');
-            if (amt < 500) prizeEl.innerText = "Quà tặng: Thẻ cào 10k";
-            else if (amt < 2000) prizeEl.innerText = "Quà tặng: Grab 50k";
-            else prizeEl.innerText = "Quà tặng: Shopee 200k";
-        }
-
-        function confirmTrade() {
-            const amt = parseInt(document.getElementById('input-amount').value);
-            if (amt > balance) { alert("Không đủ điểm!"); return; }
-            balance -= amt;
-            document.getElementById('balance').innerText = balance.toLocaleString() + " P";
-            closeModal();
-            alert("🎯 Đã xác nhận dự báo!");
-        }
-
-        render();
-    </script>
-</body>
-</html>
+| 4300;
+app.listen(PORT, () => {
+    console.log(`Forely Backend Engine đang chạy trên cổng ${PORT}`);
+});
