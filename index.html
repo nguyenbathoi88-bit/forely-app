@@ -3,154 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORELY - Professional Forecast Market</title>
+    <title>FORELY - Market Overview</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .page { display: none; }
         .page.active { display: block; }
-        .logo-diamond { background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
-        .text-gradient { background: linear-gradient(135deg, #0891b2 0%, #7e22ce 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .tab-active { background-color: #0f172a !important; color: white !important; }
-        
-        /* Biểu đồ nến đơn giản bằng CSS */
-        .chart-container { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding: 10px; border-bottom: 1px solid #f1f5f9; }
-        .candle { width: 12px; background: #14b8a6; border-radius: 2px; position: relative; }
-        .candle.red { background: #ef4444; }
-        .wick { position: absolute; width: 2px; height: 140%; background: inherit; left: 50%; transform: translateX(-50%); bottom: -20%; opacity: 0.3; }
+        .text-gradient { background: linear-gradient(135deg, #0d9488 0%, #7e22ce 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* Tối ưu hóa kích thước nhỏ */
+        .compact-card { font-size: 0.75rem; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
-<body class="bg-[#f8fafc] min-h-screen pb-32 font-sans text-slate-800">
+<body class="bg-[#f1f5f9] min-h-screen pb-24 font-sans text-slate-800">
 
-    <div id="home-page" class="page active">
-        <nav class="bg-white/90 backdrop-blur-md p-5 sticky top-0 z-50 flex justify-between items-center border-b border-slate-100">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 logo-diamond shadow-lg"></div>
-                <h1 class="text-2xl font-black tracking-tighter italic text-gradient">FORELY</h1>
+    <nav class="bg-white p-3 sticky top-0 z-50 flex justify-between items-center border-b border-slate-200 shadow-sm">
+        <div class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-gradient-to-br from-teal-500 to-purple-600 rounded-md rotate-45 flex items-center justify-center">
+                <span class="text-white text-[10px] font-black rotate-[-45deg]">F</span>
             </div>
-            <div class="bg-slate-100 px-4 py-2 rounded-2xl border border-slate-200 flex items-center gap-2">
-                <span class="text-amber-500">💎</span>
-                <span id="header-balance" class="text-xs font-black text-slate-700">1,250 P</span>
-            </div>
-        </nav>
-
-        <div class="px-5 pt-4">
-            <div class="relative">
-                <input type="text" id="search-input" oninput="searchEvents()" placeholder="Tìm kiếm sự kiện..." class="w-full bg-white border border-slate-200 rounded-2xl py-3 px-11 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all">
-                <span class="absolute left-4 top-3.5">🔍</span>
-            </div>
+            <h1 class="text-lg font-black tracking-tighter italic text-gradient">FORELY</h1>
         </div>
-
-        <div class="flex gap-2 overflow-x-auto p-4 bg-white/50 no-scrollbar border-b border-slate-100 sticky top-[73px] z-40">
-            <button onclick="filterEvents('Tất cả', this)" class="category-tab tab-active whitespace-nowrap px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Tất cả</button>
-            <button onclick="filterEvents('Kinh tế', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Kinh tế</button>
-            <button onclick="filterEvents('Giải trí', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Giải trí</button>
-            <button onclick="filterEvents('Công nghệ', this)" class="category-tab whitespace-nowrap px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 font-bold text-[11px] uppercase tracking-widest transition-all">Công nghệ</button>
+        <div class="bg-slate-100 px-3 py-1 rounded-full border border-slate-200 flex items-center gap-1.5">
+            <span class="text-[10px]">💎</span>
+            <span class="text-[10px] font-black text-slate-700">1,250 P</span>
         </div>
+    </nav>
 
-        <div id="market-container" class="p-5 space-y-5"></div>
-    </div>
-
-    <div id="detail-page" class="page">
-        <nav class="bg-white p-5 sticky top-0 z-50 flex items-center border-b border-slate-100">
-            <button onclick="showPage('home-page')" class="mr-4 text-2xl text-slate-400">←</button>
-            <h1 class="text-sm font-bold text-slate-800 italic uppercase">Biến động thị trường</h1>
-        </nav>
-        
-        <div class="p-6 bg-white">
-            <div id="detail-content">
-                </div>
-            
-            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-8 mb-4">Lịch sử niềm tin (24h)</h4>
-            <div class="chart-container">
-                <div class="candle h-[40%]"><div class="wick"></div></div>
-                <div class="candle h-[55%]"><div class="wick"></div></div>
-                <div class="candle red h-[45%]"><div class="wick"></div></div>
-                <div class="candle h-[70%]"><div class="wick"></div></div>
-                <div class="candle h-[85%]"><div class="wick"></div></div>
-                <div class="candle red h-[60%]"><div class="wick"></div></div>
-                <div class="candle h-[90%]"><div class="wick"></div></div>
-            </div>
-            
-            <div class="mt-8 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                <p class="text-[10px] text-slate-500 italic leading-relaxed text-center">
-                    Dữ liệu được tổng hợp từ trí tuệ đám đông và xác thực qua các nguồn tin chính thống tại Việt Nam.
-                </p>
-            </div>
+    <div class="bg-white border-b border-slate-200 sticky top-[53px] z-40">
+        <div class="px-3 pt-2">
+            <input type="text" id="search-input" oninput="search()" placeholder="Tìm trong 50 dự báo..." class="w-full bg-slate-50 border border-slate-200 rounded-lg py-1.5 px-3 text-[11px] focus:outline-none focus:ring-1 focus:ring-teal-500/30">
+        </div>
+        <div class="flex gap-2 overflow-x-auto p-3 no-scrollbar">
+            <button onclick="filter('Tất cả', this)" class="tab active px-4 py-1 rounded-md bg-slate-900 text-white text-[10px] font-bold uppercase transition-all">Tất cả</button>
+            <button onclick="filter('Kinh tế', this)" class="tab px-4 py-1 rounded-md bg-slate-100 text-slate-500 text-[10px] font-bold uppercase transition-all">Kinh tế</button>
+            <button onclick="filter('Giải trí', this)" class="tab px-4 py-1 rounded-md bg-slate-100 text-slate-500 text-[10px] font-bold uppercase transition-all">Giải trí</button>
+            <button onclick="filter('Công nghệ', this)" class="tab px-4 py-1 rounded-md bg-slate-100 text-slate-500 text-[10px] font-bold uppercase transition-all">Công nghệ</button>
         </div>
     </div>
 
-    <div class="fixed bottom-8 left-8 right-8 bg-white/90 backdrop-blur-2xl border border-slate-200 flex justify-around py-5 rounded-[2.5rem] shadow-2xl z-50">
-        <button onclick="showPage('home-page')" class="text-teal-600 flex flex-col items-center gap-1"><span class="text-xl">🧭</span><span class="text-[8px] font-black uppercase">Dự báo</span></button>
-        <button onclick="alert('Tính năng đổi quà sắp ra mắt')" class="text-slate-400 flex flex-col items-center gap-1"><span class="text-xl">🎁</span><span class="text-[8px] font-black uppercase">Đổi quà</span></button>
-        <button class="text-slate-400 flex flex-col items-center gap-1"><span class="text-xl">📈</span><span class="text-[8px] font-black uppercase">Hạng</span></button>
+    <div id="grid-container" class="p-3 grid grid-cols-2 gap-3">
+        </div>
+
+    <div class="fixed bottom-0 w-full bg-white border-t border-slate-200 flex justify-around py-3 shadow-lg z-50">
+        <div class="flex flex-col items-center text-teal-600"><span class="text-lg">🧭</span><span class="text-[8px] font-bold uppercase">Dự báo</span></div>
+        <div class="flex flex-col items-center text-slate-300"><span class="text-lg">🎁</span><span class="text-[8px] font-bold uppercase">Quà</span></div>
+        <div class="flex flex-col items-center text-slate-300"><span class="text-lg">📊</span><span class="text-[8px] font-bold uppercase">Top</span></div>
     </div>
 
     <script>
-        let balance = 1250;
-        const events = [
-            { id: 1, cat: "Kinh tế", title: "VN-Index vượt mốc 1.450 điểm trong Q2/2026?", yes: "62%", vol: "1.2B P" },
-            { id: 2, cat: "Giải trí", title: "Sơn Tùng M-TP tổ chức concert tại Mỹ Đình năm nay?", yes: "85%", vol: "850M P" },
-            { id: 3, cat: "Công nghệ", title: "Việt Nam chính thức cấp phép cho xe taxi tự lái?", yes: "21%", vol: "320M P" },
-            { id: 4, cat: "Đời sống", title: "Giá vàng SJC xuống dưới 80 triệu/lượng tháng tới?", yes: "45%", vol: "2.5B P" }
+        // Tạo dữ liệu giả cho 50 dự báo
+        const categories = ["Kinh tế", "Giải trí", "Công nghệ", "Thể thao", "Đời sống"];
+        const samples = [
+            "VN-Index vượt 1.500?", "SJC lên 120 triệu?", "iPhone 18 bỏ sạc?", "Việt Nam dự World Cup?", 
+            "Sơn Tùng ra Album?", "Lãi suất giảm 3%?", "Metro số 2 xong sớm?", "VinFast ra mẫu xe mới?",
+            "AI thay thế 30% dev?", "Bitcoin lên 200k USD?", "Xăng giảm về 18k?", "BlackPink về Việt Nam?"
         ];
+        
+        const allEvents = Array.from({ length: 50 }, (_, i) => ({
+            id: i + 1,
+            cat: categories[i % categories.length],
+            title: samples[i % samples.length] + " (Thử thách #" + (i + 1) + ")",
+            yes: Math.floor(Math.random() * 90 + 5) + "%",
+            vol: (Math.random() * 5).toFixed(1) + "B P"
+        }));
 
-        function renderEvents(data = events) {
-            const container = document.getElementById('market-container');
+        function render(data = allEvents) {
+            const container = document.getElementById('grid-container');
             container.innerHTML = data.map(e => `
-                <div onclick="openDetail(${e.id})" class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm transition-all active:scale-[0.98]">
-                    <div class="flex justify-between items-center mb-4 text-[10px] font-black uppercase tracking-widest text-teal-600">
-                        <span class="bg-teal-50 px-2 py-1 rounded-md">${e.cat}</span>
-                        <span class="text-slate-400 italic">Vol: ${e.vol}</span>
+                <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm active:scale-95 transition-all">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[8px] font-black uppercase text-teal-600">${e.cat}</span>
+                        <span class="text-[8px] text-slate-400 font-bold">${e.vol}</span>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-800 mb-6 leading-tight italic">${e.title}</h3>
-                    <div class="flex gap-3">
-                        <div class="flex-1 bg-slate-50 border border-slate-100 text-teal-600 py-3 rounded-xl font-black italic text-center">CÓ ${e.yes}</div>
-                        <div class="flex-1 bg-slate-50 border border-slate-100 text-purple-600 py-3 rounded-xl font-black italic text-center">KHÔNG</div>
+                    <h3 class="text-[11px] font-bold text-slate-800 line-clamp-2 mb-3 leading-tight h-7 italic">${e.title}</h3>
+                    <div class="flex gap-1.5">
+                        <button onclick="trade()" class="flex-1 bg-teal-50 text-teal-600 text-[9px] font-black py-1.5 rounded-lg border border-teal-100">CÓ ${e.yes}</button>
+                        <button onclick="trade()" class="flex-1 bg-slate-50 text-slate-400 text-[9px] font-black py-1.5 rounded-lg border border-slate-100 uppercase italic">Không</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function searchEvents() {
+        function filter(cat, el) {
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('bg-slate-900', 'text-white');
+                t.classList.add('bg-slate-100', 'text-slate-500');
+            });
+            el.classList.add('bg-slate-900', 'text-white');
+            el.classList.remove('bg-slate-100', 'text-slate-500');
+            render(cat === 'Tất cả' ? allEvents : allEvents.filter(e => e.cat === cat));
+        }
+
+        function search() {
             const term = document.getElementById('search-input').value.toLowerCase();
-            const filtered = events.filter(e => e.title.toLowerCase().includes(term));
-            renderEvents(filtered);
+            render(allEvents.filter(e => e.title.toLowerCase().includes(term)));
         }
 
-        function filterEvents(category, el) {
-            document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('tab-active'));
-            el.classList.add('tab-active');
-            const filtered = category === "Tất cả" ? events : events.filter(e => e.cat === category);
-            renderEvents(filtered);
-        }
+        function trade() { alert("Đã gửi dự báo (100 P)"); }
 
-        function openDetail(id) {
-            const event = events.find(e => e.id === id);
-            document.getElementById('detail-content').innerHTML = `
-                <span class="text-[10px] font-black text-teal-600 uppercase mb-2 block tracking-widest">${event.cat}</span>
-                <h2 class="text-2xl font-bold text-slate-800 italic leading-tight mb-4">${event.title}</h2>
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Xác suất CÓ</p>
-                        <p class="text-4xl font-black text-teal-600 italic">${event.yes}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Khối lượng</p>
-                        <p class="text-xl font-black text-slate-800 italic">${event.vol}</p>
-                    </div>
-                </div>
-            `;
-            showPage('detail-page');
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
-        }
-
-        renderEvents();
+        render();
     </script>
 </body>
 </html>
