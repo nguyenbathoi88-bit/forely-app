@@ -377,5 +377,62 @@
 
         window.onload = fetchEventsFromGoogleSheets;
     </script>
+    // --- LOGIC ĐA NGÔN NGỮ (i18n) ---
+const translations = {
+    vi: {
+        survey: "Khảo sát", news: "Tin tức", deposit: "Nạp P", rewards: "Quà", account: "Cá nhân",
+        balance: "Số dư", rank: "Hạng", history: "Lịch sử nhận định", language: "Ngôn ngữ", logout: "Đăng xuất",
+        login_btn: "Đăng nhập", search_placeholder: "Tìm kiếm nhận định..."
+    },
+    en: {
+        survey: "Markets", news: "News", deposit: "Deposit", rewards: "Redeem", account: "Profile",
+        balance: "Balance", rank: "Rank", history: "Activity History", language: "Language", logout: "Log out",
+        login_btn: "Log In", search_placeholder: "Search markets..."
+    }
+};
+
+function changeLanguage(lang) {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.innerText = translations[lang][key];
+    });
+    // Update input placeholders separately
+    document.getElementById('search-input').placeholder = translations[lang].search_placeholder;
+    localStorage.setItem('forely_lang', lang);
+}
+
+// --- CẬP NHẬT TRẠNG THÁI TÀI KHOẢN ---
+// Hàm này bạn gọi trong auth.onAuthStateChanged của code cũ nhé
+function syncProfileData(user) {
+    if (user) {
+        document.getElementById('profile-name').innerText = user.displayName;
+        document.getElementById('profile-email').innerText = user.email;
+        document.getElementById('profile-avatar-large').src = user.photoURL;
+        document.querySelectorAll('.user-balance').forEach(el => el.innerText = balance.toLocaleString());
+    }
+}
+
+// Bổ sung nút "Cá nhân" vào Bottom Nav cũ bằng lệnh này (Chạy 1 lần khi load)
+function injectAccountButton() {
+    const nav = document.querySelector('.fixed.bottom-0');
+    // Kiểm tra xem đã có nút chưa để tránh trùng
+    if (!document.getElementById('nav-profile')) {
+        const btn = document.createElement('button');
+        btn.id = "nav-profile";
+        btn.onclick = () => switchPage('profile');
+        btn.className = "flex flex-col items-center gap-1 w-1/5 py-1 text-gray-400";
+        btn.innerHTML = `<span class="text-xl">👤</span><span class="text-[9px] font-bold" data-i18n="account">Cá nhân</span>`;
+        nav.appendChild(btn);
+    }
+}
+
+// Khởi tạo thêm
+window.addEventListener('load', () => {
+    injectAccountButton();
+    const savedLang = localStorage.getItem('forely_lang') || 'vi';
+    document.getElementById('lang-selector').value = savedLang;
+    changeLanguage(savedLang);
+});
+
 </body>
 </html>
