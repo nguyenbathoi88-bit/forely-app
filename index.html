@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forely - Khảo sát & Tin Tức</title>
+    <title>Forely - Khảo sát, Tin Tức & Đổi Quà</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
@@ -19,6 +19,9 @@
         .page-section { display: none; animation: fadeIn 0.3s ease-in-out; }
         .page-active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Gradient cho thẻ Quà tặng */
+        .voucher-card { background: linear-gradient(145deg, #ffffff 0%, #f0fdfa 100%); }
     </style>
 </head>
 <body class="pb-24">
@@ -76,59 +79,104 @@
     <div id="page-deposit" class="page-section bg-white min-h-screen">
         <div class="px-4 py-4 border-b border-gray-100 bg-gray-50 text-center">
             <h2 class="text-lg font-bold text-gray-900">Nạp F-Point (VietQR)</h2>
-            <p class="text-xs text-gray-500 mt-1">Hệ thống xử lý tự động 24/7 qua Open Banking</p>
+            <p class="text-xs text-gray-500 mt-1">Hệ thống xử lý tự động 24/7</p>
         </div>
-        
         <div class="p-4">
             <h3 class="text-sm font-semibold text-gray-700 mb-3">1. Chọn gói nạp điểm</h3>
             <div class="grid grid-cols-2 gap-3 mb-6">
-                <button onclick="selectPackage(20000, 20000)" class="pkg-btn border-2 border-gray-200 rounded-xl p-3 text-center transition-all hover:border-teal-500 focus:border-teal-500 focus:bg-teal-50">
-                    <div class="text-lg font-extrabold text-teal-600 mb-1">20,000 P</div>
-                    <div class="text-[11px] font-semibold text-gray-500">Giá: 20,000 VNĐ</div>
+                <button onclick="selectPackage(20000, 20000)" class="pkg-btn border-2 border-gray-200 rounded-xl p-3 text-center transition-all hover:border-teal-500 focus:bg-teal-50">
+                    <div class="text-lg font-extrabold text-teal-600 mb-1">20,000 P</div><div class="text-[11px] font-semibold text-gray-500">20,000 VNĐ</div>
                 </button>
                 <button onclick="selectPackage(50000, 50000)" class="pkg-btn border-2 border-teal-500 bg-teal-50 rounded-xl p-3 text-center transition-all">
-                    <div class="text-lg font-extrabold text-teal-600 mb-1">50,000 P</div>
-                    <div class="text-[11px] font-semibold text-gray-500">Giá: 50,000 VNĐ</div>
-                </button>
-                <button onclick="selectPackage(100000, 105000)" class="pkg-btn border-2 border-gray-200 rounded-xl p-3 text-center transition-all hover:border-teal-500 focus:border-teal-500 focus:bg-teal-50">
-                    <div class="text-lg font-extrabold text-teal-600 mb-1">105,000 P</div>
-                    <div class="text-[11px] font-semibold text-gray-500 text-orange-500">Giá: 100,000 VNĐ (Tặng 5%)</div>
-                </button>
-                <button onclick="selectPackage(200000, 220000)" class="pkg-btn border-2 border-gray-200 rounded-xl p-3 text-center transition-all hover:border-teal-500 focus:border-teal-500 focus:bg-teal-50">
-                    <div class="text-lg font-extrabold text-teal-600 mb-1">220,000 P</div>
-                    <div class="text-[11px] font-semibold text-gray-500 text-orange-500">Giá: 200,000 VNĐ (Tặng 10%)</div>
+                    <div class="text-lg font-extrabold text-teal-600 mb-1">50,000 P</div><div class="text-[11px] font-semibold text-gray-500">50,000 VNĐ</div>
                 </button>
             </div>
-
             <h3 class="text-sm font-semibold text-gray-700 mb-3">2. Quét mã thanh toán</h3>
             <div class="bg-gray-50 border border-gray-200 rounded-2xl p-5 text-center shadow-inner">
-                <p class="text-[11px] text-gray-500 mb-3">Mở App ngân hàng quét mã dưới đây để nạp <span id="deposit-amount-display" class="font-bold text-gray-900">50,000 VNĐ</span></p>
-                
                 <div class="bg-white w-48 h-48 mx-auto rounded-xl p-2 shadow-sm border border-gray-100 mb-4 relative flex items-center justify-center">
                     <img id="vietqr-img" src="https://img.vietqr.io/image/MB-123456789-compact2.png?amount=50000&addInfo=FORELY NAP50K&accountName=CONG TY FORELY" alt="VietQR" class="w-full h-full object-contain rounded-lg">
                 </div>
-                
                 <div class="text-left bg-white p-3 rounded-lg border border-gray-100 inline-block w-full max-w-[250px]">
-                    <div class="text-[10px] text-gray-400 mb-1">Nội dung chuyển khoản (Bắt buộc):</div>
-                    <div class="flex justify-between items-center">
-                        <span id="deposit-content" class="text-sm font-bold text-blue-600 uppercase tracking-widest">FORELY NAP50K</span>
-                        <button class="text-gray-400 hover:text-gray-600" onclick="alert('Đã copy nội dung!')"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
-                    </div>
+                    <div class="text-[10px] text-gray-400 mb-1">Nội dung chuyển khoản:</div>
+                    <div class="flex justify-between items-center"><span id="deposit-content" class="text-sm font-bold text-blue-600 uppercase tracking-widest">FORELY 50K</span></div>
                 </div>
-                
-                <p class="text-[9px] text-orange-500 mt-4 font-medium italic">Vui lòng điền ĐÚNG NỘI DUNG để hệ thống tự động cộng điểm sau 5s.</p>
+            </div>
+            <button onclick="mockCompleteDeposit()" class="w-full mt-6 bg-teal-600 text-white py-3.5 rounded-xl text-sm font-bold hover:bg-teal-700">[Thử nghiệm] Đã nạp xong</button>
+        </div>
+    </div>
+
+    <div id="page-rewards" class="page-section bg-gray-50 min-h-screen">
+        <div class="px-4 py-4 border-b border-gray-200 bg-white flex justify-between items-center sticky top-[60px] z-30">
+            <div>
+                <h2 class="text-lg font-bold text-gray-900">Kho Quà Tặng</h2>
+                <p class="text-[10px] text-gray-500 mt-0.5">Quy đổi F-Point thành Voucher</p>
+            </div>
+            <div class="bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-lg text-right shadow-sm">
+                <div class="text-[9px] text-teal-600 font-bold uppercase tracking-widest">Số dư của bạn</div>
+                <div class="text-sm font-black text-gray-900"><span id="reward-balance-display">0</span> P</div>
+            </div>
+        </div>
+
+        <div class="p-4 pb-20">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-lg">📱</span><h3 class="text-sm font-bold text-gray-800">Thẻ nạp viễn thông</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="voucher-card p-3.5 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
+                    <div class="text-xs font-bold text-gray-500 mb-1">Viettel / Vina / Mobi</div>
+                    <div class="text-xl font-black text-teal-700 mb-3">10,000đ</div>
+                    <button onclick="openRedeemModal('Thẻ nạp điện thoại 10K', 10000)" class="w-full bg-teal-600 text-white text-[11px] font-bold py-2 rounded-lg hover:bg-teal-700 transition-colors">Đổi 10,000 P</button>
+                </div>
+                <div class="voucher-card p-3.5 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
+                    <div class="text-xs font-bold text-gray-500 mb-1">Viettel / Vina / Mobi</div>
+                    <div class="text-xl font-black text-teal-700 mb-3">20,000đ</div>
+                    <button onclick="openRedeemModal('Thẻ nạp điện thoại 20K', 20000)" class="w-full bg-teal-600 text-white text-[11px] font-bold py-2 rounded-lg hover:bg-teal-700 transition-colors">Đổi 20,000 P</button>
+                </div>
+                <div class="voucher-card p-3.5 rounded-2xl border border-teal-100 shadow-sm flex flex-col justify-between">
+                    <div class="text-xs font-bold text-gray-500 mb-1">Viettel / Vina / Mobi</div>
+                    <div class="text-xl font-black text-teal-700 mb-3">50,000đ</div>
+                    <button onclick="openRedeemModal('Thẻ nạp điện thoại 50K', 50000)" class="w-full bg-teal-600 text-white text-[11px] font-bold py-2 rounded-lg hover:bg-teal-700 transition-colors">Đổi 50,000 P</button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-lg">🍔</span><h3 class="text-sm font-bold text-gray-800">Ăn uống & Mua sắm</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">G</div>
+                        <span class="text-xs font-bold text-gray-700">GrabFood</span>
+                    </div>
+                    <div class="text-lg font-black text-gray-900 mb-3">Voucher 50K</div>
+                    <button onclick="openRedeemModal('Voucher GrabFood 50K', 50000)" class="w-full bg-gray-900 text-white text-[11px] font-bold py-2 rounded-lg hover:bg-gray-800 transition-colors">Đổi 50,000 P</button>
+                </div>
+                <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <div class="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">S</div>
+                        <span class="text-xs font-bold text-gray-700">Shopee</span>
+                    </div>
+                    <div class="text-lg font-black text-gray-900 mb-3">Voucher 100K</div>
+                    <button onclick="openRedeemModal('Voucher Shopee 100K', 100000)" class="w-full bg-gray-900 text-white text-[11px] font-bold py-2 rounded-lg hover:bg-gray-800 transition-colors">Đổi 100,000 P</button>
+                </div>
+                <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <div class="w-5 h-5 bg-red-600 rounded-full flex items-center justify-center text-white text-[10px] font-bold">C</div>
+                        <span class="text-xs font-bold text-gray-700">CGV Cinema</span>
+                    </div>
+                    <div class="text-lg font-black text-gray-900 mb-3">Vé xem phim</div>
+                    <button onclick="openRedeemModal('Vé xem phim CGV 2D', 120000)" class="w-full bg-gray-900 text-white text-[11px] font-bold py-2 rounded-lg hover:bg-gray-800 transition-colors">Đổi 120,000 P</button>
+                </div>
             </div>
             
-            <button onclick="mockCompleteDeposit()" class="w-full mt-6 bg-teal-600 text-white py-3.5 rounded-xl text-sm font-bold shadow-lg shadow-teal-500/30 hover:bg-teal-700 transition-colors">
-                [Thử nghiệm] Đã chuyển khoản xong
-            </button>
+            <p class="text-[10px] text-gray-400 text-center px-4">Mã Voucher sẽ được gửi trực tiếp vào mục Thông báo hoặc Email đăng ký của bạn trong vòng 24h làm việc.</p>
         </div>
     </div>
 
     <div id="login-modal" class="modal">
         <div class="bg-white w-[85%] max-w-sm rounded-2xl p-6 text-center shadow-2xl">
             <h2 class="text-xl font-extrabold text-gray-900 mb-2">Đăng nhập Forely</h2>
-            <p class="text-gray-500 text-sm mb-6">Đăng nhập để nhận <span class="text-teal-500 font-bold">5,000 P</span> trải nghiệm.</p>
+            <p class="text-gray-500 text-sm mb-6">Đăng nhập để trải nghiệm Khảo sát & Đổi quà.</p>
             <div class="space-y-3">
                 <button onclick="doLogin()" class="w-full bg-white border border-gray-200 py-3 rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 shadow-sm">
                     <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5">
@@ -139,21 +187,30 @@
         </div>
     </div>
 
+    <div id="redeem-modal" class="modal">
+        <div class="bg-white w-[85%] max-w-sm rounded-2xl p-6 text-center shadow-2xl">
+            <div class="w-12 h-12 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎁</div>
+            <h2 class="text-lg font-bold text-gray-900 mb-1">Xác nhận đổi quà</h2>
+            <p class="text-sm text-gray-600 mb-4">Bạn có chắc chắn muốn đổi lấy <br><span id="redeem-item-name" class="font-bold text-teal-600">...</span>?</p>
+            
+            <div class="bg-gray-50 rounded-xl p-3 mb-5 border border-gray-100 flex justify-between items-center">
+                <span class="text-xs font-medium text-gray-500">Chi phí F-Point:</span>
+                <span id="redeem-cost" class="text-sm font-black text-gray-900">0 P</span>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeModal('redeem-modal')" class="flex-1 bg-gray-100 text-gray-600 py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors">Hủy</button>
+                <button onclick="confirmRedeem()" class="flex-1 bg-teal-600 text-white py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-teal-700 transition-colors">Đổi ngay</button>
+            </div>
+        </div>
+    </div>
+
     <div id="trade-modal" class="modal">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-            <div class="px-5 py-4 flex justify-between items-start border-b border-gray-100">
-                <div class="pr-4"><p id="modal-side-badge" class="text-[10px] font-bold uppercase tracking-wider mb-1"></p><h3 id="modal-title" class="text-sm font-semibold text-gray-900 leading-snug"></h3></div>
-                <button onclick="closeModal('trade-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">×</button>
-            </div>
+            <div class="px-5 py-4 flex justify-between items-start border-b border-gray-100"><div class="pr-4"><p id="modal-side-badge" class="text-[10px] font-bold uppercase tracking-wider mb-1"></p><h3 id="modal-title" class="text-sm font-semibold text-gray-900 leading-snug"></h3></div><button onclick="closeModal('trade-modal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">×</button></div>
             <div class="p-5">
                 <div class="flex justify-between items-center mb-2"><span class="text-sm font-medium text-gray-700">Điểm sử dụng</span><span class="text-xs font-medium text-gray-500">Số dư: <span id="modal-balance">0</span></span></div>
-                <div class="relative mb-5">
-                    <input type="number" id="input-amount" value="100" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 px-4 text-xl font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500/30" oninput="calculatePrize()">
-                    <span class="absolute right-4 top-3.5 text-gray-400 font-semibold">P</span>
-                </div>
-                <div class="bg-teal-50/50 rounded-lg p-3 mb-5 flex items-center justify-between border border-teal-100">
-                    <span class="text-xs font-medium text-gray-600">Voucher ước tính</span><span id="prize-estimate" class="text-sm font-bold text-teal-600">Thẻ nạp 10k</span>
-                </div>
+                <div class="relative mb-5"><input type="number" id="input-amount" value="100" class="w-full bg-gray-50 border border-gray-200 rounded-lg py-3 px-4 text-xl font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500/30"><span class="absolute right-4 top-3.5 text-gray-400 font-semibold">P</span></div>
                 <button onclick="confirmTrade()" id="btn-confirm" class="w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors">Gửi nhận định</button>
             </div>
         </div>
@@ -169,8 +226,8 @@
         <button onclick="switchPage('deposit')" id="nav-deposit" class="flex flex-col items-center gap-1 w-1/4 py-1 text-gray-400 hover:text-gray-900 transition-colors">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span class="text-[10px] font-bold">Nạp P</span>
         </button>
-        <button onclick="alert('Kho Voucher sẽ sớm ra mắt!')" class="flex flex-col items-center gap-1 w-1/4 py-1 text-gray-400 hover:text-gray-900 transition-colors">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><rect x="16" y="14" width="4" height="4" rx="1"/></svg><span class="text-[10px] font-bold">Quà</span>
+        <button onclick="switchPage('rewards')" id="nav-rewards" class="flex flex-col items-center gap-1 w-1/4 py-1 text-gray-400 hover:text-gray-900 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><rect x="16" y="14" width="4" height="4" rx="1"/></svg><span class="text-[10px] font-bold">Đổi quà</span>
         </button>
     </div>
 
@@ -180,13 +237,19 @@
         const VNEXPRESS_RSS_URL = "https://vnexpress.net/rss/kinh-doanh.rss";
         const RSS_TO_JSON_API = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(VNEXPRESS_RSS_URL)}`;
 
-        // Thông tin Ngân hàng của bạn (Để tạo mã VietQR)
-        const BANK_CODE = "MB"; // Thay bằng mã ngân hàng của bạn (VCB, TCB, ACB...)
-        const ACCOUNT_NO = "123456789"; // Thay bằng số tài khoản của bạn
-        const ACCOUNT_NAME = "CONG TY FORELY"; // Tên chủ tài khoản (Viết hoa không dấu)
+        let isGuest = true; let balance = 5000; let allEvents = []; let currentStatusView = 'active'; let currentCategory = 'Tất cả'; let selectedEvent = null; let newsLoaded = false;
+        let pendingDepositPoints = 50000;
+        let itemToRedeemName = ""; let itemToRedeemCost = 0;
 
-        let isGuest = true; let balance = 0; let allEvents = []; let currentStatusView = 'active'; let currentCategory = 'Tất cả'; let selectedEvent = null; let newsLoaded = false;
-        let pendingDepositPoints = 50000; // Lưu số điểm đang chuẩn bị nạp
+        // --- CẬP NHẬT GIAO DIỆN SỐ DƯ ---
+        function updateBalanceUI() {
+            // Header
+            if(!isGuest) {
+                document.getElementById('auth-area').innerHTML = `<div class="bg-gray-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-gray-200"><span class="text-xs">💎</span><span class="text-[13px] font-bold text-gray-900">${balance.toLocaleString()} P</span></div>`;
+            }
+            // Trang Đổi Quà
+            document.getElementById('reward-balance-display').innerText = balance.toLocaleString();
+        }
 
         // --- CHUYỂN TRANG ---
         function switchPage(pageId) {
@@ -194,106 +257,95 @@
             document.getElementById('page-' + pageId).classList.add('page-active');
             window.scrollTo(0,0);
 
-            ['home', 'news', 'deposit'].forEach(id => {
+            ['home', 'news', 'deposit', 'rewards'].forEach(id => {
                 const navBtn = document.getElementById('nav-' + id);
                 if (navBtn) navBtn.className = "flex flex-col items-center gap-1 w-1/4 py-1 transition-colors " + (pageId === id ? "text-teal-600" : "text-gray-400 hover:text-gray-900");
             });
 
             if (pageId === 'news' && !newsLoaded) fetchNews();
-            if (pageId === 'deposit' && isGuest) {
-                alert("Vui lòng đăng nhập để nạp điểm!");
+            
+            // Yêu cầu đăng nhập ở trang Nạp tiền và Đổi quà
+            if ((pageId === 'deposit' || pageId === 'rewards') && isGuest) {
+                alert("Vui lòng đăng nhập để sử dụng tính năng này!");
                 switchPage('home');
                 openLoginModal();
             }
-        }
-
-        // --- XỬ LÝ TRANG NẠP ĐIỂM (VIETQR) ---
-        function selectPackage(vndAmount, pAmount) {
-            pendingDepositPoints = pAmount;
             
-            // Đổi UI của nút bấm
-            document.querySelectorAll('.pkg-btn').forEach(btn => {
-                btn.classList.remove('border-teal-500', 'bg-teal-50');
-                btn.classList.add('border-gray-200');
-            });
-            event.currentTarget.classList.remove('border-gray-200');
-            event.currentTarget.classList.add('border-teal-500', 'bg-teal-50');
-
-            // Tạo nội dung chuyển khoản động (Thêm đuôi ngẫu nhiên hoặc username để phân biệt)
-            const transferContent = `FORELY ${vndAmount / 1000}K`; 
-
-            // Update UI
-            document.getElementById('deposit-amount-display').innerText = vndAmount.toLocaleString() + ' VNĐ';
-            document.getElementById('deposit-content').innerText = transferContent;
-
-            // Generate VietQR Link
-            const qrUrl = `https://img.vietqr.io/image/${BANK_CODE}-${ACCOUNT_NO}-compact2.png?amount=${vndAmount}&addInfo=${encodeURIComponent(transferContent)}&accountName=${encodeURIComponent(ACCOUNT_NAME)}`;
-            document.getElementById('vietqr-img').src = qrUrl;
+            if (pageId === 'rewards') updateBalanceUI();
         }
 
-        function mockCompleteDeposit() {
-            balance += pendingDepositPoints;
+        // --- XỬ LÝ ĐỔI QUÀ (REWARDS) ---
+        function openRedeemModal(itemName, cost) {
+            if (isGuest) { openLoginModal(); return; }
+            itemToRedeemName = itemName;
+            itemToRedeemCost = cost;
+            
+            document.getElementById('redeem-item-name').innerText = itemName;
+            document.getElementById('redeem-cost').innerText = cost.toLocaleString() + ' P';
+            document.getElementById('redeem-modal').classList.add('active');
+        }
+
+        function confirmRedeem() {
+            if (balance < itemToRedeemCost) {
+                alert(`Thất bại: Bạn cần thêm ${(itemToRedeemCost - balance).toLocaleString()} P nữa để đổi quà này. Hãy Nạp thêm hoặc tham gia Khảo sát!`);
+                closeModal('redeem-modal');
+                return;
+            }
+            
+            // Trừ tiền và cập nhật
+            balance -= itemToRedeemCost;
             updateBalanceUI();
-            alert(`✅ Nạp thành công ${pendingDepositPoints.toLocaleString()} P vào tài khoản! (Đây là chức năng giả lập để test giao diện)`);
-            switchPage('home');
+            closeModal('redeem-modal');
+            
+            alert(`🎉 Đổi quà thành công!\nBạn đã dùng ${itemToRedeemCost.toLocaleString()} P để đổi lấy "${itemToRedeemName}".\nMã nạp/Voucher sẽ được gửi vào hệ thống trong vòng 24h.`);
         }
 
-        function updateBalanceUI() {
-            document.getElementById('auth-area').innerHTML = `<div class="bg-gray-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-gray-200"><span class="text-xs">💎</span><span class="text-[13px] font-bold text-gray-900">${balance.toLocaleString()} P</span></div>`;
-        }
-
-        // --- TẢI TIN TỨC TỪ BÁO (RSS) ---
+        // --- CÁC HÀM CŨ GIỮ NGUYÊN (Tin tức, Nạp tiền, CSDL...) ---
+        function mockCompleteDeposit() { balance += pendingDepositPoints; updateBalanceUI(); alert(`✅ Nạp thành công ${pendingDepositPoints.toLocaleString()} P!`); switchPage('home'); }
+        function selectPackage(vndAmount, pAmount) { pendingDepositPoints = pAmount; document.querySelectorAll('.pkg-btn').forEach(btn => { btn.classList.remove('border-teal-500', 'bg-teal-50'); btn.classList.add('border-gray-200'); }); event.currentTarget.classList.remove('border-gray-200'); event.currentTarget.classList.add('border-teal-500', 'bg-teal-50'); }
+        
         function fetchNews() {
             document.getElementById('news-loading').classList.remove('hidden');
-            fetch(RSS_TO_JSON_API).then(response => response.json()).then(data => {
+            fetch(RSS_TO_JSON_API).then(r => r.json()).then(data => {
                 document.getElementById('news-loading').classList.add('hidden');
-                if (data.status === 'ok') { renderNews(data.items); newsLoaded = true; } 
-                else { document.getElementById('news-container').innerHTML = '<p class="text-sm text-center text-gray-500">Tạm thời không thể lấy tin tức.</p>'; }
-            }).catch(() => { document.getElementById('news-loading').classList.add('hidden'); document.getElementById('news-container').innerHTML = '<p class="text-sm text-center text-gray-500">Lỗi kết nối khi lấy tin tức.</p>'; });
+                if (data.status === 'ok') { 
+                    document.getElementById('news-container').innerHTML = data.items.slice(0, 15).map(article => {
+                        let img = ""; const match = article.description.match(/src\s*=\s*"(.+?)"/); if (match) img = match[1];
+                        const d = new Date(article.pubDate); const t = `${d.getHours()}:${d.getMinutes().toString().padStart(2,'0')} - ${d.getDate()}/${d.getMonth()+1}`;
+                        return `<a href="${article.link}" target="_blank" class="block bg-white border border-gray-100 p-3 rounded-xl shadow-sm"><div class="flex gap-3">${img ? `<img src="${img}" class="w-24 h-20 object-cover rounded-lg shrink-0">` : ''}<div class="flex flex-col justify-between"><h3 class="text-xs font-bold text-gray-900 line-clamp-2">${article.title}</h3><div class="flex items-center gap-2 mt-2"><span class="bg-teal-50 text-teal-600 text-[9px] font-bold px-1.5 py-0.5 rounded">VnExpress</span><span class="text-[10px] text-gray-400">${t}</span></div></div></div></a>`;
+                    }).join(''); 
+                    newsLoaded = true; 
+                } 
+            }).catch(() => document.getElementById('news-loading').classList.add('hidden'));
         }
 
-        function renderNews(articles) {
-            document.getElementById('news-container').innerHTML = articles.slice(0, 15).map(article => {
-                let imageUrl = ""; const imgMatch = article.description.match(/src\s*=\s*"(.+?)"/); if (imgMatch) imageUrl = imgMatch[1];
-                const dateObj = new Date(article.pubDate); const timeString = `${dateObj.getHours()}:${dateObj.getMinutes().toString().padStart(2, '0')} - ${dateObj.getDate()}/${dateObj.getMonth() + 1}`;
-                return `
-                <a href="${article.link}" target="_blank" class="block bg-white border border-gray-100 p-3 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                    <div class="flex gap-3">${imageUrl ? `<img src="${imageUrl}" alt="news" class="w-24 h-20 object-cover rounded-lg shrink-0">` : ''}
-                        <div class="flex flex-col justify-between"><h3 class="text-xs font-bold text-gray-900 leading-snug line-clamp-2">${article.title}</h3><div class="flex items-center gap-2 mt-2"><span class="bg-teal-50 text-teal-600 text-[9px] font-bold px-1.5 py-0.5 rounded">VnExpress</span><span class="text-[10px] text-gray-400">${timeString}</span></div></div>
-                    </div>
-                </a>`;
-            }).join('');
-        }
-
-        // --- CÁC HÀM XỬ LÝ KHẢO SÁT & GOOGLE SHEETS ---
-        function formatDate(dateString) { if (!dateString) return "Vô thời hạn"; const date = new Date(dateString); if(isNaN(date)) return dateString; return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`; }
+        function formatDate(d) { if (!d) return "Vô thời hạn"; const date = new Date(d); if(isNaN(date)) return d; return `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()}`; }
         function fetchEventsFromGoogleSheets() {
             Papa.parse(GOOGLE_SHEET_CSV_URL, { download: true, header: true, skipEmptyLines: true, complete: function(results) {
                 const now = new Date().getTime();
-                allEvents = results.data.filter(row => row.Title).map((row, index) => {
-                    let isExpired = false; if(row.Deadline && new Date(row.Deadline).getTime() < now) isExpired = true; 
-                    let finalActiveStatus = true; if(row.Status === "Ended" || isExpired) finalActiveStatus = false;
-                    return { id: index, cat: row.Category || "Khác", title: row.Title, yesRate: parseInt(row.YesRate) || 50, vol: row.Volume || "10M", deadline: row.Deadline ? formatDate(row.Deadline) : "Vô thời hạn", isActive: finalActiveStatus, result: row.Result ? row.Result.trim().toLowerCase() : "" };
+                allEvents = results.data.filter(r => r.Title).map((r, i) => {
+                    let isExp = false; if(r.Deadline && new Date(r.Deadline).getTime() < now) isExp = true; 
+                    return { id: i, cat: r.Category || "Khác", title: r.Title, yesRate: parseInt(r.YesRate) || 50, vol: r.Volume || "10M", deadline: r.Deadline ? formatDate(r.Deadline) : "Vô thời hạn", isActive: !(r.Status === "Ended" || isExp), result: r.Result ? r.Result.trim().toLowerCase() : "" };
                 });
                 document.getElementById('loading').classList.add('hidden'); document.getElementById('market-grid').classList.remove('hidden'); renderGrid();
             }});
         }
 
-        function setStatusView(status) { currentStatusView = status; document.getElementById('tab-active').className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all " + (status === 'active' ? "bg-white text-gray-900 shadow-sm" : "bg-transparent text-gray-500"); document.getElementById('tab-ended').className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all " + (status === 'ended' ? "bg-white text-gray-900 shadow-sm" : "bg-transparent text-gray-500"); renderGrid(); }
-        function filterCat(cat, el) { currentCategory = cat; document.querySelectorAll('.cat-tab').forEach(t => t.className = "cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all"); el.className = "cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all"; renderGrid(); }
+        function setStatusView(s) { currentStatusView = s; document.getElementById('tab-active').className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all " + (s === 'active' ? "bg-white text-gray-900 shadow-sm" : "bg-transparent text-gray-500"); document.getElementById('tab-ended').className = "flex-1 py-1.5 text-xs font-bold rounded-md transition-all " + (s === 'ended' ? "bg-white text-gray-900 shadow-sm" : "bg-transparent text-gray-500"); renderGrid(); }
+        function filterCat(c, el) { currentCategory = c; document.querySelectorAll('.cat-tab').forEach(t => t.className = "cat-tab bg-gray-100 text-gray-600 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all"); el.className = "cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all"; renderGrid(); }
         function searchEvents() { renderGrid(); }
 
         function renderGrid() {
             const term = document.getElementById('search-input').value.toLowerCase(); const grid = document.getElementById('market-grid');
             let filtered = allEvents.filter(e => (currentStatusView === 'active' ? e.isActive : !e.isActive) && (currentCategory === 'Tất cả' ? true : e.cat === currentCategory) && (e.title.toLowerCase().includes(term) || e.cat.toLowerCase().includes(term)));
-            if(filtered.length === 0) { grid.innerHTML = `<div class="col-span-2 md:col-span-3 lg:col-span-4 text-center py-10"><p class="text-sm text-gray-400">Không có dữ liệu.</p></div>`; return; }
+            if(filtered.length === 0) { grid.innerHTML = `<div class="col-span-2 text-center py-10"><p class="text-sm text-gray-400">Không có dữ liệu.</p></div>`; return; }
 
-            grid.innerHTML = filtered.map((e) => {
-                const noRate = 100 - e.yesRate; let yesBtnClass = "bg-[#eff6ff] hover:bg-[#dbeafe] text-[#2563eb] cursor-pointer"; let noBtnClass = "bg-[#fef2f2] hover:bg-[#fee2e2] text-[#dc2626] cursor-pointer"; let yesIcon = ""; let noIcon = "";
+            grid.innerHTML = filtered.map(e => {
+                const noRate = 100 - e.yesRate; let yClass = "bg-[#eff6ff] hover:bg-[#dbeafe] text-[#2563eb] cursor-pointer"; let nClass = "bg-[#fef2f2] hover:bg-[#fee2e2] text-[#dc2626] cursor-pointer"; let yI = ""; let nI = "";
                 if (!e.isActive) {
-                    yesBtnClass = "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"; noBtnClass = "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60";
-                    if (e.result === "có" || e.result === "yes") { yesBtnClass = "bg-teal-50 text-teal-700 border border-teal-400 opacity-100 cursor-default shadow-sm"; yesIcon = "🏆 "; } 
-                    else if (e.result === "không" || e.result === "no") { noBtnClass = "bg-teal-50 text-teal-700 border border-teal-400 opacity-100 cursor-default shadow-sm"; noIcon = "🏆 "; }
+                    yClass = "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"; nClass = "bg-gray-100 text-gray-400 cursor-not-allowed opacity-60";
+                    if (e.result === "có" || e.result === "yes") { yClass = "bg-teal-50 text-teal-700 border border-teal-400 cursor-default"; yI = "🏆 "; } 
+                    else if (e.result === "không" || e.result === "no") { nClass = "bg-teal-50 text-teal-700 border border-teal-400 cursor-default"; nI = "🏆 "; }
                 }
                 return `
                 <div class="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
@@ -302,24 +354,24 @@
                         <h3 class="text-xs font-semibold text-gray-900 line-clamp-3 mb-4 leading-snug h-12">${e.title}</h3>
                     </div>
                     <div class="flex gap-2 mt-auto">
-                        <button ${e.isActive ? `onclick="handlePredict(${e.id}, 'Đồng ý')"` : ""} class="flex-1 flex justify-between items-center px-2.5 py-2 rounded-lg transition-colors ${yesBtnClass}"><span class="text-[11px] font-bold">${yesIcon}Có</span><span class="text-xs font-bold">${e.yesRate}%</span></button>
-                        <button ${e.isActive ? `onclick="handlePredict(${e.id}, 'Phản đối')"` : ""} class="flex-1 flex justify-between items-center px-2.5 py-2 rounded-lg transition-colors ${noBtnClass}"><span class="text-[11px] font-bold">${noIcon}Không</span><span class="text-xs font-bold">${noRate}%</span></button>
+                        <button ${e.isActive ? `onclick="handlePredict(${e.id}, 'Đồng ý')"` : ""} class="flex-1 flex justify-between items-center px-2.5 py-2 rounded-lg transition-colors ${yClass}"><span class="text-[11px] font-bold">${yI}Có</span><span class="text-xs font-bold">${e.yesRate}%</span></button>
+                        <button ${e.isActive ? `onclick="handlePredict(${e.id}, 'Phản đối')"` : ""} class="flex-1 flex justify-between items-center px-2.5 py-2 rounded-lg transition-colors ${nClass}"><span class="text-[11px] font-bold">${nI}Không</span><span class="text-xs font-bold">${noRate}%</span></button>
                     </div>
                 </div>`;
             }).join('');
         }
 
-        // --- HÀM MODAL ---
-        function handlePredict(id, type) { if (isGuest) { switchPage('home'); document.getElementById('login-modal').classList.add('active'); } else openTradeModal(id, type); }
-        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+        function handlePredict(id, type) { if (isGuest) { switchPage('home'); openLoginModal(); } else openTradeModal(id, type); }
+        function openLoginModal() { document.getElementById('login-modal').classList.add('active'); }
+        function closeModal(mId) { document.getElementById(mId).classList.remove('active'); }
         function doLogin() { isGuest = false; balance = 5000; closeModal('login-modal'); updateBalanceUI(); }
+        
         function openTradeModal(id, type) {
             selectedEvent = allEvents.find(e => e.id === id); const badge = document.getElementById('modal-side-badge'); const btn = document.getElementById('btn-confirm');
             if(type === 'Đồng ý') { badge.innerText = 'Bình chọn: CÓ'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-blue-600'; btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-blue-600 hover:bg-blue-700'; } 
             else { badge.innerText = 'Bình chọn: KHÔNG'; badge.className = 'text-[10px] font-bold uppercase tracking-wider mb-1 text-red-600'; btn.className = 'w-full py-3.5 rounded-lg text-sm font-bold text-white shadow-sm transition-colors bg-red-600 hover:bg-red-700'; }
-            document.getElementById('modal-title').innerText = selectedEvent.title; document.getElementById('modal-balance').innerText = balance.toLocaleString() + ' P'; document.getElementById('trade-modal').classList.add('active'); calculatePrize();
+            document.getElementById('modal-title').innerText = selectedEvent.title; document.getElementById('modal-balance').innerText = balance.toLocaleString() + ' P'; document.getElementById('trade-modal').classList.add('active'); 
         }
-        function calculatePrize() { const amt = parseInt(document.getElementById('input-amount').value) || 0; const p = document.getElementById('prize-estimate'); if(amt < 500) p.innerText = "Thẻ nạp 10k"; else if(amt < 2000) p.innerText = "Grab 50k"; else p.innerText = "Shopee 200k"; }
         function confirmTrade() { const amt = parseInt(document.getElementById('input-amount').value); if(amt > balance) { alert("Không đủ điểm!"); return; } balance -= amt; updateBalanceUI(); closeModal('trade-modal'); alert("Gửi nhận định thành công!"); }
         function goHome() { switchPage('home'); document.getElementById('search-input').value = ''; setStatusView('active'); filterCat('Tất cả', document.querySelector('.cat-tab')); window.scrollTo(0,0); }
 
