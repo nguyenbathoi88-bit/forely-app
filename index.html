@@ -3,54 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FORELY - Login</title>
+    <title>FORELY - Explore First</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
         .page { display: none; }
         .page.active { display: block; }
         .text-gradient { background: linear-gradient(135deg, #0d9488 0%, #7e22ce 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #login-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        #login-modal.show { display: flex; }
     </style>
 </head>
-<body class="bg-[#f1f5f9] min-h-screen font-sans">
+<body class="bg-[#f1f5f9] min-h-screen pb-24 font-sans text-slate-800">
 
-    <div id="login-page" class="page active">
-        <div class="flex flex-col items-center justify-center min-h-screen p-6 text-center">
-            <div class="w-20 h-20 bg-gradient-to-br from-teal-500 to-purple-600 rounded-[2rem] flex items-center justify-center rotate-45 mb-8 shadow-2xl">
-                <span class="text-white text-4xl font-black rotate-[-45deg] italic">F</span>
+    <nav class="bg-white p-3 sticky top-0 z-50 flex justify-between items-center border-b border-slate-200">
+        <div class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-gradient-to-br from-teal-500 to-purple-600 rounded-md flex items-center justify-center rotate-45">
+                <span class="text-white text-[10px] font-black rotate-[-45deg]">F</span>
             </div>
-            <h1 class="text-4xl font-black italic tracking-tighter text-gradient mb-2 uppercase">Forely</h1>
-            <p class="text-slate-500 text-sm font-medium mb-12">Dự đoán tương lai - Nhận quà giá trị</p>
-
-            <div class="w-full space-y-4">
-                <button onclick="fakeLogin('Google')" class="w-full bg-white border border-slate-200 py-4 rounded-2xl flex items-center justify-center gap-3 shadow-sm active:scale-95 transition-all">
-                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5">
-                    <span class="font-bold text-slate-700">Tiếp tục với Google</span>
-                </button>
-                <button onclick="fakeLogin('Facebook')" class="w-full bg-[#1877F2] text-white py-4 rounded-2xl flex items-center justify-center gap-3 shadow-sm active:scale-95 transition-all">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_2023.png" class="w-5 h-5 invert">
-                    <span class="font-bold">Tiếp tục với Facebook</span>
-                </button>
-            </div>
-            <p class="mt-8 text-[10px] text-slate-400 px-6 italic">Bằng cách đăng nhập, bạn đồng ý với Điều khoản và mô hình Dự đoán có thưởng của Forely.</p>
+            <h1 class="text-lg font-black tracking-tighter italic text-gradient uppercase">Forely</h1>
         </div>
-    </div>
+        <div id="user-area">
+            <button onclick="toggleLoginModal(true)" class="bg-teal-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-lg shadow-teal-100 uppercase italic">Đăng nhập</button>
+        </div>
+    </nav>
 
-    <div id="main-app" class="page">
-        <div class="p-6 text-center">
-            <h2 class="text-xl font-bold">Chào mừng bạn đã quay lại!</h2>
-            <button onclick="location.reload()" class="mt-4 text-teal-600 font-bold underline">Vào sảnh dự báo</button>
+    <div id="grid-container" class="p-3 grid grid-cols-2 gap-3"></div>
+
+    <div id="login-modal">
+        <div class="bg-white w-[85%] rounded-[2.5rem] p-8 text-center animate-in fade-in zoom-in duration-300">
+            <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-purple-600 rounded-2xl flex items-center justify-center rotate-45 mx-auto mb-6 shadow-xl">
+                <span class="text-white text-2xl font-black rotate-[-45deg] italic">F</span>
+            </div>
+            <h2 class="text-xl font-black italic text-slate-800 mb-2">Tham gia cộng đồng Forely</h2>
+            <p class="text-slate-400 text-[11px] mb-8 px-4 leading-relaxed">Đăng nhập để nhận ngay <span class="text-teal-600 font-bold">1,250 P</span> trải nghiệm và tham gia dự báo nhận quà.</p>
+            
+            <div class="space-y-3">
+                <button onclick="doLogin('Google')" class="w-full bg-white border border-slate-200 py-3.5 rounded-xl flex items-center justify-center gap-3 active:scale-95 transition-all">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-4 h-4">
+                    <span class="text-xs font-bold text-slate-700">Tiếp tục với Google</span>
+                </button>
+                <button onclick="doLogin('Facebook')" class="w-full bg-[#1877F2] text-white py-3.5 rounded-xl flex items-center justify-center gap-3 active:scale-95 transition-all">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_2023.png" class="w-4 h-4 invert">
+                    <span class="text-xs font-bold">Tiếp tục với Facebook</span>
+                </button>
+                <button onclick="toggleLoginModal(false)" class="w-full py-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Để sau</button>
+            </div>
         </div>
     </div>
 
     <script>
-        function fakeLogin(provider) {
-            // Đây là nơi Web3Auth sẽ xử lý thực tế
-            alert(`Đang kết nối với ${provider}...`);
-            setTimeout(() => {
-                document.getElementById('login-page').classList.remove('active');
-                document.getElementById('main-app').classList.add('active');
-            }, 1000);
+        let isGuest = true;
+        const categories = ["Kinh tế", "Giải trí", "Công nghệ", "Thể thao"];
+        const samples = ["VN-Index vượt 1.500?", "SJC lên 120 triệu?", "iPhone 18 bỏ sạc?", "Việt Nam dự World Cup?"];
+        
+        const allEvents = Array.from({ length: 50 }, (_, i) => ({
+            id: i + 1,
+            cat: categories[i % categories.length],
+            title: samples[i % samples.length] + " #" + (i+1),
+            yes: Math.floor(Math.random() * 90 + 5) + "%",
+            vol: (Math.random() * 5).toFixed(1) + "B P"
+        }));
+
+        function render() {
+            const container = document.getElementById('grid-container');
+            container.innerHTML = allEvents.map(e => `
+                <div onclick="handlePredict()" class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm active:scale-95 transition-all">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[8px] font-black uppercase text-teal-600">${e.cat}</span>
+                        <span class="text-[8px] text-slate-300 font-bold italic">${e.vol}</span>
+                    </div>
+                    <h3 class="text-[11px] font-bold text-slate-800 line-clamp-2 mb-3 leading-tight h-7 italic">${e.title}</h3>
+                    <div class="flex gap-1.5">
+                        <div class="flex-1 bg-slate-50 text-teal-600 text-[9px] font-black py-1.5 rounded-lg border border-slate-100 text-center uppercase">CÓ ${e.yes}</div>
+                        <div class="flex-1 bg-slate-50 text-slate-400 text-[9px] font-black py-1.5 rounded-lg border border-slate-100 text-center uppercase">KHÔNG</div>
+                    </div>
+                </div>
+            `).join('');
         }
+
+        function handlePredict() {
+            if (isGuest) {
+                toggleLoginModal(true);
+            } else {
+                alert("Dự báo thành công!");
+            }
+        }
+
+        function toggleLoginModal(show) {
+            const modal = document.getElementById('login-modal');
+            if (show) modal.classList.add('show');
+            else modal.classList.remove('show');
+        }
+
+        function doLogin(provider) {
+            alert(`Đang đăng nhập bằng ${provider}...`);
+            isGuest = false;
+            toggleLoginModal(false);
+            
+            // Cập nhật Header sau khi đăng nhập
+            document.getElementById('user-area').innerHTML = `
+                <div class="bg-slate-100 px-3 py-1 rounded-full border border-slate-200 flex items-center gap-1.5">
+                    <span class="text-[10px]">💎</span>
+                    <span class="text-[10px] font-black text-slate-700 uppercase">1,250 P</span>
+                </div>
+            `;
+        }
+
+        render();
     </script>
 </body>
 </html>
