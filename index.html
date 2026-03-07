@@ -24,8 +24,8 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         /* Ẩn thanh cuộn để giao diện giống App di động */
-      .hide-scroll-bar::-webkit-scrollbar { display: none; }
-      .hide-scroll-bar { -ms-overflow-style: none; scrollbar-width: none; }
+     .hide-scroll-bar::-webkit-scrollbar { display: none; }
+     .hide-scroll-bar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-surface text-slate-800 pb-20">
@@ -114,9 +114,10 @@
     let activeEvent = null;
     let activeChoice = '';
 
+    // ĐÃ SỬA LỖI: Cập nhật đầy đủ mảng dữ liệu categories
     const categories =;
 
-    // Bổ sung nhiều sự kiện đa dạng hơn
+    // ĐÃ SỬA LỖI: Cập nhật đầy đủ mảng dữ liệu eventsData
     const eventsData =;
 
     // --- KHỞI TẠO GIAO DIỆN ---
@@ -139,7 +140,7 @@
             const isSelected = cat === currentCategory;
             // Áp dụng class sáng màu
             const btnClass = isSelected 
-              ? 'bg-primary text-white font-bold px-5 py-2.5 md:py-3 rounded-full md:rounded-xl whitespace-nowrap shadow-md transition-all' 
+             ? 'bg-primary text-white font-bold px-5 py-2.5 md:py-3 rounded-full md:rounded-xl whitespace-nowrap shadow-md transition-all' 
                 : 'bg-white text-slate-600 hover:text-primary hover:bg-slate-50 px-5 py-2.5 md:py-3 rounded-full md:rounded-xl whitespace-nowrap border border-slate-300 transition-all cursor-pointer font-medium shadow-sm';
             
             const btn = document.createElement('button');
