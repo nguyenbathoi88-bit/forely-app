@@ -3,716 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thị Trường Dự Đoán - Lấy Cảm Hứng Từ Polymarket</title>
+    <title>Forely Terminal</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/frappe-charts@1.6.1/dist/frappe-charts.min.iife.js"></script>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script src="[https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js](https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js)"></script>
+    <script src="[https://cdn.jsdelivr.net/npm/frappe-charts@1.6.1/dist/frappe-charts.min.iife.js](https://cdn.jsdelivr.net/npm/frappe-charts@1.6.1/dist/frappe-charts.min.iife.js)"></script>
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
     
     <style>
-        /* Thiết lập hệ thống phông chữ trung tính 'Inter', tối ưu cho giao diện dữ liệu dày đặc */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f7f9fa; color: #111827; }
-        
-        /* Loại bỏ thanh cuộn ngang gây cản trở trải nghiệm cho các khu vực điều hướng tab trên điện thoại */
+        @import url('[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap)');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #111827; overflow: hidden; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
-        /* Cắt ngắn văn bản nếu quá dài (hiển thị dấu ... ở cuối cho 2 hoặc 3 dòng) */
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         
-        /* Cấu trúc thiết kế cửa sổ bật lên (Modal) đa dụng với hiệu ứng mờ nền (blur) chuyên nghiệp */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: opacity 0.3s ease; }
+        /* Hiệu ứng Modal & Sidebar */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal.active { display: flex; }
         
-        /* --- ĐẶC SẢN CỦA POLYMARKET: HIỆU ỨNG THANH ĐỘ SÂU SỔ LỆNH (CLOB) --- */
-        /* Thanh nền màu xanh lá thể hiện Lực Cầu (Bids) */
-        .depth-bar-bid { position: absolute; top: 0; bottom: 0; right: 0; background-color: rgba(16, 185, 129, 0.15); z-index: 0; transition: width 0.3s; }
-        /* Thanh nền màu đỏ thể hiện Lực Cung (Asks) */
-        .depth-bar-ask { position: absolute; top: 0; bottom: 0; left: 0; background-color: rgba(239, 68, 68, 0.15); z-index: 0; transition: width 0.3s; }
-        /* Định dạng các hàng chữ hiển thị mức giá đè lên trên thanh nền */
-        .ob-row { position: relative; z-index: 1; display: flex; justify-content: space-between; padding: 2px 4px; font-size: 11px; }
+        /* Orderbook Depth Bars */
+        .depth-bar-bid { position: absolute; top: 0; bottom: 0; right: 0; background-color: rgba(16, 185, 129, 0.12); z-index: 0; }
+        .depth-bar-ask { position: absolute; top: 0; bottom: 0; left: 0; background-color: rgba(239, 68, 68, 0.12); z-index: 0; }
+        .ob-row { position: relative; z-index: 1; display: flex; justify-content: space-between; padding: 4px 6px; font-size: 12px; font-variant-numeric: tabular-nums; }
         
-        /* Vòng lặp hoạt ảnh (animation) cho các biểu tượng xoay tròn khi đang tải dữ liệu */
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #0f172a; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 20px auto; }
-        .news-loader { border: 2px solid #f3f3f3; border-top: 2px solid #3b82f6; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; }
+        /* Loaders */
+        .loader { border: 3px solid #e5e7eb; border-top: 3px solid #3b82f6; border-radius: 50%; width: 28px; height: 28px; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        /* Kiến trúc chuyển đổi linh hoạt giữa giao diện lưới và giao diện trang chi tiết (Single Page App) */
-        #home-view { display: block; }
-        #detail-view { display: none; }
     </style>
 </head>
-<body class="pb-24">
-    <nav class="bg-white px-4 py-3 sticky top-0 z-50 flex justify-between items-center border-b border-gray-200 shadow-sm">
-        
-        <div onclick="showHomeView()" class="flex items-center gap-2.5 cursor-pointer">
-            
-            <svg width="28" height="28" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="55" cy="60" r="45" stroke="#0f172a" stroke-width="8"/>
-                <circle cx="95" cy="25" r="10" stroke="#0f172a" stroke-width="7"/>
-                <path d="M55 20v8M55 92v8M20 60h8M82 60h8" stroke="#0f172a" stroke-width="5" stroke-linecap="round"/>
-                <path d="M35 85L85 35L62 90L52 68Z" fill="#0f172a"/>
-                <path d="M35 85L85 35L30 62L52 68Z" fill="#334155"/>
-            </svg>
-            
-            <h1 class="text-xl font-bold text-gray-900 tracking-tight"> Forely Terminal </h1>
-        </div>
+<body class="flex h-screen antialiased">
 
-        <div id="auth-area">
-            <button onclick="openModal('login-modal')" class="bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"> Thiết lập tài khoản </button>
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-200 cursor-pointer" onclick="showHomeView()">
+            <div class="w-8 h-8 bg-gray-900 rounded-md flex items-center justify-center text-white font-bold text-xl mr-3">F</div>
+            <span class="text-lg font-bold tracking-tight">Forely</span>
         </div>
-    </nav>
-    <div id="home-view">        
+        <div class="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-2">Khám phá</div>
+            <button onclick="showHomeView()" class="w-full flex items-center gap-3 px-3 py-2 bg-gray-100 text-gray-900 rounded-lg font-semibold text-sm transition-colors">
+                <i class="fa-solid fa-chart-line w-5"></i> Thị trường
+            </button>
+            <button class="w-full flex items-center gap-3 px-3 py-2 text-gray-500 hover:bg-gray-50 rounded-lg font-medium text-sm transition-colors">
+                <i class="fa-solid fa-bolt w-5"></i> Tin tức & Cập nhật
+            </button>
+            <button class="w-full flex items-center gap-3 px-3 py-2 text-gray-500 hover:bg-gray-50 rounded-lg font-medium text-sm transition-colors">
+                <i class="fa-solid fa-trophy w-5"></i> Bảng xếp hạng
+            </button>
+            
+            <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-2 mt-8">Tài khoản</div>
+            <button class="w-full flex items-center gap-3 px-3 py-2 text-gray-500 hover:bg-gray-50 rounded-lg font-medium text-sm transition-colors">
+                <i class="fa-solid fa-wallet w-5"></i> Danh mục (Portfolio)
+            </button>
+        </div>
+        <div class="p-4 border-t border-gray-200">
+            <div class="bg-blue-50 text-blue-700 p-3 rounded-xl text-xs font-medium border border-blue-100">
+                🚀 Phiên bản thử nghiệm Beta chuẩn bị cho lộ trình chính thức 2026.
+            </div>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
         
-        <div class="bg-white sticky top-[53px] z-40 border-b border-gray-200 shadow-sm">
-            <div class="px-4 pt-3 pb-2 max-w-6xl mx-auto">
-                
-                <div class="relative mb-3">
-                    <input type="text" id="search-input" oninput="searchEvents()" placeholder="Tìm kiếm các hợp đồng dự báo, sự kiện kinh tế..." class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 pl-10 pr-4 text-sm font-medium text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                    <span class="absolute left-3.5 top-2.5 text-gray-400"> 🔍 </span>
-                </div>                                  
-                
-                <div class="flex gap-2 bg-gray-100 p-1 rounded-lg w-full sm:w-64">            
-                    <button onclick="setStatusView('active')" id="tab-active" class="flex-1 py-1.5 text-xs font-bold rounded-md bg-white text-gray-900 shadow-sm transition-all"> 🟢 Thanh khoản mở </button>
-                    <button onclick="setStatusView('ended')" id="tab-ended" class="flex-1 py-1.5 text-xs font-bold rounded-md bg-transparent text-gray-500 transition-all"> ⏳ Lịch sử khép kín </button>
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 shrink-0 z-10">
+            <div class="flex items-center flex-1 gap-4">
+                <button class="md:hidden text-gray-500 text-xl"><i class="fa-solid fa-bars"></i></button>
+                <div class="relative w-full max-w-md hidden sm:block">
+                    <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400 text-sm"></i>
+                    <input type="text" id="search-input" oninput="searchEvents()" placeholder="Tìm kiếm sự kiện, công ty, tin tức..." class="w-full bg-gray-100 border-none rounded-lg py-2 pl-9 pr-4 text-sm focus:ring-2 focus:ring-blue-500 transition-all">
                 </div>
-            </div>    
+            </div>
+
+            <div id="auth-area" class="flex items-center gap-3">
+                <button onclick="openModal('login-modal')" class="bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors shadow-sm">
+                    Đăng nhập
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto bg-gray-50 relative p-4 sm:p-6 lg:p-8" id="main-scroll-area">
             
-            <div class="flex gap-2 overflow-x-auto px-4 pb-3 no-scrollbar border-t border-gray-100 pt-3 max-w-6xl mx-auto">
-                <button onclick="filterCat('Tất cả', this)" class="cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all shadow-sm"> Toàn cảnh </button>
-                <button onclick="filterCat('Kinh tế vĩ mô', this)" class="cat-tab bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all"> Chỉ số Kinh tế vĩ mô </button>   
-                <button onclick="filterCat('Chính sách', this)" class="cat-tab bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all"> Hành lang Chính sách </button>
-                <button onclick="filterCat('Công nghệ', this)" class="cat-tab bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all"> Công nghệ & AI </button>
-                <button onclick="filterCat('Thể thao', this)" class="cat-tab bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all"> Thể thao </button>
+            <div id="home-view" class="max-w-7xl mx-auto block">
+                
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Thị trường nổi bật</h2>
+                    <div class="bg-white rounded-lg border border-gray-200 p-1 flex shadow-sm hidden sm:flex">
+                        <button onclick="setStatusView('active')" id="tab-active" class="px-4 py-1 text-xs font-bold rounded-md bg-gray-100 text-gray-900">Đang giao dịch</button>
+                        <button onclick="setStatusView('ended')" id="tab-ended" class="px-4 py-1 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900">Đã đóng</button>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-2">
+                    <button onclick="filterCat('Tất cả', this)" class="cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-xs font-semibold shrink-0">Tất cả</button>
+                    <button onclick="filterCat('Kinh tế vĩ mô', this)" class="cat-tab bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-1.5 rounded-full text-xs font-medium shrink-0">Kinh tế vĩ mô</button>
+                    <button onclick="filterCat('Chính sách', this)" class="cat-tab bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-1.5 rounded-full text-xs font-medium shrink-0">Chính sách</button>
+                    <button onclick="filterCat('Công nghệ', this)" class="cat-tab bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-1.5 rounded-full text-xs font-medium shrink-0">Công nghệ & AI</button>
+                    <button onclick="filterCat('Giải trí - Xã hội', this)" class="cat-tab bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-1.5 rounded-full text-xs font-medium shrink-0">Xã hội</button>
+                </div>
+
+                <div id="loading" class="py-20 text-center">
+                    <div class="loader"></div>
+                    <p class="text-sm text-gray-400 mt-4 font-medium">Đang đồng bộ dữ liệu thị trường...</p>
+                </div>
+
+                <div id="market-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 hidden">
+                    </div>
+            </div>
+
+            <div id="detail-view" class="max-w-6xl mx-auto hidden">
+                <button onclick="showHomeView()" class="text-sm font-semibold text-gray-500 hover:text-gray-900 mb-6 flex items-center gap-2 transition-colors">
+                    <i class="fa-solid fa-arrow-left"></i> Trở về thị trường
+                </button>
+                
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="w-full lg:w-[65%] space-y-6">
+                        
+                        <div class="flex gap-4 items-start">
+                            <img id="detail-icon" src="" class="w-16 h-16 rounded-xl shadow-sm border border-gray-200 bg-white">
+                            <div>
+                                <span id="detail-cat" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Danh mục</span>
+                                <h1 id="detail-title" class="text-2xl font-bold text-gray-900 leading-tight mt-1">Tiêu đề hợp đồng</h1>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                            <div class="flex justify-between items-end mb-6">
+                                <div>
+                                    <div class="text-4xl font-bold text-blue-600" id="detail-current-prob">50%</div>
+                                    <div class="text-sm font-medium text-gray-500 mt-1">Xác suất thị trường ngầm định</div>
+                                </div>
+                                <div class="flex gap-1 bg-gray-100 p-1 rounded-lg">
+                                    <button class="px-3 py-1 text-xs font-bold rounded bg-white shadow-sm text-gray-900">Tất cả</button>
+                                    <button class="px-3 py-1 text-xs font-bold rounded text-gray-500">1T</button>
+                                </div>
+                            </div>
+                            <div id="probability-chart" class="w-full h-64 -ml-2"></div>
+                            
+                            <div class="flex gap-6 border-t border-gray-100 pt-4 mt-4 text-sm">
+                                <div class="flex flex-col"><span class="text-gray-400 font-medium text-xs">Thanh khoản</span><span id="detail-vol" class="font-bold text-gray-900">0</span></div>
+                                <div class="flex flex-col"><span class="text-gray-400 font-medium text-xs">Hạn chót</span><span id="detail-deadline" class="font-bold text-gray-900">0</span></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+                            <div class="flex justify-between items-center mb-5">
+                                <h3 class="font-bold text-gray-900 text-lg flex items-center gap-2">
+                                    <i class="fa-regular fa-newspaper text-gray-400"></i> Điểm báo tự động
+                                </h3>
+                                <div id="news-loading" class="loader w-4 h-4 hidden"></div>
+                            </div>
+                            <div id="news-feed" class="flex flex-col gap-4">
+                                <p class="text-sm text-gray-400">Hệ thống AI đang trích xuất dữ liệu...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full lg:w-[35%]">
+                        <div class="sticky top-6 space-y-6">
+                            
+                            <div class="bg-white rounded-2xl border border-gray-200 shadow-lg p-5">
+                                <div class="flex bg-gray-100 p-1 rounded-xl mb-5">
+                                    <button class="flex-1 py-2 text-sm font-bold rounded-lg bg-white text-gray-900 shadow-sm">Mua</button>
+                                    <button class="flex-1 py-2 text-sm font-bold rounded-lg text-gray-500">Bán</button>
+                                </div>
+                                
+                                <div class="flex gap-3 mb-6">
+                                    <button onclick="selectTradeSide('Yes')" id="btn-trade-yes" class="flex-1 border-2 border-blue-500 bg-blue-50 text-blue-700 py-4 rounded-xl flex flex-col items-center transition-all shadow-sm">
+                                        <span class="text-sm font-bold">CÓ (Yes)</span>
+                                        <span id="price-yes" class="text-xl font-black mt-1">50¢</span>
+                                    </button>
+                                    <button onclick="selectTradeSide('No')" id="btn-trade-no" class="flex-1 border border-gray-200 bg-white text-gray-600 py-4 rounded-xl flex flex-col items-center hover:bg-red-50 hover:border-red-200 transition-all opacity-60">
+                                        <span class="text-sm font-bold">KHÔNG (No)</span>
+                                        <span id="price-no" class="text-xl font-black mt-1">50¢</span>
+                                    </button>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="flex justify-between text-xs font-semibold text-gray-500 mb-2">
+                                            <span>Số tiền đầu tư</span>
+                                            <span id="current-balance" class="text-blue-600">0 P</span>
+                                        </div>
+                                        <div class="relative">
+                                            <input type="number" id="trade-amount" value="100" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-lg font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" oninput="calculateReturns()">
+                                            <span class="absolute right-4 top-3.5 text-gray-400 font-bold">P</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                                        <div class="flex justify-between text-sm mb-2">
+                                            <span class="text-gray-500">Lợi nhuận ước tính</span>
+                                            <span id="est-return" class="text-green-600 font-bold">0 P</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span class="text-gray-500">ROI</span>
+                                            <span id="est-roi" class="text-gray-900 font-bold">0%</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <button onclick="executeTrade()" class="w-full py-4 rounded-xl text-sm font-bold text-white shadow-md transition-all bg-blue-600 hover:bg-blue-700 active:scale-[0.98]">
+                                        Xác nhận Đặt lệnh
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                                <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">Sổ lệnh (Orderbook)</h3>
+                                <div class="flex justify-between text-xs font-bold text-gray-400 mb-2 border-b border-gray-100 pb-2">
+                                    <span class="w-1/2">Lực Cầu (Bids)</span>
+                                    <span class="w-1/2 text-right">Lực Cung (Asks)</span>
+                                </div>
+                                <div class="flex gap-4">
+                                    <div class="flex-1 flex flex-col gap-1" id="ob-bids"></div>
+                                    <div class="flex-1 flex flex-col gap-1" id="ob-asks"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </main>
+    </div>
+
+    <div id="login-modal" class="modal">
+        <div class="bg-white w-[90%] max-w-sm rounded-2xl p-8 text-center shadow-2xl">
+            <div class="w-16 h-16 bg-gray-900 rounded-2xl mx-auto flex items-center justify-center text-white font-bold text-3xl mb-4 shadow-lg">F</div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Forely Terminal</h2>
+            <p class="text-gray-500 text-sm mb-8 leading-relaxed">Nền tảng giao dịch thông tin. Đăng nhập để nhận <span class="text-blue-600 font-bold">5,000 P</span> điểm tín nhiệm ban đầu.</p>
+            
+            <div class="space-y-3">
+                <button onclick="doLogin()" class="w-full bg-white border border-gray-200 py-3.5 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 transition-all font-semibold text-gray-700 shadow-sm hover:shadow">
+                    <img src="[https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png](https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png)" class="w-5 h-5"> Tiếp tục với Google
+                </button>
+                <button onclick="closeModal('login-modal')" class="w-full py-3 text-sm font-semibold text-gray-400 hover:text-gray-600 transition-colors">Để sau</button>
             </div>
         </div>
-        <div id="loading" class="text-center mt-12">
-            <div class="loader"></div>
-            <p class="text-xs font-medium text-gray-500 mt-2"> Đang đồng bộ mạng lưới nút dữ liệu tài chính... </p>
-        </div>                 
-
-        <div id="market-grid" class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 hidden max-w-6xl mx-auto">
-            </div>
-
-    </div> 
-    ```
-
-Chỉ cần như vậy là chúng ta đã hoàn tất toàn bộ **Giao diện của Trang chủ** rồi đấy! Kể từ phần tiếp theo, chúng ta sẽ bắt đầu xây dựng **Giao diện của Trang Chi tiết** (nơi người dùng bấm vào một sự kiện để đọc tin tức và đặt lệnh giao dịch).
-
-Sau khi bạn dán xong Phần 4, hãy kiểm tra chắc chắn rằng bạn đã có thẻ đóng `</div>` ở dòng cuối cùng nhé. Bạn đã sẵn sàng để chuyển sang **Phần 5: Trang chi tiết - Khung thông tin và Tin tức RSS** chưa?
-    <div id="detail-view" class="max-w-6xl mx-auto p-4 hidden">
-        
-        <button onclick="showHomeView()" class="text-sm font-semibold text-gray-500 hover:text-gray-900 mb-4 flex items-center gap-1">
-            <span> ← </span> Rời khỏi phiên giao dịch
-        </button>            
-        
-        <div class="flex flex-col lg:flex-row gap-6">              
-            
-            <div class="w-full lg:w-2/3 space-y-5">                  
-                
-                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">                      
-                    <div class="flex items-center gap-3 mb-3">                       
-                        <img id="detail-icon" src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full bg-gray-100 p-1 border border-gray-200">                          
-                        <div>                              
-                            <span id="detail-cat" class="text-[10px] font-bold uppercase tracking-wider text-blue-600"> Phân loại danh mục </span>                     
-                            <h2 id="detail-title" class="text-xl font-bold text-gray-900 leading-tight"> Điều kiện cấu thành thị trường tài chính </h2>                          
-                        </div>                      
-                    </div>                      
-                    <div class="flex items-center gap-4 text-xs font-medium text-gray-500 border-t border-gray-100 pt-3 mt-3">                          
-                        <span id="detail-vol" class="flex items-center gap-1"> 💰 Tổng thanh khoản (Volume):  <span class="text-gray-900 font-bold"> 0 </span></span>                          
-                        <span id="detail-deadline" class="flex items-center gap-1"> ⏳ Thời hạn đáo hạn hợp đồng:  <span class="text-gray-900 font-bold"> 0 </span></span>             
-                    </div>                  
-                </div>                  
-                
-                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">                      
-                    <div class="flex justify-between items-center mb-4">                       
-                        <h3 class="text-sm font-bold text-gray-900"> Chu kỳ Biến động Xác suất Lịch sử </h3>                          
-                        <div class="flex gap-1 bg-gray-100 p-1 rounded-lg">                              
-                            <button class="px-3 py-1 text-[10px] font-bold rounded-md bg-white shadow-sm text-gray-900"> Đồ thị toàn cảnh </button>           
-                            <button class="px-3 py-1 text-[10px] font-bold rounded-md text-gray-500"> Khung 1 Tháng </button>                          
-                        </div>                      
-                    </div>                      
-                    <div id="probability-chart" class="w-full h-64"></div>                  
-                </div>                  
-                
-                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">                      
-                    <div class="flex justify-between items-center mb-4">                          
-                        <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">                              
-                            <span> 📰 </span> Điểm báo Ngữ cảnh (Truy xuất từ mạng lưới VnExpress)                         
-                        </h3>                          
-                        <div id="news-loading" class="news-loader hidden"></div> 
-                    </div>                      
-                    <div id="news-feed" class="flex flex-col gap-4">                          
-                        <p class="text-xs text-gray-400 italic"> Đang phân tích tập từ khóa và thiết lập đường ống nạp bản tin điện tử... </p>       
-                    </div>                  
-                </div>              
-            
-            </div>
-            ```
-
-**Lưu ý quan trọng:** Bạn sẽ thấy ở cuối đoạn mã này không có các thẻ đóng `</div>` cho tổng thể trang chi tiết. Đó là vì chúng ta đang để "mở" không gian để nhét tiếp **Cột Phải (Phần 6: Khung đặt lệnh và Sổ lệnh)** vào ngay bên cạnh nó.
-
-Hãy cho tôi biết khi bạn đã dán xong phần này, để chúng ta đi tới "bàn điều khiển hành động" cực ngầu ở Phần 6 nhé!
-        <div class="w-full lg:w-1/3 space-y-5">                  
-                
-                <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm sticky top-[70px]">          
-                    
-                    <div class="flex gap-2 bg-gray-100 p-1 rounded-xl mb-4">                          
-                        <button class="flex-1 py-1.5 text-xs font-bold rounded-lg bg-white text-gray-900 shadow-sm"> Mua cổ phần (Buy) </button>                          
-                        <button class="flex-1 py-1.5 text-xs font-bold rounded-lg text-gray-500 hover:text-gray-900"> Bán tháo (Sell) </button>      
-                    </div>                                          
-                    
-                    <div class="flex gap-3 mb-6">                          
-                        <button onclick="selectTradeSide('Yes')" id="btn-trade-yes" class="flex-1 border-2 border-blue-500 bg-blue-50 text-blue-700 font-bold py-3 rounded-xl flex flex-col items-center transition-all">                              
-                            <span class="text-sm"> Xác nhận (Có) </span>                              
-                            <span id="price-yes" class="text-xl font-black mt-1"> 50¢ </span>                          
-                        </button>  
-                        <button onclick="selectTradeSide('No')" id="btn-trade-no" class="flex-1 border border-gray-200 bg-white text-gray-600 font-bold py-3 rounded-xl flex flex-col items-center hover:bg-red-50 hover:border-red-200 transition-all opacity-60">                              
-                            <span class="text-sm"> Bác bỏ (Không) </span>                         
-                            <span id="price-no" class="text-xl font-black mt-1"> 50¢ </span>                          
-                        </button>                      
-                    </div>                      
-                    
-                    <div class="space-y-4">                  
-                        <div class="flex justify-between items-center text-xs font-medium">                              
-                            <span class="text-gray-500"> Mức vốn phân bổ (Quy mô lệnh) </span>                              
-                            <span class="text-gray-900 font-bold"> Số dư khả dụng:  <span id="current-balance"> 0 P </span></span>      
-                        </div>                          
-                        <div class="relative">                              
-                            <input type="number" id="trade-amount" value="100" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-lg font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="calculateReturns()">      
-                            <span class="absolute right-4 top-3 text-gray-400 font-bold"> P </span>                          
-                        </div>                                           
-                        
-                        <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">                              
-                            <div class="flex justify-between text-xs mb-1">                                  
-                                <span class="text-gray-500 font-medium"> Khoản thanh toán kỳ vọng </span>            
-                                <span id="est-return" class="text-green-600 font-bold"> 0 P </span>                              
-                            </div>                              
-                            <div class="flex justify-between text-xs">         
-                                <span class="text-gray-500 font-medium"> Tỷ suất sinh lời trên vốn (ROI) </span>                                  
-                                <span id="est-roi" class="text-gray-900 font-bold"> 0% </span>                          
-                            </div>                          
-                        </div>                          
-                        
-                        <button onclick="executeTrade()" class="w-full py-3.5 rounded-xl text-sm font-bold text-white shadow-sm transition-colors bg-blue-600 hover:bg-blue-700">                             
-                            Khởi tạo Hợp đồng Dự đoán                         
-                        </button>                          
-                        <p class="text-[10px] text-center text-gray-400 mt-2"> Dữ liệu phân giải dựa trên nguyên tắc của cấu trúc UMA Optimistic Oracle. </p>                      
-                    </div>                  
-                </div>                  
-                
-                <div class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm">                      
-                    <h3 class="text-sm font-bold text-gray-900 mb-3 border-b border-gray-100 pb-2"> Độ sâu Sổ lệnh (Order Book Dynamics) </h3>                      
-                    <div class="flex justify-between text-[10px] font-semibold text-gray-400 mb-2 uppercase tracking-wider px-1">                          
-                        <span> Lực cầu (Bids) </span>                          
-                        <span> Lực cung (Asks) </span>        
-                    </div>                                          
-                    <div class="flex gap-2">                          
-                        <div class="flex-1 flex flex-col gap-0.5" id="ob-bids"></div>           
-                        <div class="flex-1 flex flex-col gap-0.5" id="ob-asks"></div>                      
-                    </div>                  
-                </div>              
-            
-            </div>
-            
-        </div>
-        
     </div>
-    <div id="login-modal" class="modal">  
-        <div class="bg-white w-[85%] max-w-sm rounded-3xl p-6 text-center shadow-2xl transform transition-all">              
-            <h2 class="text-xl font-bold text-gray-900 mb-2"> Truy cập Cổng Tương tác Dữ liệu </h2>              
-            <p class="text-gray-500 text-sm mb-6"> Tham gia thiết lập thị trường thông tin minh bạch nhất khu vực và nhận  <span class="text-blue-600 font-bold"> 5,000 P </span>  làm quỹ khởi nghiệp. </p>              
-            
-            <div class="space-y-3">                  
-                <button onclick="doLogin()" class="w-full bg-white border border-gray-300 py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors shadow-sm">                      
-                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5" alt="Google">                      
-                    <span class="text-sm font-bold text-gray-700"> Xác thực chứng danh thông qua Google </span>                  
-                </button>                  
-                <button onclick="closeModal('login-modal')" class="w-full py-2 text-sm font-medium text-gray-400 hover:text-gray-600 mt-2"> Đóng quá trình </button>              
-            </div>          
-        </div>      
-    </div>      
 
-    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2.5 z-50 px-2 pb-safe">          
-        
-        <button onclick="showHomeView()" class="flex flex-col items-center gap-1 text-blue-600">              
-            <span class="text-xl"> 🧭 </span>
-            <span class="text-[10px] font-bold"> Mạng lưới </span>          
-        </button>          
-        
-        <button onclick="alert('Module chuyển đổi tài sản đang thiết lập chuỗi khối riêng.')" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-900 transition-colors">              
-            <span class="text-xl"> 💳 </span>
-            <span class="text-[10px] font-semibold"> Tài sản (P) </span>          
-        </button>          
-        
-        <button onclick="alert('Đang trích xuất sổ phụ ghi nhận vị thế.')" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-900 transition-colors">              
-            <span class="text-xl"> 📊 </span>
-            <span class="text-[10px] font-semibold"> Danh mục </span>          
-        </button>      
-    </div>
     <script>
-        // 1. CẤU HÌNH CỔNG TRUY XUẤT CƠ SỞ DỮ LIỆU
-        // Đây là đường link public của Google Sheets (định dạng CSV). Khi bạn cập nhật file Google Sheets, trang web sẽ tự động lấy dữ liệu mới.
-        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vREHXHIoKFy_Vhds8sFY8pJzrvcLZItNS2O0hQTy8Z-JJ9TiwFvCYmQgWVyhLVpcyY1IheROL0ljntf/pub?gid=0&single=true&output=csv";
+        const GOOGLE_SHEET_CSV_URL = "[https://docs.google.com/spreadsheets/d/e/2PACX-1vREHXHIoKFy_Vhds8sFY8pJzrvcLZItNS2O0hQTy8Z-JJ9TiwFvCYmQgWVyhLVpcyY1IheROL0ljntf/pub?gid=0&single=true&output=csv](https://docs.google.com/spreadsheets/d/e/2PACX-1vREHXHIoKFy_Vhds8sFY8pJzrvcLZItNS2O0hQTy8Z-JJ9TiwFvCYmQgWVyhLVpcyY1IheROL0ljntf/pub?gid=0&single=true&output=csv)";
 
-        // 2. KHỞI TẠO CÁC BIẾN TOÀN CỤC (GLOBAL VARIABLES)
-        let isGuest = true;                 // Trạng thái tài khoản (true = chưa đăng nhập, false = đã đăng nhập)
-        let balance = 0;                    // Số dư điểm (P) của người dùng
-        let allEvents = [];                 // Mảng chứa toàn bộ dữ liệu sự kiện tải về từ Google Sheets
-        let currentStatusView = 'active';   // Trạng thái tab đang chọn (active = Đang mở, ended = Lịch sử)
-        let currentCategory = 'Tất cả';     // Danh mục đang chọn (Mặc định là hiển thị tất cả)
-        let selectedEvent = null;           // Biến lưu trữ sự kiện đang được xem chi tiết
-        let selectedSide = 'Yes';           // Lựa chọn phe khi đặt lệnh (Mặc định là Yes/Có)
-        let chartInstance = null;           // Biến chứa đối tượng đồ thị Frappe Charts
+        let isGuest = true, balance = 0, allEvents = [];
+        let currentStatusView = 'active', currentCategory = 'Tất cả';
+        let selectedEvent = null, selectedSide = 'Yes', chartInstance = null;
 
-        // 3. MÔ-ĐUN TIỆN ÍCH: CHUẨN HÓA DỮ LIỆU
-        // Hàm chuyển đổi chuỗi ngày tháng tiếng Anh sang định dạng DD/MM/YYYY của Việt Nam
-        function formatDate(dateString) {
-            if (!dateString) return "Vô thời hạn";
-            const date = new Date(dateString);
-            if(isNaN(date)) return dateString; // Nếu không phải ngày hợp lệ thì trả về chuỗi gốc
-            const day = date.getDate().toString().padStart(2, '0');
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            return `${day}/${month}/${date.getFullYear()}`;
+        // Fallback data in case Google Sheet is empty or fails
+        const mockData = [
+            { id: 901, cat: "Kinh tế vĩ mô", title: "NHNN sẽ hạ lãi suất điều hành trước tháng 6/2026?", yesRate: 65, noRate: 35, vol: "$124,500", deadline: "30/05/2026", isActive: true, icon: "[https://ui-avatars.com/api/?name=KT&background=10b981&color=fff](https://ui-avatars.com/api/?name=KT&background=10b981&color=fff)" },
+            { id: 902, cat: "Công nghệ", title: "Dự án Forely sẽ thu hút hơn 10.000 users trong quý đầu ra mắt?", yesRate: 82, noRate: 18, vol: "$45,200", deadline: "31/12/2026", isActive: true, icon: "[https://ui-avatars.com/api/?name=F&background=3b82f6&color=fff](https://ui-avatars.com/api/?name=F&background=3b82f6&color=fff)" },
+            { id: 903, cat: "Chính sách", title: "Quốc hội thông qua Luật Thuế thu nhập mới?", yesRate: 45, noRate: 55, vol: "$89,000", deadline: "15/10/2026", isActive: true, icon: "[https://ui-avatars.com/api/?name=CS&background=f59e0b&color=fff](https://ui-avatars.com/api/?name=CS&background=f59e0b&color=fff)" }
+        ];
+
+        function formatDate(dStr) {
+            if (!dStr) return "Vô thời hạn";
+            const d = new Date(dStr); return isNaN(d) ? dStr : `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`;
         }
 
-        // Hàm tự động tạo ảnh đại diện (avatar) ngẫu nhiên cho từng thẻ sự kiện dựa trên API ui-avatars
-        function generateRandomIcon() {
-            const colors = ['10b981', '3b82f6', 'f59e0b', '8b5cf6', 'ec4899'];
-            const randColor = colors[Math.floor(Math.random() * colors.length)];
-            return `https://ui-avatars.com/api/?name=FM&background=${randColor}&color=fff&rounded=true&bold=true`;
-        }
-
-        // 4. HÀM CỐT LÕI: TẢI DỮ LIỆU TỪ GOOGLE SHEETS
-        // Hàm này mô phỏng API Gamma của Polymarket, đóng vai trò kéo dữ liệu từ máy chủ (ở đây là Google Sheets)
-        function fetchEventsFromGoogleSheets() {
+        function fetchEvents() {
             Papa.parse(GOOGLE_SHEET_CSV_URL, {
-                download: true,       // Cho phép tải file từ URL
-                header: true,         // Sử dụng dòng đầu tiên của Google Sheets làm Tên Cột (Header)
-                skipEmptyLines: true, // Bỏ qua các dòng trống để tránh lỗi
-                complete: function(results) {
-                    const now = new Date().getTime(); // Lấy thời gian hiện tại để so sánh hạn chót
-
-                    // Duyệt qua từng dòng dữ liệu trong Google Sheets và chuẩn hóa lại
-                    allEvents = results.data.filter(row => row.Title).map((row, index) => {
-                        let isExpired = false;
-                        
-                        // Kiểm tra xem sự kiện đã quá hạn chưa
-                        if(row.Deadline) {
-                            const dlDate = new Date(row.Deadline).getTime();
-                            if(dlDate < now) isExpired = true;            
-                        }
-                        
-                        // Nếu sự kiện chưa kết thúc (không phải "Ended") và chưa quá hạn thì trạng thái là Đang mở (isActive = true)
-                        let finalActiveStatus = (row.Status !== "Ended" && !isExpired);
-                        
-                        // Xử lý tỷ lệ phần trăm (Mặc định là 50/50 nếu không có số liệu)
-                        let yesRate = parseInt(row.YesRate) || 50;                             
-
-                        // Trả về một Đối tượng (Object) chứa đầy đủ thông tin chuẩn hóa
+                download: true, header: true, skipEmptyLines: true,
+                complete: (res) => {
+                    const now = new Date().getTime();
+                    let parsedEvents = res.data.filter(r => r.Title).map((r, i) => {
+                        let expired = r.Deadline ? (new Date(r.Deadline).getTime() < now) : false;
+                        let yesRate = parseInt(r.YesRate) || 50;
                         return {
-                            id: index,
-                            cat: row.Category || "Khác",                    
-                            title: row.Title,
-                            yesRate: yesRate,
-                            noRate: 100 - yesRate,
-                            vol: row.Volume || Math.floor(Math.random() * 500000) + " USD", // Fake volume ngẫu nhiên nếu trống
-                            deadline: row.Deadline ? formatDate(row.Deadline) : "Vô thời hạn",
-                            isActive: finalActiveStatus,
-                            result: row.Result ? row.Result.trim().toLowerCase() : "",
-                            icon: generateRandomIcon()
+                            id: i, cat: r.Category || "Khác", title: r.Title,
+                            yesRate: yesRate, noRate: 100 - yesRate,
+                            vol: r.Volume || "$" + (Math.floor(Math.random() * 50) + 10) + ",000",
+                            deadline: r.Deadline ? formatDate(r.Deadline) : "Vô thời hạn",
+                            isActive: (r.Status !== "Ended" && !expired),
+                            icon: `https://ui-avatars.com/api/?name=${r.Category?r.Category.charAt(0):'M'}&background=random&color=fff&rounded=true`
                         };
-                    });                                        
+                    });
                     
-                    // Sau khi tải dữ liệu xong: Ẩn vòng xoay loading và Hiển thị lưới sự kiện
-                    document.getElementById('loading').classList.add('hidden');                    
-                    document.getElementById('market-grid').classList.remove('hidden');                    
-                    
-                    // Gọi hàm renderGrid() (Sẽ viết ở Phần 9) để vẽ các thẻ HTML ra màn hình
-                    renderGrid();                
+                    allEvents = parsedEvents.length > 0 ? parsedEvents : mockData;
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('market-grid').classList.remove('hidden');
+                    renderGrid();
                 },
-                error: function() {
-                    alert("Kết nối Cổng phân tán thất bại. Không thể nhận luồng danh mục sự kiện từ Google Sheets.");
-                }            
+                error: () => {
+                    console.warn("Dùng dữ liệu giả lập do lỗi Google Sheets");
+                    allEvents = mockData;
+                    document.getElementById('loading').classList.add('hidden');
+                    document.getElementById('market-grid').classList.remove('hidden');
+                    renderGrid();
+                }
             });
         }
-        // 5. HỆ THỐNG LỌC VÀ TÌM KIẾM (FILTER & SEARCH)
-        function setStatusView(status) {
-            currentStatusView = status;
-            // Đảo giao diện nút bấm giữa "Đang mở" và "Lịch sử"
-            document.getElementById('tab-active').className = status === 'active'                
-                ? "flex-1 py-1.5 text-xs font-bold rounded-md bg-white text-gray-900 shadow-sm transition-all"                 
-                : "flex-1 py-1.5 text-xs font-bold rounded-md bg-transparent text-gray-500 transition-all";
-            document.getElementById('tab-ended').className = status === 'ended'                
-                ? "flex-1 py-1.5 text-xs font-bold rounded-md bg-white text-gray-900 shadow-sm transition-all"                 
-                : "flex-1 py-1.5 text-xs font-bold rounded-md bg-transparent text-gray-500 transition-all";
+
+        function setStatusView(s) {
+            currentStatusView = s;
+            document.getElementById('tab-active').className = s === 'active' ? "px-4 py-1 text-xs font-bold rounded-md bg-gray-100 text-gray-900 shadow-sm" : "px-4 py-1 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900";
+            document.getElementById('tab-ended').className = s === 'ended' ? "px-4 py-1 text-xs font-bold rounded-md bg-gray-100 text-gray-900 shadow-sm" : "px-4 py-1 text-xs font-bold rounded-md text-gray-500 hover:text-gray-900";
             renderGrid();
         }
 
         function filterCat(cat, el) {
             currentCategory = cat;
-            // Xóa hiệu ứng đang chọn ở tất cả các tab
-            document.querySelectorAll('.cat-tab').forEach(t => {                
-                t.className = "cat-tab bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all";            
-            });
-            // Bật hiệu ứng đang chọn cho tab vừa click
-            el.className = "cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-[11px] font-semibold shrink-0 transition-all shadow-sm";            
+            document.querySelectorAll('.cat-tab').forEach(t => t.className = "cat-tab bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-1.5 rounded-full text-xs font-medium shrink-0 transition-all");
+            el.className = "cat-tab bg-gray-900 text-white px-4 py-1.5 rounded-full text-xs font-semibold shrink-0 transition-all";
             renderGrid();
         }
 
         function searchEvents() { renderGrid(); }
 
-        // 6. KẾT XUẤT LƯỚI THỊ TRƯỜNG (RENDER GRID)
         function renderGrid() {
             const term = document.getElementById('search-input').value.toLowerCase();
-            const grid = document.getElementById('market-grid');                        
+            const grid = document.getElementById('market-grid');
             
-            // Lọc dữ liệu dựa trên: Trạng thái + Danh mục + Từ khóa tìm kiếm
-            let filtered = allEvents.filter(e => {                
-                const matchStatus = currentStatusView === 'active' ? e.isActive : !e.isActive;                
-                const matchCat = currentCategory === 'Tất cả' ? true : e.cat === currentCategory;                
-                const matchSearch = e.title.toLowerCase().includes(term) || e.cat.toLowerCase().includes(term);                
-                return matchStatus && matchCat && matchSearch;            
+            let filtered = allEvents.filter(e => {
+                const matchStatus = currentStatusView === 'active' ? e.isActive : !e.isActive;
+                const matchCat = currentCategory === 'Tất cả' ? true : e.cat === currentCategory;
+                const matchSearch = e.title.toLowerCase().includes(term) || e.cat.toLowerCase().includes(term);
+                return matchStatus && matchCat && matchSearch;
             });
 
-            // Nếu không có dữ liệu nào khớp
-            if(filtered.length === 0) {                
-                grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-sm text-gray-400 font-medium">Bộ lọc không trả về kết quả thị trường hợp lệ.</p></div>`;
-                return;            
-            }            
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-400 font-medium">Không tìm thấy thị trường phù hợp.</div>`;
+                return;
+            }
 
-            // Vẽ từng thẻ HTML và "bơm" (inject) vào lưới
-            grid.innerHTML = filtered.map((e) => {                
-                const yesWidth = e.yesRate + "%";                
-                const noWidth = e.noRate + "%";                                
-                return `        
-                <div onclick="openMarketDetail(${e.id})" class="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:border-blue-200 cursor-pointer transition-all flex flex-col h-full group">                    
-                    <div class="flex items-start gap-3 mb-3">                        
-                        <img src="${e.icon}" class="w-10 h-10 rounded-full border border-gray-100 shrink-0">                      
-                        <div>                            
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">${e.cat}</p>                            
-                            <h3 class="text-sm font-bold text-gray-900 line-clamp-3 leading-snug group-hover:text-blue-600 transition-colors">${e.title}</h3>                        
-                        </div>     
-                    </div>                                        
-                    <div class="mt-auto pt-3 border-t border-gray-50">                        
-                        <div class="flex justify-between items-center text-xs font-bold mb-1.5">           
-                            <span class="text-blue-600">Luồng Có ${e.yesRate}¢</span>                            
-                            <span class="text-red-500">Luồng Không ${e.noRate}¢</span>                        
-                        </div>                        
-                        <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden flex">                            
-                            <div class="bg-blue-500 h-full transition-all" style="width: ${yesWidth}"></div>                            
-                            <div class="bg-red-400 h-full transition-all" style="width: ${noWidth}"></div>                        
-                        </div>     
-                        <div class="flex justify-between items-center mt-3 text-[10px] font-medium text-gray-400">                            
-                            <span>Thanh khoản: ${e.vol}</span>                            
-                            <span>${e.isActive ? '⏳ ' + e.deadline : '🔒 Hợp đồng đóng'}</span>                        
-                        </div>                    
-                    </div>                
-                </div>`
-            }).join('');
+            grid.innerHTML = filtered.map(e => `
+                <div onclick="openMarket(${e.id})" class="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-lg hover:border-gray-300 transition-all cursor-pointer flex flex-col h-full group">
+                    <div class="flex items-center gap-3 mb-3">
+                        <img src="${e.icon}" class="w-8 h-8 rounded-full border border-gray-100">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${e.cat}</span>
+                    </div>
+                    <h3 class="font-bold text-gray-900 text-sm leading-snug mb-4 group-hover:text-blue-600 transition-colors line-clamp-2">${e.title}</h3>
+                    
+                    <div class="mt-auto">
+                        <div class="flex gap-2 mb-3">
+                            <div class="flex-1 bg-blue-50 text-blue-700 rounded-lg p-2 text-center border border-blue-100 font-bold text-sm">Có ${e.yesRate}¢</div>
+                            <div class="flex-1 bg-red-50 text-red-600 rounded-lg p-2 text-center border border-red-100 font-bold text-sm">Không ${e.noRate}¢</div>
+                        </div>
+                        <div class="flex justify-between items-center text-[11px] font-medium text-gray-500">
+                            <span>Thanh khoản: ${e.vol}</span>
+                            <span>${e.isActive ? e.deadline : 'Đã đóng'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // 7. HỆ THỐNG ĐIỀU HƯỚNG SPA (Đổi trang không cần tải lại trình duyệt)
-        function showHomeView() {            
+        function showHomeView() {
             document.getElementById('detail-view').style.display = 'none';
-            document.getElementById('home-view').style.display = 'block';            
-            window.scrollTo(0, 0);        
-        }        
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('main-scroll-area').scrollTo(0,0);
+        }
 
-        function openMarketDetail(id) {            
+        function openMarket(id) {
             selectedEvent = allEvents.find(e => e.id === id);
-
-            // Đồng bộ dữ liệu sự kiện vào Trang Chi tiết            
             document.getElementById('detail-icon').src = selectedEvent.icon;
-            document.getElementById('detail-cat').innerText = selectedEvent.cat;            
-            document.getElementById('detail-title').innerText = selectedEvent.title;            
-            document.getElementById('detail-vol').innerHTML = `💰 Tổng thanh khoản: <span class="text-gray-900 font-bold">${selectedEvent.vol}</span>`;
-            document.getElementById('detail-deadline').innerHTML = `⏳ Thời điểm khóa sổ: <span class="text-gray-900 font-bold">${selectedEvent.deadline}</span>`;                        
-            document.getElementById('price-yes').innerText = selectedEvent.yesRate + '¢';            
+            document.getElementById('detail-cat').innerText = selectedEvent.cat;
+            document.getElementById('detail-title').innerText = selectedEvent.title;
+            document.getElementById('detail-current-prob').innerText = selectedEvent.yesRate + '%';
+            document.getElementById('detail-vol').innerText = selectedEvent.vol;
+            document.getElementById('detail-deadline').innerText = selectedEvent.deadline;
+            document.getElementById('price-yes').innerText = selectedEvent.yesRate + '¢';
             document.getElementById('price-no').innerText = selectedEvent.noRate + '¢';
 
-            // Mặc định chọn phe 'Có' khi vừa mở trang
-            selectTradeSide('Yes');                        
+            selectTradeSide('Yes');
+            renderChart();
+            renderOrderBook();
+            fetchNews(selectedEvent.title);
 
-            // Khởi chạy các khối Phân tích (Biểu đồ, Sổ lệnh, Tin tức)
-            renderProbabilityChart();
-            renderSimulatedOrderBook();            
-            fetchContextualNews(selectedEvent.title); // Hàm này sẽ được viết ở Phần 10
-            
-            // Ẩn trang lưới, hiện trang chi tiết
-            document.getElementById('home-view').style.display = 'none';            
-            document.getElementById('detail-view').style.display = 'block';            
-            window.scrollTo(0, 0);
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+            document.getElementById('main-scroll-area').scrollTo(0,0);
         }
 
-        // 8. TÍCH HỢP BIỂU ĐỒ FRAPPE CHARTS (Đồ thị véc-tơ siêu nhẹ) [cite: 85]
-        function renderProbabilityChart() {            
-            const chartContainer = document.getElementById("probability-chart");
-            chartContainer.innerHTML = '';                         
-            
-            // Thuật toán giả lập Bước Đi Ngẫu Nhiên (Random Walk) xoay quanh tỷ lệ hiện tại [cite: 86, 87]
-            let currentRate = selectedEvent.yesRate;
-            let historyData = [currentRate];            
-            for(let i=0; i<30; i++) {                
-                let change = Math.floor(Math.random() * 10) - 4;
-                let prev = historyData[0] - change;                
-                if(prev > 95) prev = 95;                
-                if(prev < 5) prev = 5;                
-                historyData.unshift(prev);
-            }                        
-            let labels = Array.from({length: 31}, (_, i) => `Chu kỳ ${i+1}`);
-            const data = { labels: labels, datasets: [{ name: "Xác suất (%)", values: historyData }] };
+        function selectTradeSide(side) {
+            selectedSide = side;
+            const y = document.getElementById('btn-trade-yes'), n = document.getElementById('btn-trade-no');
+            if(side === 'Yes') {
+                y.className = "flex-1 border-2 border-blue-500 bg-blue-50 text-blue-700 py-4 rounded-xl flex flex-col items-center shadow-sm transition-all";
+                n.className = "flex-1 border border-gray-200 bg-white text-gray-500 py-4 rounded-xl flex flex-col items-center hover:bg-red-50 transition-all opacity-60";
+            } else {
+                y.className = "flex-1 border border-gray-200 bg-white text-gray-500 py-4 rounded-xl flex flex-col items-center hover:bg-blue-50 transition-all opacity-60";
+                n.className = "flex-1 border-2 border-red-500 bg-red-50 text-red-600 py-4 rounded-xl flex flex-col items-center shadow-sm transition-all";
+            }
+            calculateReturns();
+        }
 
-            // Khởi tạo đối tượng SVG biểu đồ [cite: 85]
-            chartInstance = new frappe.Chart(chartContainer, {                
-                data: data,                
-                title: "",                
-                type: 'line',                
-                height: 250,         
-                colors: ['#3b82f6'],                
-                lineOptions: { regionFill: 1, hideDots: 1, spline: 1 }, // spline: 1 giúp làm mượt đường cong
-                axisOptions: { xIsSeries: true, xAxisMode: 'tick' }            
+        function calculateReturns() {
+            const amt = parseFloat(document.getElementById('trade-amount').value) || 0;
+            const price = (selectedSide === 'Yes' ? selectedEvent.yesRate : selectedEvent.noRate) / 100;
+            const ret = amt / price;
+            const roi = ((ret - amt) / amt) * 100;
+            document.getElementById('est-return').innerText = (isFinite(ret) ? ret.toFixed(2) : 0) + ' P';
+            document.getElementById('est-roi').innerText = (isFinite(roi) ? '+' + roi.toFixed(1) : 0) + '%';
+        }
+
+        function executeTrade() {
+            if (isGuest) return openModal('login-modal');
+            const amt = parseFloat(document.getElementById('trade-amount').value);
+            if(amt <= 0 || isNaN(amt)) return alert("Số tiền không hợp lệ.");
+            if(amt > balance) return alert("Số dư không đủ.");
+            balance -= amt; updateBalance();
+            alert("Khớp lệnh thành công vào Sổ lệnh ảo!");
+            renderOrderBook();
+        }
+
+        function renderChart() {
+            const container = document.getElementById("probability-chart");
+            container.innerHTML = '';
+            let hist = [selectedEvent.yesRate];
+            for(let i=0; i<30; i++) {
+                let p = hist[0] - (Math.floor(Math.random() * 10) - 4);
+                hist.unshift(p > 95 ? 95 : (p < 5 ? 5 : p));
+            }
+            chartInstance = new frappe.Chart(container, {
+                data: { labels: Array.from({length:31}, (_,i)=>i), datasets: [{ values: hist }] },
+                type: 'line', height: 250, colors: ['#2563eb'],
+                lineOptions: { regionFill: 1, hideDots: 1, spline: 1 }, axisOptions: { xIsSeries: 1 }
             });
         }
 
-        // 9. TRỰC QUAN HÓA SỔ LỆNH (CLOB SIMULATION) [cite: 22, 99]
-        function renderSimulatedOrderBook() {            
-            const yesR = selectedEvent.yesRate;
-            const bidsEl = document.getElementById('ob-bids');            
-            const asksEl = document.getElementById('ob-asks');                        
-            let bidsHtml = ''; let asksHtml = '';
-
-            // Tính toán Phía Lực Cầu (Bids) - Giá giảm dần [cite: 23]
-            let currentBidPrice = yesR - 1;
-            for(let i=0; i<6; i++) {                
-                if(currentBidPrice < 1) break;
-                let size = Math.floor(Math.random() * 5000) + 500;                
-                let depthWidth = Math.min((size / 5000) * 100, 100) + '%';
-                bidsHtml += `                    
-                    <div class="relative ob-row text-gray-600">                        
-                        <div class="depth-bar-bid" style="width: ${depthWidth}"></div>                        
-                        <span class="z-10">${size.toLocaleString()}</span>                       
-                        <span class="z-10 font-bold text-green-600">${currentBidPrice}¢</span>                    
-                    </div>`;
-                currentBidPrice -= Math.floor(Math.random() * 3) + 1;            
-            }                        
-
-            // Tính toán Phía Lực Cung (Asks) - Giá tăng dần [cite: 23]
-            let currentAskPrice = yesR + 1;
-            for(let i=0; i<6; i++) {                
-                if(currentAskPrice > 99) break;
-                let size = Math.floor(Math.random() * 5000) + 500;                
-                let depthWidth = Math.min((size / 5000) * 100, 100) + '%';
-                asksHtml += `                    
-                    <div class="relative ob-row text-gray-600">                        
-                        <div class="depth-bar-ask" style="width: ${depthWidth}"></div>                        
-                        <span class="z-10 font-bold text-red-500">${currentAskPrice}¢</span>                     
-                        <span class="z-10">${size.toLocaleString()}</span>                    
-                    </div>`;
-                currentAskPrice += Math.floor(Math.random() * 3) + 1;            
-            }                        
-            
-            bidsEl.innerHTML = bidsHtml;
-            asksEl.innerHTML = asksHtml;        
-        }
-
-        // 10. XỬ LÝ GIAO DỊCH VÀ TÍNH TOÁN LỢI NHUẬN
-        function selectTradeSide(side) {            
-            selectedSide = side;
-            const btnYes = document.getElementById('btn-trade-yes');            
-            const btnNo = document.getElementById('btn-trade-no');                        
-            
-            if(side === 'Yes') {                
-                btnYes.className = "flex-1 border-2 border-blue-500 bg-blue-50 text-blue-700 font-bold py-3 rounded-xl flex flex-col items-center transition-all";
-                btnNo.className = "flex-1 border border-gray-200 bg-white text-gray-600 font-bold py-3 rounded-xl flex flex-col items-center hover:bg-red-50 hover:border-red-200 transition-all opacity-60";
-            } else {                
-                btnYes.className = "flex-1 border border-gray-200 bg-white text-gray-600 font-bold py-3 rounded-xl flex flex-col items-center hover:bg-blue-50 hover:border-blue-200 transition-all opacity-60";
-                btnNo.className = "flex-1 border-2 border-red-500 bg-red-50 text-red-700 font-bold py-3 rounded-xl flex flex-col items-center transition-all";
-            }            
-            calculateReturns();
-        }        
-
-        function calculateReturns() {            
-            const amountStr = document.getElementById('trade-amount').value;
-            const amount = parseFloat(amountStr) || 0;                        
-            const price = selectedSide === 'Yes' ? selectedEvent.yesRate : selectedEvent.noRate;
-            
-            // Công thức tính cổ phần: Số tiền / Giá (Giá từ 0.01 đến 0.99) [cite: 243]
-            const decimalPrice = price / 100;                        
-            const shares = amount / decimalPrice;
-            const potentialReturn = shares;             
-            const roi = ((potentialReturn - amount) / amount) * 100;                        
-            
-            document.getElementById('est-return').innerText = potentialReturn.toFixed(2) + ' P';
-            document.getElementById('est-roi').innerText = (isNaN(roi) || !isFinite(roi)) ? '0%' : '+' + roi.toFixed(1) + '%';
-        }        
-
-        function executeTrade() {            
-            // Kiểm tra trạng thái đăng nhập
-            if (isGuest) { 
-                openModal('login-modal');
-                return; 
-            }            
-            const amount = parseFloat(document.getElementById('trade-amount').value);
-            if(amount <= 0 || isNaN(amount)) return alert("Quy mô lệnh thiết lập không đạt chuẩn hợp lệ.");
-            if(amount > balance) return alert("Hạn mức tài khoản không đủ để duy trì ký quỹ lệnh.");                        
-            
-            // Trừ tiền và cập nhật giao diện
-            balance -= amount;            
-            updateBalanceDisplay();
-            alert(`Lệnh đã được phát đi! Trạng thái phân giải sẽ được quyết định bởi UMA Optimistic Oracle khi sự kiện kết thúc. [cite: 31, 33]`);
-            
-            // Tạo sự biến động ngẫu nhiên trên sổ lệnh để chứng tỏ tính thanh khoản
-            renderSimulatedOrderBook(); 
-        }
-        // 11. THUẬT TOÁN COSINE SIMILARITY (AI LỌC TIN TỨC THEO NGỮ CẢNH)
-        function calculateCosineSimilarity(text1, text2) {
-            // Hàm phụ tách chuỗi thành các từ khóa (Tokenization)
-            const tokenize = (text) => {
-                return text.toLowerCase()
-                    .replace(/[^\w\s\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]/g, '')
-                    .split(/\s+/)
-                    .filter(word => word.length > 2);
-            };
-
-            const tokens1 = tokenize(text1);
-            const tokens2 = tokenize(text2);
-            if (tokens1.length === 0 || tokens2.length === 0) return 0;
-
-            const termFrequency = {};
-            tokens1.forEach(w => { termFrequency[w] = (termFrequency[w] || 0) + 1; });
-            
-            let dotProduct = 0;
-            const vector2Config = {};
-            tokens2.forEach(w => { vector2Config[w] = (vector2Config[w] || 0) + 1; });
-
-            // Tính tích vô hướng (Dot Product)
-            for (const w in vector2Config) {
-                if (termFrequency[w]) dotProduct += termFrequency[w] * vector2Config[w];
+        function renderOrderBook() {
+            const r = selectedEvent.yesRate;
+            let bH = '', aH = '', cB = r - 1, cA = r + 1;
+            for(let i=0; i<5; i++) {
+                if(cB < 1) break;
+                let s = Math.floor(Math.random()*5000)+500;
+                bH += `<div class="ob-row"><div class="depth-bar-bid" style="width:${Math.min((s/5000)*100,100)}%"></div><span class="text-gray-500">${s}</span><span class="font-bold text-green-600">${cB}¢</span></div>`;
+                cB -= Math.floor(Math.random()*3)+1;
             }
-
-            // Tính độ lớn của các vector
-            let mag1 = 0; for (const w in termFrequency) mag1 += termFrequency[w] * termFrequency[w];
-            mag1 = Math.sqrt(mag1);
-
-            let mag2 = 0; for (const w in vector2Config) mag2 += vector2Config[w] * vector2Config[w];
-            mag2 = Math.sqrt(mag2);
-
-            if (mag1 === 0 || mag2 === 0) return 0;
-            return dotProduct / (mag1 * mag2); // Trả về điểm từ 0 đến 1
+            for(let i=0; i<5; i++) {
+                if(cA > 99) break;
+                let s = Math.floor(Math.random()*5000)+500;
+                aH += `<div class="ob-row"><div class="depth-bar-ask" style="width:${Math.min((s/5000)*100,100)}%"></div><span class="font-bold text-red-500">${cA}¢</span><span class="text-gray-500">${s}</span></div>`;
+                cA += Math.floor(Math.random()*3)+1;
+            }
+            document.getElementById('ob-bids').innerHTML = bH;
+            document.getElementById('ob-asks').innerHTML = aH;
         }
 
-        // 12. TÍCH HỢP KÉO TIN TỨC BÁO CHÍ (RSS & CORS PROXY)
-        async function fetchContextualNews(searchKeyword) {
-            const newsFeedEl = document.getElementById('news-feed');
-            const loader = document.getElementById('news-loading');
-            
-            loader.classList.remove('hidden');
-            newsFeedEl.innerHTML = '';
-            
-            // Lấy nguồn cấp tin mới nhất từ VnExpress thông qua Proxy AllOrigins để vượt rào cản CORS
-            const rssUrl = "https://vnexpress.net/rss/tin-moi-nhat.rss";
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+        // Tích hợp AI Cosine Similarity cơ bản cho News
+        function cosSim(t1, t2) {
+            const tok = t => t.toLowerCase().replace(/[^\w\s\u0100-\u024F\u1E00-\u1EFF]/g, '').split(/\s+/).filter(w=>w.length>2);
+            let k1 = tok(t1), k2 = tok(t2); if(!k1.length || !k2.length) return 0;
+            let tf = {}; k1.forEach(w => tf[w] = (tf[w]||0)+1);
+            let dp=0, v2={}, m1=0, m2=0;
+            k2.forEach(w => v2[w] = (v2[w]||0)+1);
+            for(let w in v2) if(tf[w]) dp += tf[w]*v2[w];
+            for(let w in tf) m1 += tf[w]**2;
+            for(let w in v2) m2 += v2[w]**2;
+            return dp / (Math.sqrt(m1)*Math.sqrt(m2));
+        }
 
+        async function fetchNews(kw) {
+            const feed = document.getElementById('news-feed'), ldr = document.getElementById('news-loading');
+            ldr.classList.remove('hidden'); feed.innerHTML = '';
             try {
-                const response = await fetch(proxyUrl);
-                const data = await response.json();
-                
-                // Dùng DOMParser để dịch cấu trúc XML của RSS
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-                const items = xmlDoc.querySelectorAll("item");
-                let allNews = [];
-
-                items.forEach(el => {
-                    const title = el.querySelector("title")?.textContent || "Tin tức";
-                    const link = el.querySelector("link")?.textContent || "#";
-                    
-                    // Phương pháp thao tác DOM ảo để bóc tách ảnh khỏi chuỗi mô tả
-                    const rawDescription = el.querySelector("description")?.textContent || "";
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = rawDescription;
-                    
-                    let imgSrc = "https://via.placeholder.com/100?text=News";
-                    const imgNode = tempDiv.querySelector('img');
-                    if(imgNode && imgNode.src) imgSrc = imgNode.src;
-                    
-                    const cleanDescription = tempDiv.textContent.trim();
-                    const combinedText = title + " " + cleanDescription;
-                    
-                    // Chấm điểm sự liên quan giữa bản tin và tiêu đề của sự kiện dự đoán
-                    const similarityScore = calculateCosineSimilarity(searchKeyword, combinedText);
-
-                    allNews.push({ title, link, imgSrc, cleanDescription, score: similarityScore });
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent("https://vnexpress.net/rss/tin-moi-nhat.rss")}`);
+                const data = await res.json();
+                const doc = new DOMParser().parseFromString(data.contents, "text/xml");
+                let news = [];
+                doc.querySelectorAll("item").forEach(el => {
+                    let title = el.querySelector("title")?.textContent||"";
+                    let link = el.querySelector("link")?.textContent||"";
+                    let desc = el.querySelector("description")?.textContent||"";
+                    let div = document.createElement('div'); div.innerHTML = desc;
+                    let img = div.querySelector('img')?.src || "[https://via.placeholder.com/80?text=News](https://via.placeholder.com/80?text=News)";
+                    let text = div.textContent.trim();
+                    news.push({title, link, img, text, score: cosSim(kw, title+" "+text)});
                 });
-
-                // Sắp xếp bài có độ liên quan cao nhất lên đầu
-                allNews.sort((a, b) => b.score - a.score);
-
-                let newsHtml = '';
-                const topNews = allNews.slice(0, 4); // Chỉ lấy 4 bài tốt nhất
-
-                topNews.forEach(news => {
-                    // Nếu điểm > 2% thì gắn nhãn "Liên quan", nếu không thì ghi "Tin mới"
-                    const relevanceBadge = news.score > 0.02 
-                        ? `<span class="text-[9px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-bold ml-2 shadow-sm">Liên quan: ${(news.score * 100).toFixed(0)}%</span>` 
-                        : `<span class="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-bold ml-2">Tin mới</span>`;
-
-                    newsHtml += `
-                        <a href="${news.link}" target="_blank" class="flex gap-4 group hover:bg-gray-50 p-2 -mx-2 rounded-xl transition-colors border border-transparent hover:border-gray-100 relative">
-                            <img src="${news.imgSrc}" class="w-20 h-20 object-cover rounded-lg border border-gray-100 shrink-0">
-                            <div class="flex flex-col justify-center">
-                                <h4 class="text-sm font-bold text-gray-900 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">${news.title}</h4>
-                                <p class="text-[11px] text-gray-500 line-clamp-2 mt-1 mb-1 leading-relaxed">${news.cleanDescription}</p>
-                                <div>${relevanceBadge}</div>
+                news.sort((a,b) => b.score - a.score);
+                let html = news.slice(0,4).map(n => `
+                    <a href="${n.link}" target="_blank" class="flex gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200 group">
+                        <img src="${n.img}" class="w-16 h-16 rounded-lg object-cover border border-gray-100 shrink-0">
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 line-clamp-2">${n.title}</h4>
+                            <div class="mt-2 flex items-center gap-2">
+                                ${n.score > 0.05 ? `<span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded">Khớp ${Math.round(n.score*100)}%</span>` : `<span class="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-0.5 rounded">Cập nhật</span>`}
                             </div>
-                        </a>
-                    `;
-                });
-
-                newsFeedEl.innerHTML = newsHtml === '' ? `<p class="text-xs text-gray-500">Không có bản tin thời sự nào.</p>` : newsHtml;
-            } catch (err) {
-                console.error("Lỗi xung đột tải RSS:", err);
-                newsFeedEl.innerHTML = `<p class="text-xs text-red-500">Mất kết nối với máy chủ tin tức.</p>`;
-            } finally {
-                loader.classList.add('hidden');
-            }
+                        </div>
+                    </a>
+                `).join('');
+                feed.innerHTML = html || "<p class='text-sm text-gray-500'>Không có tin tức.</p>";
+            } catch (e) { feed.innerHTML = "<p class='text-sm text-red-500'>Lỗi tải tin tức.</p>"; } 
+            finally { ldr.classList.add('hidden'); }
         }
 
-        // 13. QUẢN LÝ PHIÊN ĐĂNG NHẬP VÀ CỬA SỔ
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
         function doLogin() {
-            isGuest = false; 
-            balance = 5000; // Tặng ngay 5.000 điểm khi click Đăng nhập
-            closeModal('login-modal');
-            updateBalanceDisplay();
-            
-            // Chuyển nút Đăng nhập thành Khu vực hiển thị Tài sản
+            isGuest = false; balance = 5000; closeModal('login-modal'); updateBalance();
             document.getElementById('auth-area').innerHTML = `
-                <div class="bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-gray-200 cursor-pointer transition-colors">
-                    <span class="text-xs">💎</span>
-                    <span class="text-xs font-bold text-gray-900" id="nav-balance">${balance.toLocaleString()} P</span>
-                </div>    
+                <div class="bg-gray-100 border border-gray-200 px-4 py-2 rounded-lg flex items-center gap-2 font-bold text-sm text-gray-900 shadow-inner">
+                    Tài sản: <span id="nav-balance" class="text-blue-600">${balance.toLocaleString()} P</span>
+                </div>
             `;
         }
-
-        // Hàm tiện ích cập nhật số dư ở khắp nơi trên web
-        function updateBalanceDisplay() {
-            const el = document.getElementById('current-balance');
-            if(el) el.innerText = balance.toLocaleString() + ' P';
-            const navEl = document.getElementById('nav-balance');
-            if(navEl) navEl.innerText = balance.toLocaleString() + ' P';
+        function updateBalance() {
+            if(document.getElementById('current-balance')) document.getElementById('current-balance').innerText = balance.toLocaleString() + ' P';
+            if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = balance.toLocaleString() + ' P';
         }
 
-        // 14. BẬT KHỞI ĐỘNG ỨNG DỤNG TRUNG TÂM
-        // Dòng này đảm bảo ngay khi mở web, hệ thống sẽ tự động gọi Google Sheets
-        window.onload = fetchEventsFromGoogleSheets;
-
+        window.onload = fetchEvents;
     </script>
 </body>
 </html>
