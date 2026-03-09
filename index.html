@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Forely Terminal - Community Prediction Engine</title>
+    <title>Forely - Premier Prediction & Intelligence</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -15,267 +16,395 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         
-        :root { --brand-primary: #2563eb; --brand-secondary: #0d9488; --bg-surface: #f8fafc; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-surface); color: #0f172a; -webkit-tap-highlight-color: transparent; }
-        
-        /* Hiệu ứng kính mờ và Brand */
-        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
-        .brand-gradient { background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        :root {
+            --primary: #2563eb; /* Royal Blue */
+            --yes-color: #10b981; /* Emerald */
+            --no-color: #f43f5e; /* Rose */
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Ẩn thanh cuộn nhưng vẫn cho cuộn */
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Hiệu ứng kính mờ (Glassmorphism) */
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.5); box-shadow: 0 -10px 40px rgba(0,0,0,0.05); }
 
         /* Animation chuyển trang SPA */
-        .page-section { display: none; opacity: 0; transform: translateY(15px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .page-section { display: none; opacity: 0; transform: translateY(20px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .page-active { display: block; opacity: 1; transform: translateY(0); }
 
-        /* Giao diện Thẻ Polymarket */
-        .market-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #f1f5f9; border-radius: 28px; background: white;}
-        .market-card:hover { transform: translateY(-4px); box-shadow: 0 20px 30px -10px rgba(0,0,0,0.05); border-color: var(--brand-primary); }
-        .market-card:active { transform: scale(0.97); }
+        /* Card Design - Smooth UI */
+        .modern-card { 
+            background: var(--surface); border: 1px solid #e2e8f0; border-radius: 24px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .modern-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.02); border-color: #cbd5e1; }
+        .modern-card:active { transform: scale(0.98); }
 
-        /* Sổ lệnh CLOB depth effect */
-        .depth-bar-bid { position: absolute; top: 0; bottom: 0; right: 0; background-color: rgba(16, 185, 129, 0.1); z-index: 0; transition: width 0.4s; }
-        .depth-bar-ask { position: absolute; top: 0; bottom: 0; left: 0; background-color: rgba(239, 68, 68, 0.1); z-index: 0; transition: width 0.4s; }
-
-        /* Drawer Menu */
-        #side-menu { position: fixed; inset: 0; z-index: 2000; visibility: hidden; pointer-events: none; }
-        #side-menu.active { visibility: visible; pointer-events: auto; }
-        #menu-content { position: absolute; right: 0; top: 0; height: 100%; width: 300px; background: white; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        #side-menu.active #menu-content { transform: translateX(0); }
-        #menu-overlay { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.5); opacity: 0; transition: opacity 0.4s; backdrop-filter: blur(4px); }
-        #side-menu.active #menu-overlay { opacity: 1; }
+        /* Button Animations */
+        .btn-modern { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-modern:active { transform: scale(0.94); }
 
         /* Loader */
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--brand-primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: auto; }
+        .loader { border: 3px solid #e2e8f0; border-top: 3px solid var(--primary); border-radius: 50%; width: 36px; height: 36px; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Custom Modal */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 1500; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal.active { display: flex; animation: modalFadeIn 0.3s ease; }
-        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
+        /* Modal Overlay */
+        .modal { display: none; position: fixed; inset: 0; z-index: 1500; background: rgba(15, 23, 42, 0.5); align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+        .modal.active { display: flex; animation: fadeScale 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeScale { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+
+        /* Toast Notifications */
+        #toast-container { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: white; color: #0f172a; padding: 14px 24px; border-radius: 100px; font-size: 13px; font-weight: 600; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 8px; animation: slideDown 0.4s ease, fadeOut 0.4s ease 2.5s forwards; border: 1px solid #f1f5f9; }
+        @keyframes slideDown { from { transform: translate(-50%, -20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; transform: translate(-50%, -10px); } }
+
+        /* Line Clamps */
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Floating Nav iOS Style */
+        .floating-nav-wrapper { position: fixed; bottom: 20px; left: 0; right: 0; z-index: 100; display: flex; justify-content: center; padding: 0 16px; pointer-events: none; }
+        .floating-nav { pointer-events: auto; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); border-radius: 100px; display: flex; justify-content: space-between; padding: 6px 12px; width: 100%; max-w: 500px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 56px; border-radius: 20px; transition: all 0.3s ease; }
+        .nav-item.active { background: #eff6ff; color: var(--primary); }
+        .nav-item.inactive { color: #64748b; }
     </style>
 </head>
-<body class="pb-28">
+<body class="pb-32">
 
-    <nav class="bg-white/90 backdrop-blur-xl px-5 py-4 sticky top-0 z-[100] flex justify-between items-center border-b border-slate-100 shadow-sm">
-        <div onclick="switchPage('home')" class="flex items-center gap-2 cursor-pointer transition-transform active:scale-95">
-            <svg width="34" height="34" viewBox="0 0 120 120">
-                <defs><linearGradient id="g" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#2563eb" /><stop offset="100%" stop-color="#0d9488" /></linearGradient></defs>
-                <circle cx="60" cy="60" r="50" stroke="url(#g)" stroke-width="12" fill="none"/>
-                <path d="M40 80 L85 35 L65 90 L55 65 Z" fill="url(#g)"/><path d="M40 80 L85 35 L30 60 L55 65 Z" fill="#1e293b"/>
+    <div id="toast-container"></div>
+
+    <nav class="glass px-5 py-4 sticky top-0 z-[90] flex justify-between items-center border-b border-slate-200/50">
+        <div onclick="switchPage('home')" class="flex items-center gap-2.5 cursor-pointer btn-modern">
+            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="40" rx="12" fill="url(#gradLogo)"/>
+                <path d="M12 28V12H24" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 20H20" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="26" cy="14" r="3.5" fill="white"/>
+                <defs>
+                    <linearGradient id="gradLogo" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#2563EB"/>
+                        <stop offset="1" stop-color="#38BDF8"/>
+                    </linearGradient>
+                </defs>
             </svg>
-            <span class="text-2xl font-black brand-gradient tracking-tighter">Forely</span>
+            <span class="text-2xl font-extrabold text-slate-800 tracking-tight">Forely</span>
         </div>
         
         <div class="flex items-center gap-3">
             <div id="auth-area" class="flex gap-2">
-                <button onclick="openModal('login-modal')" class="text-blue-600 text-xs font-black px-4 py-2 border-2 border-blue-100 rounded-full hover:bg-blue-50 transition-colors" data-i18n="login_btn">Log In</button>
-                <button onclick="openModal('login-modal')" class="bg-blue-600 text-white text-xs font-black px-5 py-2 rounded-full shadow-lg active:scale-95 transition-all" data-i18n="signup_btn">Sign Up</button>
+                <button onclick="openModal('login-modal')" class="text-slate-600 hover:bg-slate-100 text-xs font-bold px-4 py-2 rounded-full transition-colors" data-i18n="login_btn">Đăng nhập</button>
+                <button onclick="openModal('login-modal')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-5 py-2 rounded-full shadow-md btn-modern" data-i18n="signup_btn">Bắt đầu</button>
             </div>
-            <button onclick="toggleMenu()" class="p-2.5 bg-slate-50 rounded-2xl text-slate-500 border border-slate-100 active:bg-slate-200 transition-all">
-                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-            </button>
         </div>
     </nav>
 
-    <div id="side-menu">
-        <div id="menu-overlay" onclick="toggleMenu()"></div>
-        <div id="menu-content" class="flex flex-col">
-            <div class="p-7 border-b bg-slate-50 flex justify-between items-center">
-                <h3 class="font-black text-slate-900 text-lg" data-i18n="menu_settings">Cài đặt</h3>
-                <button onclick="toggleMenu()" class="text-slate-400 text-3xl font-light">×</button>
-            </div>
-            <div class="flex-1 overflow-y-auto p-7 space-y-10">
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4" data-i18n="p_lang">NGÔN NGỮ</label>
-                    <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1.5 rounded-2xl border">
-                        <button onclick="switchLang('vi')" id="l-vi" class="py-2.5 text-xs font-black rounded-xl transition-all">TIẾNG VIỆT</button>
-                        <button onclick="switchLang('en')" id="l-en" class="py-2.5 text-xs font-black rounded-xl transition-all">ENGLISH</button>
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">PLATFORM INFO</label>
-                    <a href="#" class="flex items-center justify-between py-4 border-b border-slate-50 text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors" data-i18n="menu_terms">Điều khoản dự báo</a>
-                    <a href="#" class="flex items-center justify-between py-4 border-b border-slate-50 text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors" data-i18n="menu_support">Liên hệ hỗ trợ</a>
-                </div>
-            </div>
-            <div class="p-8 text-center border-t border-slate-50 bg-slate-50/20">
-                <p class="text-[10px] text-slate-400 font-black tracking-widest">FORELY SOVEREIGN v2.6</p>
-            </div>
-        </div>
-    </div>
-
     <div id="page-home" class="page-section page-active">
-        <div class="bg-white sticky top-[68px] z-40 border-b border-slate-100 shadow-sm">
-            <div class="px-5 pt-4 pb-2">
+        <div class="bg-white sticky top-[68px] z-40 border-b border-slate-100 pb-2">
+            <div class="px-5 pt-4 pb-3 max-w-7xl mx-auto">
                 <div class="relative group">
-                    <input type="text" id="search-input" oninput="renderMarketGrid()" placeholder="Tìm thị trường..." class="w-full bg-slate-100/80 border-none rounded-2xl py-3.5 pl-12 pr-4 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none" data-i18n-placeholder="search_placeholder">
-                    <span class="absolute left-4 top-3.5 text-slate-400 text-lg group-focus-within:text-blue-500 transition-colors">🔍</span>
+                    <input type="text" id="search-input" oninput="renderMarketGrid()" placeholder="Tìm kiếm cơ hội đầu tư..." class="w-full bg-slate-50 border border-slate-200 rounded-[20px] py-4 pl-12 pr-4 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none" data-i18n-placeholder="search_placeholder">
+                    <svg class="absolute left-4 top-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                 </div>
-                <div class="flex gap-2.5 mt-4 bg-slate-100 p-1.5 rounded-2xl border">
-                    <button onclick="setViewStatus('active')" id="tab-active" class="flex-1 py-2 text-xs font-black rounded-xl bg-white text-blue-600 shadow-sm transition-all" data-i18n="tab_active">🟢 Đang mở</button>
-                    <button onclick="setViewStatus('ended')" id="tab-ended" class="flex-1 py-2 text-xs font-black rounded-xl text-slate-400 hover:bg-slate-200 transition-all" data-i18n="tab_ended">⏳ Lịch sử</button>
+                
+                <div class="flex gap-2 mt-4 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 w-full md:w-80">
+                    <button onclick="setViewStatus('active')" id="tab-active" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-blue-600 shadow-sm transition-all" data-i18n="tab_active">🟢 Đang mở</button>
+                    <button onclick="setViewStatus('ended')" id="tab-ended" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-700 transition-all" data-i18n="tab_ended">🔒 Lịch sử</button>
                 </div>
             </div>
-            <div class="flex gap-2.5 overflow-x-auto px-5 pb-4 mt-1 no-scrollbar">
-                <button onclick="setCategoryFilter('Tất cả', this)" class="cat-filter-btn bg-slate-900 text-white px-6 py-2 rounded-full text-[10px] font-black shrink-0 transition-all" data-i18n="cat_all">Tất cả</button>
-                <button onclick="setCategoryFilter('Kinh tế vĩ mô', this)" class="cat-filter-btn bg-white border border-slate-200 text-slate-500 px-6 py-2 rounded-full text-[10px] font-black shrink-0 transition-all" data-i18n="cat_eco">Kinh tế</button>
-                <button onclick="setCategoryFilter('Chính sách', this)" class="cat-filter-btn bg-white border border-slate-200 text-slate-500 px-6 py-2 rounded-full text-[10px] font-black shrink-0 transition-all" data-i18n="cat_policy">Chính sách</button>
-                <button onclick="setCategoryFilter('Công nghệ', this)" class="cat-filter-btn bg-white border border-slate-200 text-slate-500 px-6 py-2 rounded-full text-[10px] font-black shrink-0 transition-all" data-i18n="cat_tech">Công nghệ</button>
+            
+            <div class="flex gap-2 overflow-x-auto px-5 pb-3 mt-1 no-scrollbar max-w-7xl mx-auto">
+                <button onclick="setCategoryFilter('Tất cả', this)" class="cat-filter-btn bg-slate-800 text-white px-5 py-2 rounded-full text-xs font-semibold shrink-0 shadow-md transition-all" data-i18n="cat_all">Tổng hợp</button>
+                <button onclick="setCategoryFilter('Kinh tế vĩ mô', this)" class="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2 rounded-full text-xs font-semibold shrink-0 transition-all" data-i18n="cat_eco">Kinh tế vĩ mô</button>
+                <button onclick="setCategoryFilter('Chính sách', this)" class="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2 rounded-full text-xs font-semibold shrink-0 transition-all" data-i18n="cat_policy">Chính sách</button>
+                <button onclick="setCategoryFilter('Giải trí - Xã hội', this)" class="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2 rounded-full text-xs font-semibold shrink-0 transition-all" data-i18n="cat_ent">Xã hội</button>
+                <button onclick="setCategoryFilter('Công nghệ', this)" class="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2 rounded-full text-xs font-semibold shrink-0 transition-all" data-i18n="cat_tech">Công nghệ AI</button>
             </div>
         </div>
-        <div id="home-loader" class="py-32 text-center"><div class="loader"></div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-6">Connecting Node...</p></div>
-        <div id="market-grid" class="p-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 hidden"></div>
+
+        <div id="home-loader" class="py-32 text-center">
+            <div class="loader"></div>
+            <p class="text-[11px] font-bold text-slate-400 mt-4 tracking-widest uppercase">Fetching Markets...</p>
+        </div>
+        
+        <div id="market-grid" class="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 hidden max-w-7xl mx-auto">
+            </div>
     </div>
 
     <div id="page-detail" class="page-section bg-white min-h-screen">
-        <div class="px-5 py-4 flex items-center border-b border-slate-100 sticky top-0 z-50 bg-white/95 backdrop-blur-lg">
-            <button onclick="switchPage('home')" class="p-3 -ml-3 text-slate-400 bg-slate-50 rounded-2xl active:scale-90 transition-transform">❮</button>
-            <h2 class="text-sm font-black text-slate-900 ml-4 uppercase tracking-widest" data-i18n="detail_title">Dữ liệu thời gian thực</h2>
+        <div class="px-5 py-4 flex items-center border-b border-slate-100 sticky top-0 z-50 glass">
+            <button onclick="switchPage('home')" class="p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-full btn-modern">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <h2 class="text-sm font-bold text-slate-800 ml-2 uppercase tracking-wider" data-i18n="detail_title">Trạm Phân Tích</h2>
         </div>
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-5">
-                <span id="dt-cat" class="text-[10px] font-black text-blue-600 uppercase bg-blue-50 px-3 py-1 rounded-lg">CATEGORY</span>
-                <span id="dt-status" class="text-[10px] font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-lg">⏳ 2026</span>
+        
+        <div class="p-6 max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <span id="dt-cat" class="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">CATEGORY</span>
+                <span id="dt-status" class="text-[10px] font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg">⏳ Date</span>
             </div>
-            <h1 id="dt-title" class="text-2xl font-black text-slate-900 leading-tight mb-8">Nội dung câu hỏi</h1>
             
-            <div class="bg-slate-50 rounded-[45px] p-8 border border-slate-100 mb-10 shadow-inner overflow-hidden relative">
+            <h1 id="dt-title" class="text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight mb-8">Nội dung câu hỏi</h1>
+            
+            <div class="bg-slate-50/50 rounded-[32px] p-6 border border-slate-200 mb-10 relative">
                 <div class="flex justify-between items-end mb-6 relative z-10">
                     <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Xác suất CÓ</p>
-                        <h2 class="text-5xl font-black text-blue-600 tracking-tighter"><span id="dt-yes-rate">0</span>%</h2>
+                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1">Xác suất CÓ</p>
+                        <h2 class="text-5xl font-black text-emerald-500 tracking-tighter"><span id="dt-yes-rate">0</span><span class="text-3xl">%</span></h2>
                     </div>
                     <div class="text-right">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Thanh khoản (P)</p>
-                        <p id="dt-vol" class="text-xl font-black text-slate-900 italic tracking-tighter">0</p>
+                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1">Thanh khoản</p>
+                        <p id="dt-vol" class="text-2xl font-black text-slate-800">0 P</p>
                     </div>
                 </div>
-                <canvas id="detailChart" height="180"></canvas>
+                <div class="w-full bg-rose-100 rounded-full h-3 overflow-hidden flex mb-6">
+                    <div id="dt-bar-yes" class="bg-emerald-500 h-full transition-all duration-700" style="width: 50%"></div>
+                    <div id="dt-bar-no" class="bg-rose-500 h-full transition-all duration-700" style="width: 50%"></div>
+                </div>
+                <div class="w-full h-[180px] relative"><canvas id="detailChart"></canvas></div>
             </div>
 
             <div class="mb-12">
-                <div class="flex justify-between items-center mb-5 px-1">
-                    <h3 class="text-sm font-black text-slate-900 uppercase">Sổ lệnh minh bạch</h3>
-                    <div class="flex items-center gap-1.5 bg-green-50 text-green-600 px-2.5 py-1 rounded-lg">
-                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                        <span class="text-[9px] font-black uppercase">Live Orderbook</span>
+                <div class="flex justify-between items-center mb-4 px-1">
+                    <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Sổ Lệnh Minh Bạch</h3>
+                    <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 px-2.5 py-1.5 rounded-md border border-emerald-100">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span class="text-[9px] font-black uppercase tracking-widest">Live</span>
                     </div>
                 </div>
-                <div class="bg-white border border-slate-100 rounded-[30px] overflow-hidden">
+                <div class="modern-card overflow-hidden">
                     <table class="w-full text-left">
-                        <thead class="bg-slate-50 text-[9px] text-slate-400 font-black uppercase tracking-widest border-b">
-                            <tr><th class="py-4 px-5">User</th><th class="py-4 px-5 text-center">Side</th><th class="py-4 px-5 text-right">Amount</th></tr>
+                        <thead class="bg-slate-50 text-[10px] text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                            <tr><th class="py-3 px-5">Tài khoản</th><th class="py-3 px-5 text-center">Vị thế</th><th class="py-3 px-5 text-right">Quy mô (P)</th></tr>
                         </thead>
-                        <tbody id="live-order-body" class="divide-y divide-slate-50 text-xs font-bold">
-                            </tbody>
+                        <tbody id="live-order-body" class="divide-y divide-slate-100 text-sm">
+                            <tr><td colspan="3" class="py-8 text-center text-slate-400 text-xs italic">Đang đồng bộ dữ liệu blockchain...</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
 
-            <div class="space-y-10 pb-20">
-                <div class="bg-slate-50 p-6 rounded-[35px] border"><h3 class="text-sm font-black mb-3 border-l-4 border-blue-600 pl-4 uppercase" data-i18n="dt_desc">Bối cảnh</h3><p id="dt-desc" class="text-[13px] text-slate-600 font-medium"></p></div>
-                <div class="flex gap-3 sticky bottom-4 bg-white/80 backdrop-blur-md p-2 rounded-3xl border shadow-xl z-50">
-                    <button onclick="handleTradeClick('yes')" class="flex-1 bg-blue-600 text-white py-5 rounded-2xl font-black shadow-lg shadow-blue-200 active:scale-95 transition-all text-sm uppercase">Chọn CÓ <span class="dt-y-pct">...</span>%</button>
-                    <button onclick="handleTradeClick('no')" class="flex-1 bg-red-500 text-white py-5 rounded-2xl font-black shadow-lg shadow-red-200 active:scale-95 transition-all text-sm uppercase">Chọn KHÔNG <span class="dt-n-pct">...</span>%</button>
+            <div class="space-y-8 pb-32">
+                <div class="bg-blue-50/50 p-6 rounded-[24px] border border-blue-100">
+                    <h3 class="text-xs font-black text-blue-800 mb-3 uppercase tracking-widest" data-i18n="dt_desc">Bối cảnh & Phân tích</h3>
+                    <p id="dt-desc" class="text-[13px] text-blue-900/80 leading-relaxed font-medium">Đang tải...</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-[24px] border border-slate-200">
+                    <h3 class="text-xs font-black text-slate-800 mb-3 uppercase tracking-widest" data-i18n="dt_rules">Luật phân giải (Rules)</h3>
+                    <ul class="text-xs text-slate-600 space-y-3 font-medium">
+                        <li class="flex gap-3 items-start"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full mt-1.5 shrink-0"></span><span data-i18n="rule_1">Dựa trên nguồn tin chính thức từ cơ quan quản lý hoặc báo chí lớn (VnExpress, VTV).</span></li>
+                        <li class="flex gap-3 items-start"><span class="w-1.5 h-1.5 bg-slate-400 rounded-full mt-1.5 shrink-0"></span><span data-i18n="rule_2">Hoàn tiền tự động 100% nếu không có kết quả xác minh trước thời hạn.</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="fixed bottom-0 left-0 right-0 glass border-t border-slate-200 p-4 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+                <div class="max-w-4xl mx-auto flex gap-3">
+                    <button onclick="handlePredictClick('yes')" class="flex-1 bg-emerald-500 text-white py-4 rounded-2xl font-bold shadow-lg shadow-emerald-200 btn-modern text-sm">CÓ <span class="dt-y-pct font-normal opacity-80 ml-1">...</span></button>
+                    <button onclick="handlePredictClick('no')" class="flex-1 bg-rose-500 text-white py-4 rounded-2xl font-bold shadow-lg shadow-rose-200 btn-modern text-sm">KHÔNG <span class="dt-n-pct font-normal opacity-80 ml-1">...</span></button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="page-news" class="page-section bg-slate-50 min-h-screen">
-        <div class="sticky top-0 z-50 bg-white border-b border-slate-100">
-            <div class="p-5 flex justify-between items-center pb-3">
-                <h2 class="text-2xl font-black text-slate-900 tracking-tight" data-i18n="news_title">Tin tức thị trường</h2>
-                <span class="text-[9px] bg-red-50 text-red-500 px-3 py-1 rounded-full font-black animate-pulse">LIVE RSS</span>
+        <div class="sticky top-[68px] z-40 bg-white border-b border-slate-200 shadow-sm">
+            <div class="px-5 pt-4 pb-2 max-w-7xl mx-auto flex justify-between items-center">
+                <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight" data-i18n="news_title">Tin tức thị trường</h2>
+                <span class="text-[9px] bg-rose-50 text-rose-600 px-3 py-1.5 rounded-full font-bold uppercase border border-rose-100 animate-pulse flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-rose-500 rounded-full"></div>LIVE</span>
             </div>
-            <div class="flex gap-2.5 overflow-x-auto px-5 pb-5 no-scrollbar">
-                <button onclick="switchNews('kinh-doanh', this)" class="news-cat bg-blue-600 text-white px-5 py-2.5 rounded-2xl text-[11px] font-black shrink-0 shadow-lg">📈 KINH TẾ</button>
-                <button onclick="switchNews('the-gioi', this)" class="news-cat bg-white border border-slate-100 text-slate-500 px-5 py-2.5 rounded-2xl text-[11px] font-black shrink-0">🌍 THẾ GIỚI</button>
-                <button onclick="switchNews('cong-nghe', this)" class="news-cat bg-white border border-slate-100 text-slate-500 px-5 py-2.5 rounded-2xl text-[11px] font-black shrink-0">📡 CÔNG NGHỆ</button>
+            <div class="flex gap-2.5 overflow-x-auto px-5 pb-4 mt-2 max-w-7xl mx-auto no-scrollbar">
+                <button onclick="switchNewsCategory('kinh-doanh', this)" class="news-cat-btn bg-slate-800 text-white px-5 py-2 rounded-full text-xs font-semibold shrink-0 transition-all">Tài chính - Kinh tế</button>
+                <button onclick="switchNewsCategory('the-gioi', this)" class="news-cat-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2 rounded-full text-xs font-semibold shrink-0 transition-all">Thế giới</button>
+                <button onclick="switchNewsCategory('cong-nghe', this)" class="news-cat-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2 rounded-full text-xs font-semibold shrink-0 transition-all">Công nghệ & AI</button>
             </div>
         </div>
+        
         <div id="news-loader" class="py-32 text-center hidden"><div class="loader"></div></div>
-        <div class="p-5 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="news-col"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 bg-[#9f224e] rounded-xl flex items-center justify-center text-white font-black text-[10px]">VNE</div><h3 class="font-black text-sm uppercase tracking-tighter">VnExpress</h3></div><div id="col-vne" class="space-y-4"></div></div>
-            <div class="news-col border-t md:border-t-0 md:border-l md:pl-8 border-slate-200/50 pt-6 md:pt-0"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 bg-[#e32] rounded-xl flex items-center justify-center text-white font-black text-[10px]">TT</div><h3 class="font-black text-sm uppercase tracking-tighter">Tuổi Trẻ</h3></div><div id="col-tt" class="space-y-4"></div></div>
-            <div class="news-col border-t md:border-t-0 md:border-l md:pl-8 border-slate-200/50 pt-6 md:pt-0"><div class="flex items-center gap-3 mb-4"><div class="w-8 h-8 bg-[#005baa] rounded-xl flex items-center justify-center text-white font-black text-[10px]">VNN</div><h3 class="font-black text-sm uppercase tracking-tighter">VietnamNet</h3></div><div id="col-vnn" class="space-y-4"></div></div>
+
+        <div class="p-5 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3 bg-white p-3 rounded-2xl border border-slate-100 shadow-sm sticky top-[150px] z-30">
+                    <img src="https://s1.vnecdn.net/vnexpress/restruct/i/v935/v2_2019/pc/graphics/logo.svg" class="h-4 object-contain opacity-80">
+                </div>
+                <div id="news-col-vne" class="space-y-4"></div>
+            </div>
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3 bg-white p-3 rounded-2xl border border-slate-100 shadow-sm sticky top-[150px] z-30">
+                    <span class="font-black text-rose-600 text-sm tracking-tighter">TUỔI TRẺ</span>
+                </div>
+                <div id="news-col-tt" class="space-y-4"></div>
+            </div>
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-3 bg-white p-3 rounded-2xl border border-slate-100 shadow-sm sticky top-[150px] z-30">
+                    <span class="font-black text-blue-800 text-sm tracking-tighter">VIETNAMNET</span>
+                </div>
+                <div id="news-col-vnn" class="space-y-4"></div>
+            </div>
         </div>
     </div>
 
-    <div id="page-deposit" class="page-section p-5 min-h-screen bg-slate-50">
-        <div class="bg-white rounded-[50px] p-10 shadow-2xl border border-slate-100 text-center mb-8 relative overflow-hidden">
-            <h3 class="font-black text-slate-900 text-xl mb-2" data-i18n="deposit_qr_title">Nạp P qua VietQR</h3>
-            <p class="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-10">Smart Gateway Automation</p>
-            <div class="bg-slate-50 p-6 rounded-[40px] border-2 border-dashed border-slate-200 inline-block mb-10 shadow-inner group"><img id="qr-img" src="" class="w-60 h-60 object-contain transition-transform group-hover:scale-105 duration-500"></div>
-            <div class="w-full bg-blue-50 p-6 rounded-3xl border border-blue-100 text-left"><p class="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2" data-i18n="qr_content">Nội dung</p><div class="flex justify-between items-center"><span id="qr-text" class="text-xl font-black text-blue-700 tracking-tighter uppercase font-mono">FORELY USER</span><button onclick="copyToClipboard('qr-text')" class="bg-white p-3 rounded-xl shadow-sm text-blue-600 active:scale-90 transition-all">📋</button></div></div>
+    <div id="page-deposit" class="page-section p-5 min-h-screen bg-slate-50 flex flex-col items-center">
+        <div class="w-full max-w-md bg-white rounded-[32px] p-8 shadow-xl border border-slate-100 text-center mb-6">
+            <h3 class="font-black text-slate-900 text-2xl mb-2" data-i18n="deposit_qr_title">Cổng Nạp F-Point</h3>
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-8">Smart Gateway 24/7</p>
+            
+            <div class="bg-slate-50 p-4 rounded-[28px] border border-slate-200 inline-block mb-8">
+                <img id="qr-img" src="https://via.placeholder.com/250?text=Select+Amount" class="w-56 h-56 object-contain mix-blend-multiply">
+            </div>
+            
+            <div class="w-full bg-blue-50 p-5 rounded-2xl border border-blue-100 text-left">
+                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1" data-i18n="qr_content">Nội dung chuyển khoản</p>
+                <div class="flex justify-between items-center">
+                    <span id="qr-text" class="text-xl font-black text-blue-700 font-mono tracking-tight">FORELY LOGIN</span>
+                    <button class="bg-white p-2.5 rounded-xl shadow-sm text-blue-600 btn-modern" onclick="copyText('qr-text')"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                </div>
+            </div>
         </div>
-        <div class="grid grid-cols-2 gap-4"><button onclick="generateQR(50000)" class="bg-white py-6 rounded-[30px] border border-slate-100 font-black text-slate-700 hover:border-blue-500 transition-all shadow-sm">50,000 P</button><button onclick="generateQR(100000)" class="bg-white py-6 rounded-[30px] border border-slate-100 font-black text-slate-700 hover:border-blue-500 transition-all shadow-sm">100,000 P</button><button onclick="generateQR(500000)" class="bg-blue-600 py-6 rounded-[30px] border-none font-black text-white shadow-2xl active:scale-95 transition-all">500,000 P</button><button onclick="generateQR(1000000)" class="bg-slate-900 py-6 rounded-[30px] border-none font-black text-white shadow-2xl active:scale-95 transition-all">1,000,000 P</button></div>
+        
+        <div class="w-full max-w-md grid grid-cols-2 gap-3">
+            <button onclick="generateQR(50000)" class="modern-card py-5 font-bold text-slate-700 text-sm">50,000 P</button>
+            <button onclick="generateQR(100000)" class="modern-card py-5 font-bold text-slate-700 text-sm">100,000 P</button>
+            <button onclick="generateQR(500000)" class="btn-main rounded-[24px] py-5 font-bold text-white text-sm">500,000 P</button>
+            <button onclick="generateQR(1000000)" class="bg-slate-900 rounded-[24px] py-5 font-bold text-white text-sm btn-modern shadow-lg shadow-slate-300">1,000,000 P</button>
+        </div>
     </div>
 
     <div id="page-rewards" class="page-section bg-slate-50 min-h-screen p-5">
-        <div class="flex items-center justify-between mb-8 bg-white p-6 rounded-[40px] shadow-sm border">
-            <div class="flex items-center gap-5"><div class="w-14 h-14 bg-teal-50 rounded-[20px] flex items-center justify-center text-3xl shadow-inner border border-teal-100">💎</div><div><h3 class="font-black text-slate-900" data-i18n="nav_rewards">Kho Vouchers</h3><p class="text-xs text-teal-600 font-black uppercase tracking-widest mt-1 u-balance">0 P</p></div></div>
+        <div class="max-w-4xl mx-auto">
+            <div class="flex items-center justify-between mb-8 bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-2xl border border-indigo-100">💎</div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg" data-i18n="nav_rewards">Vouchers Store</h3>
+                        <p class="text-[11px] text-indigo-600 font-black uppercase tracking-widest mt-0.5"><span class="u-balance">0</span> P</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-5" id="reward-store-grid"></div>
         </div>
-        <div class="grid grid-cols-2 gap-5" id="reward-grid"></div>
     </div>
 
     <div id="page-profile" class="page-section bg-slate-50 min-h-screen">
-        <div class="bg-white p-12 rounded-b-[60px] shadow-sm border-b text-center mb-8 relative">
-            <img id="u-avatar" src="" class="w-28 h-28 rounded-full border-8 border-white shadow-2xl mx-auto object-cover mb-6">
-            <h2 id="u-name" class="text-3xl font-black text-slate-900 tracking-tighter">Forely User</h2>
-            <div class="flex gap-4 mt-10"><div class="flex-1 bg-slate-50 p-6 rounded-[35px] border shadow-inner"><p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1" data-i18n="p_balance">Số dư</p><p class="text-2xl font-black brand-gradient u-balance">0</p></div><div class="flex-1 bg-blue-50 p-6 rounded-[35px] border border-blue-100 shadow-inner"><p class="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-1" data-i18n="p_winrate">Dự báo đúng</p><p class="text-2xl font-black text-blue-600">78%</p></div></div>
-        </div>
-        <div class="px-6 pb-24 space-y-6">
-            <div class="bg-white p-6 rounded-[40px] shadow-sm border border-slate-100">
-                <h4 class="text-[11px] font-black text-slate-800 uppercase tracking-widest mb-6" data-i18n="menu_history">Lịch sử cá nhân (My Trades)</h4>
-                <div id="my-trade-history" class="space-y-3">
-                    </div>
+        <div class="bg-white px-6 py-12 rounded-b-[40px] shadow-sm border-b border-slate-200 text-center mb-8 relative">
+            <div class="relative inline-block mb-4">
+                <img id="u-avatar" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full border-4 border-white shadow-xl mx-auto object-cover">
+                <div class="absolute bottom-1 right-1 w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
             </div>
-            <button onclick="auth.signOut(); location.reload();" class="w-full py-6 text-red-500 font-black text-sm bg-white rounded-[35px] border-2 border-red-50 shadow-sm active:scale-95 transition-all" data-i18n="logout">ĐĂNG XUẤT</button>
+            <h2 id="u-name" class="text-2xl font-extrabold text-slate-900 tracking-tight">Guest User</h2>
+            <p id="u-email" class="text-xs text-slate-400 font-medium mt-1">Please login to sync data</p>
+            
+            <div class="flex justify-center gap-4 mt-8 max-w-sm mx-auto">
+                <div class="flex-1 bg-slate-50 py-4 px-2 rounded-2xl border border-slate-200">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1" data-i18n="p_balance">Tài sản (P)</p>
+                    <p class="text-xl font-black text-slate-800 u-balance">0</p>
+                </div>
+                <div class="flex-1 bg-emerald-50 py-4 px-2 rounded-2xl border border-emerald-100">
+                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1" data-i18n="p_winrate">Tỷ lệ đúng</p>
+                    <p class="text-xl font-black text-emerald-700">0%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-5 pb-32 max-w-3xl mx-auto space-y-6">
+            <div class="modern-card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h4 class="text-sm font-bold text-slate-800" data-i18n="menu_history">Lịch sử giao dịch</h4>
+                </div>
+                <div id="my-trade-history" class="space-y-3">
+                    <p class="text-sm text-slate-400 text-center py-6">Đăng nhập để xem lịch sử</p>
+                </div>
+            </div>
+            
+            <button onclick="logOutUser()" class="w-full py-4 text-rose-500 font-bold text-sm bg-white rounded-2xl border border-rose-100 shadow-sm btn-modern" data-i18n="logout">Đăng xuất hệ thống</button>
         </div>
     </div>
 
     <div id="trade-modal" class="modal">
-        <div class="bg-white w-[94%] max-w-sm rounded-[50px] shadow-2xl p-10 relative overflow-hidden">
-            <div id="trade-side-badge" class="inline-block px-4 py-2 rounded-2xl text-[10px] font-black uppercase mb-6 tracking-widest">CÓ</div>
-            <h3 id="trade-title" class="text-2xl font-black text-slate-900 mb-8 leading-tight h-20 overflow-hidden"></h3>
-            <div class="flex justify-between items-center mb-3 px-1"><span class="text-[10px] font-black text-slate-400 uppercase tracking-widest" data-i18n="modal_trade_amt">Khối lượng P</span><span class="text-[11px] font-black text-blue-600">Balance: <span class="u-balance">0</span></span></div>
-            <input type="number" id="trade-input" value="1000" step="500" class="w-full bg-slate-50 border-none rounded-[30px] py-6 px-10 text-4xl font-black text-slate-900 shadow-inner outline-none focus:ring-2 focus:ring-blue-500/20 mb-10">
-            <button onclick="executeTradeToDatabase()" id="trade-confirm-btn" class="w-full py-6 rounded-[30px] text-sm font-black text-white shadow-2xl transition-all active:scale-95 uppercase tracking-widest" data-i18n="modal_trade_confirm">Xác nhận gửi</button>
-            <button onclick="closeModal('trade-modal')" class="w-full mt-6 text-[11px] font-black text-slate-300 uppercase tracking-widest" data-i18n="cancel">Hủy lệnh</button>
+        <div class="bg-white w-[92%] max-w-sm rounded-[32px] shadow-2xl p-8 relative">
+            <div id="trade-side-badge" class="inline-block px-4 py-1.5 rounded-lg text-[10px] font-black uppercase mb-4 tracking-widest">CÓ</div>
+            <h3 id="trade-title" class="text-lg font-bold text-slate-900 mb-6 leading-tight h-14 overflow-hidden"></h3>
+            
+            <div class="flex justify-between items-center mb-2 px-1">
+                <span class="text-xs font-semibold text-slate-500" data-i18n="modal_trade_amt">Khối lượng P</span>
+                <span class="text-xs font-bold text-blue-600">Max: <span class="u-balance">0</span></span>
+            </div>
+            <div class="relative mb-8">
+                <input type="number" id="trade-input" value="1000" step="500" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-6 text-2xl font-black text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all">
+                <span class="absolute right-6 top-5 text-slate-400 font-bold">P</span>
+            </div>
+            
+            <button onclick="executeTrade()" id="trade-confirm-btn" class="w-full py-4 rounded-xl text-sm font-bold text-white shadow-lg btn-modern uppercase tracking-widest" data-i18n="modal_trade_confirm">Xác nhận</button>
+            <button onclick="closeModal('trade-modal')" class="w-full mt-4 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors" data-i18n="cancel">Hủy</button>
         </div>
     </div>
 
     <div id="login-modal" class="modal">
-        <div class="bg-white w-[90%] max-w-sm rounded-[50px] p-12 text-center shadow-2xl">
-            <div class="w-24 h-24 bg-blue-50 text-blue-600 rounded-[40px] flex items-center justify-center mx-auto mb-8 text-4xl">👋</div>
-            <h2 class="text-3xl font-black text-slate-900 mb-4">Forely Login</h2>
-            <p class="text-[13px] text-slate-400 font-medium mb-10 leading-relaxed" data-i18n="modal_login_desc">Đăng nhập để nhận định thị trường và tích lũy phần thưởng cộng đồng.</p>
-            <button onclick="loginGoogle()" class="w-full bg-slate-900 text-white py-5 rounded-[25px] flex items-center justify-center gap-4 hover:opacity-90 active:scale-95 transition-all shadow-2xl mb-6">
-                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-6 h-6"><span class="text-sm font-black uppercase tracking-tight">Continue with Google</span>
+        <div class="bg-white w-[90%] max-w-sm rounded-[32px] p-8 text-center shadow-2xl">
+            <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner border border-blue-100">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+            </div>
+            <h2 class="text-2xl font-black text-slate-900 mb-2">Forely ID</h2>
+            <p class="text-sm text-slate-500 mb-8" data-i18n="modal_login_desc">Đăng nhập an toàn bằng Google để đồng bộ dữ liệu giao dịch.</p>
+            <button onclick="loginGoogle()" class="w-full bg-white border-2 border-slate-200 text-slate-700 py-4 rounded-xl flex items-center justify-center gap-3 btn-modern hover:bg-slate-50 font-bold">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5"> Sign in with Google
             </button>
-            <button onclick="closeModal('login-modal')" class="text-xs font-black text-slate-300 uppercase tracking-widest hover:text-slate-500 transition-colors" data-i18n="cancel">Đóng</button>
+            <button onclick="closeModal('login-modal')" class="mt-6 text-xs font-bold text-slate-400" data-i18n="cancel">Đóng</button>
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-2xl border-t border-slate-100 flex justify-around py-4 z-[100] shadow-[0_-15px_40px_-10px_rgba(0,0,0,0.08)] rounded-t-[40px]">
-        <button onclick="switchPage('home')" id="nav-home" class="flex flex-col items-center gap-1.5 w-1/5 py-1 text-blue-600 transition-all duration-300"><span class="text-2xl">🧭</span><span class="text-[9px] font-black uppercase tracking-tighter" data-i18n="nav_markets">Thị trường</span></button>
-        <button onclick="switchPage('news')" id="nav-news" class="flex flex-col items-center gap-1.5 w-1/5 py-1 text-slate-300 transition-all duration-300"><span class="text-2xl">📰</span><span class="text-[9px] font-black uppercase tracking-tighter" data-i18n="nav_news">Tin tức</span></button>
-        <button onclick="switchPage('deposit')" id="nav-deposit" class="flex flex-col items-center gap-1.5 w-1/5 py-1 text-slate-300 transition-all duration-300"><span class="text-2xl">💳</span><span class="text-[9px] font-black uppercase tracking-tighter" data-i18n="nav_deposit">Nạp P</span></button>
-        <button onclick="switchPage('rewards')" id="nav-rewards" class="flex flex-col items-center gap-1.5 w-1/5 py-1 text-slate-300 transition-all duration-300"><span class="text-2xl">🎁</span><span class="text-[9px] font-black uppercase tracking-tighter" data-i18n="nav_rewards">Quà</span></button>
-        <button onclick="switchPage('profile')" id="nav-profile" class="flex flex-col items-center gap-1.5 w-1/5 py-1 text-slate-300 transition-all duration-300"><span class="text-2xl">👤</span><span class="text-[9px] font-black uppercase tracking-tighter" data-i18n="nav_account">Tôi</span></button>
+    <div class="floating-nav-wrapper">
+        <div class="floating-nav">
+            <button onclick="switchPage('home')" id="nav-home" class="nav-item active">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <span class="text-[9px] font-bold mt-1 tracking-tight" data-i18n="nav_markets">Thị trường</span>
+            </button>
+            <button onclick="switchPage('news')" id="nav-news" class="nav-item inactive">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                <span class="text-[9px] font-bold mt-1 tracking-tight" data-i18n="nav_news">Tin tức</span>
+            </button>
+            <button onclick="switchPage('deposit')" id="nav-deposit" class="nav-item inactive">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="5" width="20" height="14" rx="4"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                <span class="text-[9px] font-bold mt-1 tracking-tight" data-i18n="nav_deposit">Nạp P</span>
+            </button>
+            <button onclick="switchPage('rewards')" id="nav-rewards" class="nav-item inactive">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+                <span class="text-[9px] font-bold mt-1 tracking-tight" data-i18n="nav_rewards">Quà</span>
+            </button>
+            <button onclick="switchPage('profile')" id="nav-profile" class="nav-item inactive">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="text-[9px] font-bold mt-1 tracking-tight" data-i18n="nav_account">Tôi</span>
+            </button>
+        </div>
     </div>
 
     <script>
-        // ==========================================
-        // MODULE 1: CONFIGURATION (CORE BRAIN)
-        // ==========================================
+        // ------------------------------------------
+        // 1. SYSTEM CONFIGURATION
+        // ------------------------------------------
         const APP_CONFIG = {
+            // Thay link Google Sheets CSV (7 cột) của bạn vào đây
             sheetsUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vREHXHIoKFy_Vhds8sFY8pJzrvcLZItNS2O0hQTy8Z-JJ9TiwFvCYmQgWVyhLVpcyY1IheROL0ljntf/pub?gid=0&single=true&output=csv",
             
-            // FIREBASE CONFIG (PASTE YOUR REAL CONFIG HERE)
+            // THAY MÃ FIREBASE CỦA BẠN VÀO ĐÂY (Bước Quan Trọng Nhất)
             firebase: {
                 apiKey: "AIzaSy...", 
                 authDomain: "forely-app.firebaseapp.com",
@@ -292,29 +421,31 @@
             }
         };
 
-        // ==========================================
-        // MODULE 2: TRANSLATION DICTIONARY
-        // ==========================================
+        // ------------------------------------------
+        // 2. DICTIONARY (i18n)
+        // ------------------------------------------
         const i18n = {
             vi: {
-                login_btn: "Đăng nhập", signup_btn: "Đăng ký", search_placeholder: "Tìm nhận định...", tab_active: "🟢 Đang mở", tab_ended: "⏳ Lịch sử", 
-                cat_all: "Tất cả", cat_eco: "Kinh tế", cat_policy: "Chính sách", cat_tech: "Công nghệ", cat_sport: "Thể thao",
-                news_title: "Tin tức thị trường", deposit_qr_title: "Nạp P qua VietQR", qr_content: "Nội dung", detail_title: "Dữ liệu minh bạch", dt_desc: "Bối cảnh & Phân tích", dt_rules: "Nguyên tắc tất toán",
-                p_balance: "Số dư (P)", p_winrate: "Dự báo đúng", p_analytics: "Biểu đồ hiệu suất", p_lang: "Ngôn ngữ", logout: "Đăng xuất", nav_markets: "Thị trường", nav_news: "Tin tức", nav_deposit: "Nạp P", nav_rewards: "Quà", nav_account: "Tôi",
-                menu_settings: "Cài đặt", menu_terms: "Pháp lý", menu_support: "Hỗ trợ", menu_history: "Lịch sử cá nhân", cancel: "Hủy bỏ", modal_login_desc: "Đăng nhập để nhận định và tích lũy phần thưởng.", modal_trade_confirm: "Xác nhận gửi", modal_trade_amt: "Quy mô lệnh"
+                login_btn: "Đăng nhập", signup_btn: "Bắt đầu", search_placeholder: "Tìm cơ hội đầu tư...", tab_active: "🟢 Đang mở", tab_ended: "🔒 Đã đóng", login_modal_title: "Forely ID",
+                cat_all: "Tổng hợp", cat_eco: "Kinh tế", cat_policy: "Chính sách", cat_ent: "Xã hội", cat_infra: "Hạ tầng", cat_tech: "Công nghệ", cat_sport: "Thể thao",
+                news_title: "Thị trường Real-time", deposit_qr_title: "Cổng Nạp F-Point", qr_content: "Nội dung", detail_title: "Trạm Phân Tích", dt_desc: "Bối cảnh & Phân tích", dt_rules: "Luật phân giải (Rules)",
+                p_balance: "Tài sản (P)", p_winrate: "Tỷ lệ thắng", p_analytics: "Biểu đồ hiệu suất", p_lang: "Ngôn ngữ hệ thống", logout: "Đăng xuất tài khoản", nav_markets: "Thị trường", nav_news: "Tin tức", nav_deposit: "Nạp", nav_rewards: "Quà", nav_account: "Tôi",
+                menu_settings: "Cài đặt & Pháp lý", menu_terms: "Điều khoản (ICP)", menu_policy: "Chính sách bảo mật", menu_support: "Hỗ trợ khách hàng", menu_history: "Lịch sử giao dịch", cancel: "Hủy bỏ", modal_login_desc: "Bảo mật bằng Google để bảo vệ tài sản của bạn.", modal_trade_confirm: "Ký lệnh", modal_trade_amt: "Quy mô lệnh (P)",
+                rule_1: "Dựa trên kết quả xác thực từ báo chí lớn.", rule_2: "Hoàn tiền 100% nếu không có kết quả."
             },
             en: {
-                login_btn: "Log In", signup_btn: "Sign Up", search_placeholder: "Search prediction...", tab_active: "🟢 Active", tab_ended: "⏳ Ended",
-                cat_all: "All", cat_eco: "Economy", cat_policy: "Policy", cat_tech: "Tech", cat_sport: "Sports",
-                news_title: "Market News", deposit_qr_title: "Deposit (VietQR)", qr_content: "Transfer Note", detail_title: "Event Details", dt_desc: "Market Context", dt_rules: "Resolution",
-                p_balance: "Balance (P)", p_winrate: "Win Rate", p_analytics: "Performance", p_lang: "Language", logout: "Log Out", nav_markets: "Markets", nav_news: "News", nav_deposit: "Deposit", nav_rewards: "Rewards", nav_account: "Profile",
-                menu_settings: "Settings", menu_terms: "Terms", menu_support: "Support", menu_history: "My Trades", cancel: "Cancel", modal_login_desc: "Sign in with Google to transparently track your history.", modal_trade_confirm: "Sign Order", modal_trade_amt: "Amount"
+                login_btn: "Sign In", signup_btn: "Get Started", search_placeholder: "Search markets...", tab_active: "🟢 Active", tab_ended: "🔒 Closed", login_modal_title: "Forely ID",
+                cat_all: "Overview", cat_eco: "Economy", cat_policy: "Policy", cat_ent: "Society", cat_infra: "Infra", cat_tech: "Tech", cat_sport: "Sports",
+                news_title: "Live Markets", deposit_qr_title: "F-Point Deposit", qr_content: "Transfer Note", detail_title: "Analytics Hub", dt_desc: "Context & Analysis", dt_rules: "Resolution Rules",
+                p_balance: "Assets (P)", p_winrate: "Win Rate", p_analytics: "Performance Chart", p_lang: "Language", logout: "Sign Out", nav_markets: "Markets", nav_news: "News", nav_deposit: "Deposit", nav_rewards: "Rewards", nav_account: "Profile",
+                menu_settings: "Settings & Legal", menu_terms: "Terms of Service", menu_policy: "Privacy", menu_support: "Support Center", menu_history: "Trading History", cancel: "Cancel", modal_login_desc: "Secure login with Google to protect your assets.", modal_trade_confirm: "Sign Order", modal_trade_amt: "Order Size (P)",
+                rule_1: "Based on verified outcome from major news.", rule_2: "100% refund if no resolution."
             }
         };
 
-        // ==========================================
-        // MODULE 3: INITIALIZE & STATE
-        // ==========================================
+        // ------------------------------------------
+        // 3. INITIALIZE FIREBASE & STATE
+        // ------------------------------------------
         firebase.initializeApp(APP_CONFIG.firebase);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -323,20 +454,38 @@
             user: null, balance: 5000, events: [], viewStatus: 'active', viewCat: 'Tất cả', newsCat: 'kinh-doanh', selectedEvent: null, tradeSide: null, liveListener: null
         };
 
-        // NAVIGATION ENGINE
+        // ------------------------------------------
+        // 4. UI COMPONENTS & ROUTING
+        // ------------------------------------------
+        function showToast(msg, type='success') {
+            const c = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.innerHTML = type === 'success' ? `<span class="text-lg">✅</span> ${msg}` : `<span class="text-lg">⚠️</span> ${msg}`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
         function toggleMenu() { document.getElementById('side-menu').classList.toggle('active'); }
+
         function switchPage(pageId) {
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('page-active'));
             document.getElementById('page-' + pageId).classList.add('page-active');
             window.scrollTo(0,0);
+            
+            // Cập nhật thanh Bottom Nav
             ['home', 'news', 'deposit', 'rewards', 'profile'].forEach(id => {
                 const btn = document.getElementById('nav-'+id);
-                if(btn) { btn.classList.toggle('text-blue-600', id===pageId); btn.classList.toggle('text-slate-300', id!==pageId); }
+                if(btn) { 
+                    btn.classList.toggle('active', id===pageId); 
+                    btn.classList.toggle('inactive', id!==pageId); 
+                }
             });
+            
             if(pageId !== 'detail' && state.liveListener) { state.liveListener(); state.liveListener = null; }
             if(pageId === 'news') fetchAllNews();
             if(pageId === 'rewards') renderRewards();
-            if(pageId === 'profile' && state.user) { fetchMyTradeHistory(); }
+            if(pageId === 'profile') { if(state.user){ fetchMyHistory(); } else { openModal('login-modal'); switchPage('home'); } }
         }
 
         function switchLang(lang) {
@@ -347,190 +496,219 @@
             localStorage.setItem('lang', lang);
         }
 
-        // ==========================================
-        // MODULE 4: FIREBASE AUTH
-        // ==========================================
+        // ------------------------------------------
+        // 5. AUTHENTICATION (GOOGLE)
+        // ------------------------------------------
         function loginGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(() => closeModal('login-modal')).catch(e => alert(e.message));
+            auth.signInWithPopup(provider).then(() => {
+                closeModal('login-modal'); showToast("Xác thực thành công", "success");
+            }).catch(e => showToast(e.message, "error"));
         }
+
+        function logOutUser() { auth.signOut().then(() => location.reload()); }
 
         auth.onAuthStateChanged(u => {
             if(u) {
                 state.user = u;
-                document.getElementById('auth-area').innerHTML = `<img src="${u.photoURL}" onclick="switchPage('profile')" class="w-10 h-10 rounded-full border-2 border-teal-500 p-0.5 cursor-pointer shadow-lg transition-transform active:scale-90">`;
+                document.getElementById('auth-area').innerHTML = `<img src="${u.photoURL}" onclick="switchPage('profile')" class="w-9 h-9 rounded-full border-2 border-white shadow-md cursor-pointer transition-transform active:scale-90">`;
                 document.getElementById('u-name').innerText = u.displayName;
+                document.getElementById('u-email').innerText = u.email;
                 document.getElementById('u-avatar').src = u.photoURL;
-                document.getElementById('qr-text').innerText = "FORELY " + u.displayName.split(' ').pop().toUpperCase() + Math.floor(Math.random()*99);
+                document.getElementById('qr-text').innerText = "FORELY " + u.displayName.split(' ').pop().toUpperCase();
             } else {
                 state.user = null;
                 document.getElementById('auth-area').innerHTML = `
-                    <button onclick="openModal('login-modal')" class="text-blue-600 text-[11px] font-black px-3 py-1.5 border-2 border-blue-100 rounded-full" data-i18n="login_btn">Log In</button>
-                    <button onclick="openModal('login-modal')" class="bg-blue-600 text-white text-[11px] font-black px-4 py-1.5 rounded-full shadow-lg" data-i18n="signup_btn">Sign Up</button>
+                    <button onclick="openModal('login-modal')" class="text-blue-600 text-xs font-bold px-4 py-2 border border-blue-100 rounded-full hover:bg-blue-50" data-i18n="login_btn">Log In</button>
+                    <button onclick="openModal('login-modal')" class="bg-blue-600 text-white text-xs font-bold px-5 py-2 rounded-full shadow-md btn-modern" data-i18n="signup_btn">Sign Up</button>
                 `;
             }
             updateBalanceUI();
         });
 
-        // ==========================================
-        // MODULE 5: REAL-TIME DATABASE SYNC
-        // ==========================================
+        // ------------------------------------------
+        // 6. MARKET DATA & GRID (SHEETS)
+        // ------------------------------------------
         function loadMarketData() {
             Papa.parse(APP_CONFIG.sheetsUrl, { download: true, header: true, complete: res => {
                 const now = new Date().getTime();
                 state.events = res.data.filter(r => r.Title).map((r, i) => ({
                     id: i.toString(), cat: r.Category, title: r.Title, deadline: r.Deadline, yesRate: parseInt(r.YesRate)||50,
                     isActive: !(r.Status==='Ended' || (r.Deadline && new Date(r.Deadline).getTime() < now)),
-                    result: r.Result ? r.Result.trim().toLowerCase() : "", desc: r.Description || "Đang lấy dữ liệu từ mạng lưới Forely Nodes..."
+                    result: r.Result ? r.Result.trim().toLowerCase() : "", desc: r.Description || "Dữ liệu đang được phân tích bởi chuyên gia."
                 }));
                 document.getElementById('home-loader').style.display='none'; document.getElementById('market-grid').classList.remove('hidden');
                 renderMarketGrid();
             }});
         }
 
+        function setViewStatus(s) { 
+            state.viewStatus = s; 
+            document.getElementById('tab-active').className = "flex-1 py-2 text-xs font-black rounded-xl transition-all " + (s==='active'?'bg-white text-blue-600 shadow-sm':'text-slate-500');
+            document.getElementById('tab-ended').className = "flex-1 py-2 text-xs font-black rounded-xl transition-all " + (s==='ended'?'bg-white text-blue-600 shadow-sm':'text-slate-500');
+            renderMarketGrid(); 
+        }
+
+        function setCategoryFilter(c, el) { 
+            state.viewCat = c; 
+            document.querySelectorAll('.cat-filter-btn').forEach(t=>t.className="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-6 py-2 rounded-full text-xs font-semibold shrink-0 transition-all"); 
+            el.className="cat-filter-btn bg-slate-800 text-white px-6 py-2 rounded-full text-xs font-semibold shrink-0 shadow-md transition-all"; 
+            renderMarketGrid(); 
+        }
+
         function renderMarketGrid() {
             const term = document.getElementById('search-input').value.toLowerCase();
-            const grid = document.getElementById('market-grid');
             const filtered = state.events.filter(e => (state.viewStatus === 'active' ? e.isActive : !e.isActive) && (state.viewCat === 'Tất cả' || e.cat === state.viewCat) && e.title.toLowerCase().includes(term));
             
-            grid.innerHTML = filtered.map(e => `
-                <div onclick="openEventDetailPage('${e.id}')" class="market-card p-4 flex flex-col justify-between h-52 cursor-pointer shadow-sm">
+            document.getElementById('market-grid').innerHTML = filtered.map(e => {
+                const noRate = 100 - e.yesRate; let yC = "bg-emerald-50 text-emerald-600"; let nC = "bg-rose-50 text-rose-600"; let yI = ""; let nI = "";
+                if(!e.isActive) {
+                    yC = nC = "bg-slate-50 text-slate-400";
+                    if(['có', 'yes'].includes(e.result)) { yC="bg-emerald-100 text-emerald-700 border border-emerald-200"; yI="🏆 "; }
+                    else if(['không', 'no'].includes(e.result)) { nC="bg-rose-100 text-rose-700 border border-rose-200"; nI="🏆 "; }
+                }
+                const btnY = e.isActive ? `onclick="event.stopPropagation(); openTradeOverlay('${e.id}', 'yes')"` : "";
+                const btnN = e.isActive ? `onclick="event.stopPropagation(); openTradeOverlay('${e.id}', 'no')"` : "";
+
+                return `
+                <div onclick="openEventDetailPage('${e.id}')" class="modern-card p-5 flex flex-col justify-between h-56 cursor-pointer group">
                     <div>
-                        <div class="flex justify-between items-center mb-3 text-[9px] font-black uppercase tracking-widest text-slate-400">
-                            <span>${e.cat}</span><span class="${e.isActive?'text-blue-500':'text-orange-400'}">${e.isActive?'🟢 ACTIVE':'🔴 ENDED'}</span>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest truncate max-w-[60%]">${e.cat}</span>
+                            <span class="text-[9px] font-bold ${e.isActive?'text-blue-500 bg-blue-50 px-2 py-1 rounded':'text-slate-400'}">${e.isActive?'ĐANG MỞ':'ĐÃ ĐÓNG'}</span>
                         </div>
-                        <h3 class="text-[12px] font-extrabold text-slate-800 line-clamp-3 leading-snug">${e.title}</h3>
+                        <h3 class="text-[13px] font-bold text-slate-800 line-clamp-3 leading-snug group-hover:text-blue-600 transition-colors">${e.title}</h3>
                     </div>
-                    <button class="w-full bg-slate-50 py-3 rounded-2xl text-[10px] font-black text-blue-600 active:bg-blue-600 active:text-white transition-all uppercase tracking-widest">Analytics & Predict</button>
-                </div>`).join('');
+                    <div class="flex gap-2">
+                        <button ${btnY} class="flex-1 py-3 rounded-xl text-xs font-bold hover:opacity-80 transition-opacity ${yC}">${yI}CÓ ${e.yesRate}%</button>
+                        <button ${btnN} class="flex-1 py-3 rounded-xl text-xs font-bold hover:opacity-80 transition-opacity ${nC}">${nI}KHÔNG</button>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
+        // ------------------------------------------
+        // 7. REAL-TIME DETAIL & ORDERBOOK (FIRESTORE)
+        // ------------------------------------------
         function openEventDetailPage(id) {
-            state.selectedEvent = state.events.find(e => e.id === id);
-            const ev = state.selectedEvent;
-            document.getElementById('dt-title').innerText = ev.title;
-            document.getElementById('dt-cat').innerText = ev.cat;
-            document.getElementById('dt-status').innerText = ev.isActive ? '⏳ Đang nhận lệnh' : '🔒 Đã chốt kết quả';
-            document.getElementById('dt-desc').innerText = ev.desc;
-            switchPage('detail');
-            initEventDetailChart(ev.yesRate);
-            listenToLiveOrderBook(ev.id, ev.yesRate);
+            state.selectedEvent = state.events.find(e => e.id === id); const ev = state.selectedEvent;
+            document.getElementById('dt-title').innerText = ev.title; document.getElementById('dt-cat').innerText = ev.cat;
+            document.getElementById('dt-status').innerText = ev.isActive ? '⏳ Live' : '🔒 Closed'; document.getElementById('dt-desc').innerText = ev.desc;
+            switchPage('detail'); initEventDetailChart(ev.yesRate); connectToLiveOrderBook(ev.id, ev.yesRate);
         }
 
-        function listenToLiveOrderBook(eventId, baseRate) {
+        function connectToLiveOrderBook(eventId, baseRate) {
             const tableBody = document.getElementById('live-order-body');
             tableBody.innerHTML = '<tr><td colspan="3" class="py-10 text-center"><div class="loader"></div></td></tr>';
             
-            state.liveListener = db.collection("trades").where("eventId", "==", eventId).orderBy("timestamp", "desc").limit(20)
+            state.liveListener = db.collection("trades").where("eventId", "==", eventId).orderBy("timestamp", "desc").limit(10)
                 .onSnapshot(snap => {
-                    let totalYes = 0; let totalNo = 0; let count = 0; let rows = "";
+                    let totalYes = 0; let totalNo = 0; let rowsHtml = "";
                     snap.forEach(doc => {
-                        const d = doc.data(); count++;
+                        const d = doc.data();
                         if(d.side === 'yes') totalYes += d.amount; else totalNo += d.amount;
-                        const sColor = d.side === 'yes' ? 'text-blue-600 bg-blue-50' : 'text-red-500 bg-red-50';
-                        rows += `<tr class="border-b border-slate-50">
-                                <td class="py-4 px-5 flex items-center gap-2"><div class="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-[9px] font-black">${d.userName.charAt(0)}</div><span class="text-[11px] font-bold text-slate-700">${d.userName.split(' ')[0]}</span></td>
-                                <td class="py-4 px-5 text-center"><span class="px-2 py-1 rounded text-[9px] font-black tracking-widest ${sColor}">${d.side.toUpperCase()}</span></td>
-                                <td class="py-4 px-5 text-right font-black text-slate-900 text-xs">${d.amount.toLocaleString()}</td>
-                            </tr>`;
+                        const sColor = d.side === 'yes' ? 'text-emerald-600 bg-emerald-50' : 'text-rose-500 bg-rose-50';
+                        const sText = d.side === 'yes' ? 'CÓ' : 'KHÔNG';
+                        rowsHtml += `<tr class="live-order-row border-b border-slate-50"><td class="py-3 px-5 flex items-center gap-2"><div class="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-bold text-slate-500">${d.userName.charAt(0)}</div><span class="text-xs font-semibold text-slate-700">${d.userName.split(' ')[0]}</span></td><td class="py-3 px-5 text-center"><span class="px-2.5 py-1 rounded text-[10px] font-black ${sColor}">${sText}</span></td><td class="py-3 px-5 text-right font-black text-slate-800 text-xs">${d.amount.toLocaleString()}</td></tr>`;
                     });
                     const totalVol = totalYes + totalNo;
                     let realRate = baseRate; if(totalVol > 0) realRate = Math.round((totalYes / totalVol) * 100);
-                    document.getElementById('dt-yes-rate').innerText = realRate;
-                    document.getElementById('dt-vol').innerText = totalVol.toLocaleString();
-                    document.getElementById('dt-bar-yes').style.width = realRate + '%';
-                    document.getElementById('dt-bar-no').style.width = (100 - realRate) + '%';
-                    document.querySelector('.dt-y-pct').innerText = realRate;
-                    document.querySelector('.dt-n-pct').innerText = 100 - realRate;
-                    tableBody.innerHTML = count > 0 ? rows : '<tr><td colspan="3" class="py-10 text-center text-slate-400 italic">Chưa có giao dịch.</td></tr>';
+
+                    document.getElementById('dt-yes-rate').innerText = realRate; document.getElementById('dt-vol').innerText = totalVol.toLocaleString() + ' P';
+                    document.getElementById('dt-bar-yes').style.width = realRate + '%'; document.getElementById('dt-bar-no').style.width = (100 - realRate) + '%';
+                    document.querySelector('.dt-y-pct').innerText = realRate; document.querySelector('.dt-n-pct').innerText = 100 - realRate;
+                    tableBody.innerHTML = snap.size > 0 ? rowsHtml : '<tr><td colspan="3" class="py-8 text-center text-slate-400 text-xs">Chưa có giao dịch.</td></tr>';
                 });
         }
 
-        // ==========================================
-        // MODULE 6: TRADING ENGINE
-        // ==========================================
-        function handleTradeClick(side) {
-            if(!state.user) { openModal('login-modal'); return; }
-            state.tradeSide = side;
+        function initEventDetailChart(rate) {
+            const ctx = document.getElementById('detailChart').getContext('2d'); if(window.dtChart) window.dtChart.destroy();
+            window.dtChart = new Chart(ctx, { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3', 'Now'], datasets: [{ data: [rate-5, rate+3, rate-2, rate], borderColor: '#10b981', tension: 0.4, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.05)', pointRadius: 4, pointBackgroundColor: '#ffffff', borderWidth: 3 }] }, options: { plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' }, color: '#94a3b8' } } } } });
+        }
+
+        // ------------------------------------------
+        // 8. TRADING & WRITING TO FIRESTORE
+        // ------------------------------------------
+        function handlePredictClick(side) { if(!state.user) { showToast("Vui lòng đăng nhập", "error"); openModal('login-modal'); return; } openTradeOverlay(state.selectedEvent.id, side); }
+
+        function openTradeOverlay(id, side) {
+            if(!state.user) { showToast("Cần đăng nhập để giao dịch", "error"); openModal('login-modal'); return; }
+            state.selectedEvent = state.events.find(e => e.id === id); state.tradeSide = side;
             document.getElementById('trade-title').innerText = state.selectedEvent.title;
-            const badge = document.getElementById('trade-side-badge');
-            const btn = document.getElementById('trade-confirm-btn');
-            badge.innerText = side === 'yes' ? "CỬA CÓ" : "CỬA KHÔNG";
-            badge.className = "inline-block px-5 py-2 rounded-2xl text-[10px] font-black uppercase mb-6 tracking-widest " + (side==='yes'?"bg-blue-50 text-blue-600":"bg-red-50 text-red-600");
-            btn.className = "w-full py-6 rounded-[30px] text-sm font-black text-white shadow-2xl active:scale-95 transition-all " + (side==='yes'?"bg-blue-600 shadow-blue-200":"bg-red-500 shadow-red-200");
+            const badge = document.getElementById('trade-side-badge'); const btn = document.getElementById('trade-confirm-btn');
+            badge.innerText = side === 'yes' ? "ĐẶT CỬA CÓ" : "ĐẶT CỬA KHÔNG";
+            badge.className = "inline-block px-4 py-2 rounded-xl text-[10px] font-black uppercase mb-6 tracking-widest " + (side==='yes'?"bg-emerald-50 text-emerald-600":"bg-rose-50 text-rose-600");
+            btn.className = "w-full py-5 rounded-2xl text-sm font-black text-white shadow-lg btn-modern uppercase tracking-widest " + (side==='yes'?"bg-emerald-500 shadow-emerald-200":"bg-rose-500 shadow-rose-200");
             openModal('trade-modal');
         }
 
-        async function executeTradeToDatabase() {
-            const amt = parseInt(document.getElementById('trade-input').value);
-            if(isNaN(amt) || amt <= 0 || amt > state.balance) { alert("Invalid Amount!"); return; }
-            state.balance -= amt; updateBalanceUI(); closeModal('trade-modal');
+        async function executeTrade() {
+            const input = document.getElementById('trade-input'); const amt = parseInt(input.value); const btn = document.getElementById('trade-confirm-btn');
+            if(isNaN(amt) || amt <= 0) { showToast("Số lượng sai", "error"); return; }
+            if(amt > state.balance) { showToast("Số dư P không đủ!", "error"); return; }
+            btn.disabled = true; btn.innerText = "PROCESSING..."; btn.classList.add('opacity-50');
             try {
-                await db.collection("trades").add({
-                    eventId: state.selectedEvent.id, eventTitle: state.selectedEvent.title,
-                    userId: state.user.uid, userName: state.user.displayName,
-                    side: state.tradeSide, amount: amt, timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                alert("Order Matched!"); if(document.getElementById('page-detail').classList.contains('page-active')) switchPage('home');
-            } catch (e) { alert("Error connecting to Node."); }
+                state.balance -= amt; updateBalanceUI();
+                await db.collection("trades").add({ eventId: state.selectedEvent.id, eventTitle: state.selectedEvent.title, userId: state.user.uid, userName: state.user.displayName, side: state.tradeSide, amount: amt, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                closeModal('trade-modal'); showToast("Khớp lệnh thành công!", "success"); input.value = 1000;
+            } catch (e) { state.balance += amt; updateBalanceUI(); showToast("Lỗi máy chủ.", "error"); } 
+            finally { btn.disabled = false; btn.innerText = "XÁC NHẬN"; btn.classList.remove('opacity-50'); }
         }
 
-        function fetchMyTradeHistory() {
-            const container = document.getElementById('my-trade-history');
-            container.innerHTML = '<div class="loader"></div>';
-            db.collection("trades").where("userId", "==", state.user.uid).orderBy("timestamp", "desc").limit(10).get()
-                .then(snap => {
-                    let h = "";
-                    snap.forEach(doc => {
-                        const d = doc.data();
-                        const color = d.side === 'yes' ? 'text-blue-500' : 'text-red-500';
-                        h += `<div class="bg-slate-50 p-4 rounded-3xl border flex justify-between items-center"><div class="w-2/3"><h5 class="text-[11px] font-black text-slate-800 line-clamp-1">${d.eventTitle}</h5><p class="text-[9px] text-slate-400 font-bold uppercase mt-1">Đã chọn: <span class="${color}">${d.side.toUpperCase()}</span></p></div><div class="text-right font-black text-slate-900">-${d.amount.toLocaleString()} P</div></div>`;
-                    });
-                    container.innerHTML = h || '<p class="text-center text-xs text-slate-400 italic py-10">Bạn chưa có nhận định nào.</p>';
-                });
-        }
-
-        // ==========================================
-        // MODULE 7: MULTI-SOURCE NEWS & UTILS
-        // ==========================================
-        function switchNews(cat, el) {
+        // ------------------------------------------
+        // 9. 3-COLUMN NEWS ENGINE
+        // ------------------------------------------
+        function switchNewsCategory(cat, el) {
             state.newsCat = cat;
-            document.querySelectorAll('.news-cat').forEach(b => b.className = "news-cat bg-white border border-slate-100 text-slate-500 px-5 py-2.5 rounded-2xl text-[11px] font-black shrink-0 transition-all");
-            el.className = "news-cat bg-blue-600 text-white px-5 py-2.5 rounded-2xl text-[11px] font-black shrink-0 shadow-lg";
+            document.querySelectorAll('.news-cat-btn').forEach(b => b.className = "news-cat-btn bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-5 py-2 rounded-full text-xs font-semibold shrink-0 transition-all");
+            el.className = "news-cat-btn bg-slate-800 text-white px-5 py-2 rounded-full text-xs font-semibold shrink-0 shadow-md transition-all";
             fetchAllNews();
         }
 
         async function fetchAllNews() {
             const loader = document.getElementById('news-loader'); loader.classList.remove('hidden');
             const sources = APP_CONFIG.newsMatrix[state.newsCat];
-            await Promise.all([ fetchRss(sources.vne, 'col-vne', 'VnExpress'), fetchRss(sources.tt, 'col-tt', 'Tuổi Trẻ'), fetchRss(sources.vnn, 'col-vnn', 'VietnamNet') ]);
+            await Promise.all([ fetchRssColumn(sources.vne, 'news-col-vne', 'VnExpress'), fetchRssColumn(sources.tt, 'news-col-tt', 'Tuổi Trẻ'), fetchRssColumn(sources.vnn, 'news-col-vnn', 'VietnamNet') ]);
             loader.classList.add('hidden');
         }
 
-        async function fetchRss(url, cid, sname) {
+        async function fetchRssColumn(url, cid, sname) {
             const container = document.getElementById(cid); container.innerHTML = "";
             try {
-                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
-                const data = await res.json();
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`); const data = await res.json();
                 container.innerHTML = data.items.slice(0, 6).map(i => {
                     let img = i.thumbnail || (i.description.match(/src\s*=\s*"(.+?)"/) ? i.description.match(/src\s*=\s*"(.+?)"/)[1] : "https://via.placeholder.com/200?text=Forely");
-                    return `<a href="${i.link}" target="_blank" class="block bg-white p-3 rounded-3xl border border-slate-50 shadow-sm"><img src="${img}" class="w-full h-32 object-cover rounded-2xl mb-3 shadow-inner"><h4 class="text-xs font-bold line-clamp-2">${i.title}</h4><div class="flex justify-between text-[9px] font-black text-slate-400 uppercase mt-2"><span>${sname}</span></div></a>`;
+                    return `<a href="${i.link}" target="_blank" class="modern-card block p-4 shadow-sm"><img src="${img}" class="w-full h-36 object-cover rounded-xl mb-4"><h4 class="text-[13px] font-bold text-slate-800 line-clamp-2 leading-snug mb-3">${i.title}</h4><div class="flex justify-between items-center text-[10px] font-black text-slate-400 uppercase tracking-widest"><span class="text-blue-500">${sname}</span><span>NEW</span></div></a>`;
                 }).join('');
-            } catch (e) { container.innerHTML = "RSS Fail."; }
+            } catch (e) { container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">Loading failed.</p>`; }
         }
 
-        function generateQR(amt) { if(!state.user) { openModal('login-modal'); return; } document.getElementById('qr-img').src = `https://img.vietqr.io/image/MB-123456789-compact2.png?amount=${amt}&addInfo=${encodeURIComponent(document.getElementById('qr-text').innerText)}`; }
-        function renderRewards() { const gifts = [{n:"Thẻ 20k",p:20000,i:"📱"},{n:"Voucher Grab",p:50000,i:"🍔"},{n:"Shopee 100k",p:100000,i:"🛍️"},{n:"Netflix 1 Th",p:250000,i:"🎬"}]; document.getElementById('reward-grid').innerHTML = gifts.map(g => `<div class="bg-white p-7 rounded-[40px] border text-center"><div class="text-3xl mb-3">${g.i}</div><div class="text-[11px] font-black">${g.n}</div><div class="text-xs font-black text-blue-600 my-4">${g.p.toLocaleString()} P</div><button onclick="redeem(${g.p})" class="w-full py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-black">REDEEM</button></div>`).join(''); }
-        function redeem(p) { if(state.balance < p) alert("Insufficient!"); else { state.balance -= p; updateBalanceUI(); alert("Success!"); } }
-        function setViewStatus(s) { state.viewStatus = s; renderMarketGrid(); }
-        function setCategoryFilter(c, el) { state.viewCat = c; document.querySelectorAll('.cat-filter-btn').forEach(t=>t.className="cat-filter-btn bg-white border border-slate-200 text-slate-500 px-6 py-2 rounded-full text-[10px] font-black shrink-0 transition-all"); el.className="cat-filter-btn bg-slate-900 text-white px-6 py-2 rounded-full text-[10px] font-black shrink-0 shadow-lg"; renderMarketGrid(); }
-        function initEventDetailChart(rate) { const ctx = document.getElementById('detailChart').getContext('2d'); if(window.dtChart) window.dtChart.destroy(); window.dtChart = new Chart(ctx, { type: 'line', data: { labels: ['P1', 'P2', 'P3', 'Now'], datasets: [{ data: [rate-4, rate+2, rate-1, rate], borderColor: '#2563eb', tension: 0.5, fill: true, backgroundColor: 'rgba(37,99,235,0.05)', pointRadius: 5, borderWidth: 4 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' } } } } } }); }
+        // ------------------------------------------
+        // 10. UTILS: DEPOSIT, REWARDS, PROFILE
+        // ------------------------------------------
+        function generateQR(amt) { if(!state.user) { showToast("Đăng nhập để nạp P", "error"); openModal('login-modal'); return; } document.getElementById('qr-img').src = `https://img.vietqr.io/image/MB-123456789-compact2.png?amount=${amt}&addInfo=${encodeURIComponent(document.getElementById('qr-text').innerText)}`; showToast("Đã tạo QR Gateway"); }
+        function copyText(id) { navigator.clipboard.writeText(document.getElementById(id).innerText); showToast('Sao chép thành công!'); }
+        
+        function renderRewards() {
+            const gifts = [{n:"Thẻ 20k",p:20000,i:"📱"},{n:"Grab 50k",p:50000,i:"🍔"},{n:"Shopee 100k",p:100000,i:"🛍️"},{n:"Cinema",p:120000,i:"🎬"}];
+            document.getElementById('reward-store-grid').innerHTML = gifts.map(g => `<div class="modern-card p-6 text-center"><div class="text-4xl mb-3">${g.i}</div><div class="text-xs font-bold text-slate-800 mb-1">${g.n}</div><div class="text-sm font-black text-blue-600 mb-4">${g.p.toLocaleString()} P</div><button onclick="processRedeem(${g.p})" class="w-full py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-800 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors">Redeem</button></div>`).join('');
+        }
+        function processRedeem(p) { if(state.balance < p) showToast("Không đủ điểm P", "error"); else { state.balance -= p; updateBalanceUI(); showToast("Đã gửi lệnh quy đổi quà", "success"); } }
+
+        function fetchMyHistory() {
+            const container = document.getElementById('my-trade-history'); container.innerHTML = '<div class="loader"></div>';
+            db.collection("trades").where("userId", "==", state.user.uid).orderBy("timestamp", "desc").limit(5).get().then(snap => {
+                let h = ""; snap.forEach(doc => { const d = doc.data(); const c = d.side==='yes'?'text-emerald-500':'text-rose-500'; h += `<div class="flex justify-between items-center py-3 border-b border-slate-100"><div class="w-2/3"><h5 class="text-[11px] font-bold text-slate-700 line-clamp-1">${d.eventTitle}</h5><span class="text-[9px] font-black uppercase ${c}">${d.side}</span></div><span class="text-xs font-black text-slate-900">-${d.amount.toLocaleString()} P</span></div>`; });
+                container.innerHTML = h || '<p class="text-xs text-slate-400 text-center py-4">Chưa có giao dịch.</p>';
+            });
+        }
+        function initProfileChart() { const ctx = document.getElementById('winChart').getContext('2d'); if(window.pChart) window.pChart.destroy(); window.pChart = new Chart(ctx, { type: 'line', data: { labels: ['W1','W2','W3','W4'], datasets: [{ data: [60,85,70,76], borderColor: '#0d9488', tension: 0.4, fill: true, backgroundColor: 'rgba(13,148,136,0.05)', borderWidth: 3, pointRadius: 0 }] }, options: { plugins: { legend: { display: false } }, responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#94a3b8' } } } } }); }
+
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function updateBalanceUI() { document.querySelectorAll('.u-balance').forEach(el => el.innerText = state.balance.toLocaleString() + ' P'); }
-        function copyToClipboard(id) { navigator.clipboard.writeText(document.getElementById(id).innerText); alert('Copied!'); }
+        function updateBalanceUI() { document.querySelectorAll('.u-balance').forEach(el => el.innerText = state.balance.toLocaleString()); }
 
-        window.onload = () => { loadMarketData(); switchLang(localStorage.getItem('lang')||'vi'); };
+        window.addEventListener('DOMContentLoaded', () => { loadMarketData(); switchLang(localStorage.getItem('lang')||'vi'); });
     </script>
 </body>
 </html>
