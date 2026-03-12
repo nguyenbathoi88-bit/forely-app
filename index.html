@@ -3,199 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forely - Báo Cáo Nghiên Cứu Thị Trường</title>
+    <title>Forely - Tokenomics & UX Blueprint</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* <!-- Chosen Palette: Slate & Indigo (Modern, Trustworthy, Tech-focused) --> */
+        /* <!-- Chosen Palette: Indigo (Brand Core), Slate (Neutral/Professional), Emerald (Inflows/Profit), Rose (Outflows/Burn) --> */
+        
         /* <!-- Application Structure Plan: 
-            This SPA uses a single-page scrolling dashboard layout. 
-            Section 1 sets the macro context (The 'Why').
-            Section 2 uses an interactive Doughnut chart to explore the B2C user base (The 'Who').
-            Section 3 uses interactive tabs to explain B2B client solutions (The 'Revenue').
-            Section 4 presents the competitive landscape via a matrix and highlights USPs (The 'How we win').
-            This structure guides the investor/stakeholder logically from market need to specific user acquisition, monetization, and competitive advantage. 
+            This SPA uses a single-page scrolling dashboard format. It is designed to logically walk a stakeholder (investor, technical lead) through the economic engine of the app.
+            1. Macro Economy (FP Flow): Establishes how money moves in and out.
+            2. Gacha Math: Proves profitability (The 64.4% margin) with an interactive simulation.
+            3. Anti-Inflation: Demonstrates the dynamic system protection mechanism.
+            4. Pari-Mutuel Calculator: Allows users to interact with the core prediction market math to see zero-risk profitability.
+            5. UX Flows: Outlines the user journeys that power these economics.
+            This narrative structure shifts the focus from "what is the app" to "how does the app guarantee profit and engagement".
         --> */
+        
         /* <!-- Visualization & Content Choices: 
-            1. Context: Metric cards (Goal: Inform) -> Clean HTML/Tailwind -> Emphasizes scale.
-            2. Personas: Doughnut Chart (Goal: Compare Proportions) -> Chart.js -> Interactive exploration of user segments.
-            3. B2B Solutions: Tabbed Interface (Goal: Organize) -> JS + HTML -> Separates distinct client needs without cluttering.
-            4. Competitors: Styled Table (Goal: Compare) -> HTML Table -> Direct feature-by-feature comparison.
+            1. FP Flow: Goal: Organize -> HTML/Tailwind Flexbox Nodes -> Clear visualization of inputs/outputs without SVG.
+            2. Gacha Math: Goal: Inform & Change -> Chart.js Doughnut + JS Simulation -> Visually displays probabilities and proves the business case dynamically.
+            3. Anti-Inflation: Goal: Compare -> JS State Toggle -> Shows how the system reacts to high circulating supply by manipulating the Gacha Chart.
+            4. Pari-Mutuel: Goal: Relationships -> HTML Range Inputs + Dynamic Text -> Interactive calculator proving the platform takes 0 risk while collecting a 5% tax.
+            5. UX Flows: Goal: Organize -> Tabbed HTML Interface -> Keeps the complex user journeys accessible and bite-sized.
         --> */
+        
         /* <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. --> */
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             background-color: #f8fafc; /* slate-50 */
-            color: #1e293b; /* slate-800 */
+            color: #0f172a; /* slate-900 */
         }
-        
+
+        /* Essential Chart Container Styles */
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             margin-left: auto;
             margin-right: auto;
             height: 300px;
             max-height: 400px;
         }
-
         @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
+            .chart-container { height: 350px; }
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.9);
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
         }
 
+        .flow-node {
+            transition: all 0.3s ease;
+        }
+        .flow-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type=range] {
+            accent-color: #4f46e5;
+        }
+
+        /* Smooth Scroll */
+        html { scroll-behavior: smooth; }
+        
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
     </style>
 </head>
-<body class="antialiased pb-20">
+<body class="antialiased pb-24">
 
-    <!-- Header / Hero -->
-    <header class="bg-indigo-900 text-white py-16 px-6 shadow-lg relative overflow-hidden">
-        <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-indigo-700 rounded-full opacity-50 blur-3xl"></div>
-        <div class="max-w-6xl mx-auto relative z-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">FORELY <span class="text-indigo-300 font-light">| Bản Thiết Kế Thị Trường</span></h1>
-            <p class="text-xl md:text-2xl text-indigo-100 mb-6 max-w-3xl">Mạng xã hội Khảo sát & Đấu trí có thưởng. Nơi sự thật và tri thức của bạn được trả công xứng đáng.</p>
-            <div class="inline-block bg-indigo-800 rounded-full px-4 py-2 text-sm font-medium border border-indigo-600">
-                💎 Định vị: Gamified Market Research (B2B2C)
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-black text-indigo-700 tracking-tighter">FORELY</span>
+                    <span class="ml-2 text-sm font-medium text-slate-500 hidden sm:block px-2 py-1 bg-slate-100 rounded">Tokenomics Engine</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+                    <a href="#macro" class="hover:text-indigo-600 transition-colors">1. Macro Flow</a>
+                    <a href="#gacha" class="hover:text-indigo-600 transition-colors">2. Gacha Math</a>
+                    <a href="#parimutuel" class="hover:text-indigo-600 transition-colors">3. Pari-Mutuel</a>
+                    <a href="#ux" class="hover:text-indigo-600 transition-colors">4. UX Flows</a>
+                </div>
             </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-32 pb-16 bg-gradient-to-br from-indigo-900 to-slate-900 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 30px 30px;"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Đặc tả Mô hình Tiền tệ Nội bộ</h1>
+            <p class="text-xl text-indigo-200 max-w-3xl leading-relaxed">
+                "Trái tim" của hệ sinh thái Forely: Một nền kinh tế ảo khép kín, không lạm phát, loại bỏ rủi ro thanh khoản và khóa chặt biên lợi nhuận >60% từ ngân sách B2B.
+            </p>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-6 -mt-8 relative z-20 space-y-12">
+    <main class="max-w-7xl mx-auto px-6 mt-12 space-y-20">
 
-        <!-- Section 1: Vĩ mô & Cơ hội -->
-        <section class="glass-card rounded-2xl p-8">
-            <div class="mb-6 border-b border-slate-200 pb-4">
-                <h2 class="text-3xl font-bold text-slate-800 flex items-center gap-2">
-                    <span class="text-2xl">🌍</span> Bối cảnh Vĩ mô & Cơ hội Thị trường
+        <!-- SECTION 1: MACRO ECONOMY -->
+        <section id="macro" class="scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 flex items-center gap-3">
+                    <span class="text-3xl">🔄</span> 2.1 Thiết kế Dòng chảy Tiền tệ (FP Flow)
                 </h2>
-                <p class="text-slate-500 mt-2">Đại địa chấn "Cookieless World" đang tái định hình cách các nhãn hàng thu thập dữ liệu. Phần này minh họa khoảng trống thị trường khổng lồ mà Forely đang lấp đầy.</p>
+                <p class="text-slate-600 mt-3 text-lg">Hệ thống van cung-cầu kiểm soát lượng FP lưu thông. Mọi FP sinh ra đều được bảo chứng bằng tiền mặt từ B2B, và được thu hồi qua các cơ chế Game hóa.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <h3 class="text-xl font-semibold mb-3 text-indigo-700">Kỷ nguyên Zero-party Data</h3>
-                    <p class="text-slate-600 mb-4 leading-relaxed">
-                        Các quy định bảo mật (GDPR, iOS 14+ ATT) khiến các nhãn hàng B2B không thể "theo dõi lén". Họ khát khao <strong>Zero-party Data</strong> - dữ liệu người dùng tự nguyện cung cấp. Tuy nhiên, các hình thức khảo sát truyền thống đang chết dần với tỷ lệ hoàn thành <strong>dưới 5%</strong>.
-                    </p>
-                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r">
-                        <p class="text-sm text-amber-800 font-medium">🚨 Vấn đề: Người dùng quá nhàm chán và không thấy được lợi ích ngay lập tức khi làm khảo sát.</p>
-                    </div>
-                </div>
+            <div class="glass-panel rounded-2xl p-8">
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+                    
+                    <!-- Inflows -->
+                    <div class="w-full lg:w-1/3 space-y-4">
+                        <div class="text-center font-bold text-emerald-600 mb-2 uppercase tracking-wide text-sm">Vòi bơm (Inflows)</div>
+                        
+                        <div class="flow-node bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex items-start gap-3 relative">
+                            <div class="text-2xl">🎁</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Onboarding & Daily</h4>
+                                <p class="text-xs text-slate-600 mt-1">Lượng nhỏ FP tạo thói quen mở app (DAU).</p>
+                            </div>
+                            <div class="absolute -right-3 top-1/2 transform -translate-y-1/2 text-slate-300 hidden lg:block">➡️</div>
+                        </div>
+                        
+                        <div class="flow-node bg-emerald-100 border-2 border-emerald-400 p-4 rounded-xl flex items-start gap-3 relative shadow-sm">
+                            <div class="text-2xl">🏢</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Brand Zone</h4>
+                                <p class="text-xs text-slate-700 mt-1 font-medium">Nguồn cung chính. 100% bảo chứng bằng VNĐ từ ngân sách Marketing B2B.</p>
+                            </div>
+                            <div class="absolute -right-3 top-1/2 transform -translate-y-1/2 text-slate-300 hidden lg:block">➡️</div>
+                        </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center transform transition hover:-translate-y-1">
-                        <div class="text-4xl mb-2">📊</div>
-                        <div class="text-2xl font-bold text-slate-800">$150-200M</div>
-                        <div class="text-sm text-slate-500 mt-1">Quy mô TT Nghiên cứu thị trường VN (FMCG, Tài chính)</div>
+                        <div class="flow-node bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex items-start gap-3 relative">
+                            <div class="text-2xl">🧠</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Thắng Dự báo</h4>
+                                <p class="text-xs text-slate-600 mt-1">Phân bổ lại tài sản từ người thua sang người thắng.</p>
+                            </div>
+                            <div class="absolute -right-3 top-1/2 transform -translate-y-1/2 text-slate-300 hidden lg:block">➡️</div>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center transform transition hover:-translate-y-1">
-                        <div class="text-4xl mb-2">🎁</div>
-                        <div class="text-2xl font-bold text-slate-800">Hàng chục tỷ VNĐ</div>
-                        <div class="text-sm text-slate-500 mt-1">Ngân sách chi cho Voucher/Loyalty mỗi năm</div>
+
+                    <!-- Core System -->
+                    <div class="w-full lg:w-1/3 flex justify-center py-8 lg:py-0">
+                        <div class="w-48 h-48 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-800 flex flex-col items-center justify-center text-white shadow-2xl border-4 border-indigo-200 z-10 relative">
+                            <div class="text-4xl mb-2">💎</div>
+                            <div class="font-black text-2xl">FP</div>
+                            <div class="text-xs text-indigo-200 font-medium uppercase tracking-widest mt-1">Lưu thông</div>
+                        </div>
                     </div>
-                    <div class="col-span-1 sm:col-span-2 bg-indigo-50 p-4 rounded-xl border border-indigo-100 text-center">
-                        <p class="font-semibold text-indigo-900">🎯 Điểm giao thoa (Forely)</p>
-                        <p class="text-sm text-indigo-700">Bán "Giải pháp Nghiên cứu" cho B2B + Trả thưởng "Gacha/Voucher" cho B2C.</p>
+
+                    <!-- Outflows -->
+                    <div class="w-full lg:w-1/3 space-y-4">
+                        <div class="text-center font-bold text-rose-600 mb-2 uppercase tracking-wide text-sm">Vòi đốt (Outflows)</div>
+                        
+                        <div class="flow-node bg-rose-50 border border-rose-200 p-4 rounded-xl flex items-start gap-3 relative">
+                            <div class="absolute -left-3 top-1/2 transform -translate-y-1/2 text-slate-300 hidden lg:block">➡️</div>
+                            <div class="text-2xl">🏦</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Phí Nền Tảng (5%)</h4>
+                                <p class="text-xs text-slate-600 mt-1">Đốt vĩnh viễn 5% trên mọi giao dịch dự báo.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flow-node bg-rose-50 border border-rose-200 p-4 rounded-xl flex items-start gap-3 relative">
+                            <div class="absolute -left-3 top-1/2 transform -translate-y-1/2 text-slate-300 hidden lg:block">➡️</div>
+                            <div class="text-2xl">🛡️</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Kinh tế Bang hội</h4>
+                                <p class="text-xs text-slate-600 mt-1">Nâng cấp sức chứa, trang trí bang hội.</p>
+                            </div>
+                        </div>
+
+                        <div class="flow-node bg-rose-100 border-2 border-rose-400 p-4 rounded-xl flex items-start gap-3 relative shadow-sm">
+                            <div class="absolute -left-3 top-1/2 transform -translate-y-1/2 text-slate-300 hidden lg:block">➡️</div>
+                            <div class="text-2xl">🎰</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Hộp Quà (Gacha Sink)</h4>
+                                <p class="text-xs text-slate-700 mt-1 font-medium">Lò đốt lớn nhất. Ngăn chặn lạm phát và rủi ro Bank Run.</p>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </section>
 
-        <!-- Section 2: Chân dung Người dùng -->
-        <section class="glass-card rounded-2xl p-8">
-            <div class="mb-6 border-b border-slate-200 pb-4">
-                <h2 class="text-3xl font-bold text-slate-800 flex items-center gap-2">
-                    <span class="text-2xl">👥</span> Cấu trúc Người dùng B2C
+        <!-- SECTION 2: GACHA MATH & ANTI-INFLATION -->
+        <section id="gacha" class="scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 flex items-center gap-3">
+                    <span class="text-3xl">🎲</span> 2.2 & 2.3 Toán học Gacha & Chống Lạm phát
                 </h2>
-                <p class="text-slate-500 mt-2">Phân tích 3 nhóm người dùng tạo nên "Bánh đà tăng trưởng" của Forely. Tương tác với biểu đồ để xem chi tiết từng nhóm (hành vi, động lực và giá trị mang lại).</p>
+                <p class="text-slate-600 mt-3 text-lg">Khám phá cách cơ chế Hộp quà may mắn quản lý kỳ vọng người dùng, đồng thời khóa chặt biên lợi nhuận của hệ thống. Tương tác để xem phản ứng của hệ thống khi lạm phát xảy ra.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-                <!-- Chart Container Constraint -->
-                <div class="w-full flex justify-center">
-                    <div class="chart-container">
-                        <canvas id="personaChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Dynamic Detail Panel -->
-                <div id="personaDetails" class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm min-h-[300px] flex flex-col justify-center transition-all duration-300">
-                    <div class="text-center text-slate-400">
-                        <div class="text-5xl mb-4">👈</div>
-                        <p>Nhấp vào một phần biểu đồ để xem chi tiết phân tích chân dung người dùng.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 3: Giải pháp B2B -->
-        <section class="glass-card rounded-2xl p-8">
-            <div class="mb-6 border-b border-slate-200 pb-4">
-                <h2 class="text-3xl font-bold text-slate-800 flex items-center gap-2">
-                    <span class="text-2xl">💼</span> Nguồn Doanh Thu: Khách hàng B2B
-                </h2>
-                <p class="text-slate-500 mt-2">Khám phá cách tính năng "Brand Zone" và "Sponsored Markets" giải quyết trực tiếp nỗi đau của các tệp khách hàng doanh nghiệp trả tiền.</p>
-            </div>
-
-            <!-- Tab Buttons -->
-            <div class="flex flex-col sm:flex-row gap-2 mb-6" id="b2b-tabs">
-                <button onclick="switchTab('brand')" id="btn-brand" class="flex-1 py-3 px-4 rounded-lg font-semibold transition-colors bg-indigo-600 text-white border-2 border-indigo-600">
-                    🏢 Client 1: Brand Manager (FMCG, F&B)
-                </button>
-                <button onclick="switchTab('agency')" id="btn-agency" class="flex-1 py-3 px-4 rounded-lg font-semibold transition-colors bg-white text-slate-600 border-2 border-slate-200 hover:border-indigo-300">
-                    📈 Client 2: Market Research Agency
-                </button>
-            </div>
-
-            <!-- Tab Content -->
-            <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-inner min-h-[200px]">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
-                <!-- Content: Brand Manager -->
-                <div id="content-brand" class="block animate-fade-in">
-                    <div class="flex items-start gap-4 mb-4">
-                        <div class="text-3xl">🤕</div>
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-lg">Nỗi đau (Pain points)</h3>
-                            <p class="text-slate-600 mt-1">Cần test phản ứng thị trường (A/B Testing) thiết kế/ý tưởng mới <strong>ngay lập tức trong 48h</strong>. Thuê Agency truyền thống tốn hàng trăm triệu và mất 2-3 tuần. Làm minigame Fanpage thì toàn nick ảo trúng giải.</p>
+                <!-- Chart Panel -->
+                <div class="glass-panel rounded-2xl p-6 sm:p-8 flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-xl text-slate-800">Phân phối Xác suất Gacha</h3>
+                        
+                        <!-- Anti-Inflation Toggle -->
+                        <div class="bg-slate-100 p-1 rounded-lg inline-flex">
+                            <button id="btn-normal" onclick="setGachaState('normal')" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-white shadow text-slate-800 transition-all">Bình thường</button>
+                            <button id="btn-alert" onclick="setGachaState('alert')" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-500 hover:text-slate-800 transition-all">Giờ Vàng (Chống lạm phát)</button>
                         </div>
                     </div>
-                    <div class="flex items-start gap-4 mt-6 bg-indigo-50 p-4 rounded-lg">
-                        <div class="text-3xl">💡</div>
-                        <div>
-                            <h3 class="font-bold text-indigo-900 text-lg">Giải pháp từ Forely</h3>
-                            <p class="text-indigo-800 mt-1">"Chỉ với ~20 triệu VNĐ, Brand Manager có thể tạo 'Thị trường Dự đoán Xu hướng' hoặc 'Khảo sát Gamified'. Thu về 5.000 phản hồi thực tế từ Gen Z sau 24h, kèm theo báo cáo AI tự động phân tích (Sentiment Analysis)."</p>
+
+                    <!-- State Description -->
+                    <div id="state-desc" class="mb-4 text-sm bg-indigo-50 text-indigo-800 p-3 rounded-lg border border-indigo-100">
+                        <strong>Trạng thái Xanh:</strong> Tỷ lệ chuẩn. Đảm bảo tỷ suất lợi nhuận mục tiêu ~64%.
+                    </div>
+
+                    <div class="flex-grow flex items-center justify-center">
+                        <div class="chart-container">
+                            <canvas id="gachaChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <!-- Content: Agency -->
-                <div id="content-agency" class="hidden animate-fade-in">
-                    <div class="flex items-start gap-4 mb-4">
-                        <div class="text-3xl">🤕</div>
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-lg">Nỗi đau (Pain points)</h3>
-                            <p class="text-slate-600 mt-1">Tìm kiếm đáp viên (Panel) rất khó, tỷ lệ rớt (Drop-out rate) giữa chừng khi làm bảng hỏi dài quá cao. Phải trả tiền mặt cho đáp viên rất tốn kém chi phí vận hành.</p>
+                <!-- Simulation Panel -->
+                <div class="glass-panel rounded-2xl p-6 sm:p-8 bg-slate-800 text-white">
+                    <h3 class="font-bold text-xl mb-2">Mô phỏng Kinh doanh (Business Case)</h3>
+                    <p class="text-slate-400 text-sm mb-6">Giả lập 10,000 lượt quay với chi phí 500 FP/lượt. (Doanh thu B2B giả định: 50đ / 1 FP).</p>
+
+                    <button onclick="runSimulation()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-3 px-4 rounded-xl transition-colors mb-8 shadow-lg shadow-emerald-500/30 flex items-center justify-center gap-2">
+                        ▶️ Chạy Giả Lập 10,000 Lượt
+                    </button>
+
+                    <div class="space-y-6">
+                        <div class="border-b border-slate-700 pb-4">
+                            <div class="flex justify-between items-end mb-1">
+                                <span class="text-slate-300">Doanh thu B2B (Tiền vào)</span>
+                                <span class="text-2xl font-black text-emerald-400" id="sim-revenue">0 VNĐ</span>
+                            </div>
+                            <p class="text-xs text-slate-500 text-right">Từ 5,000,000 FP người dùng đã đốt</p>
                         </div>
-                    </div>
-                    <div class="flex items-start gap-4 mt-6 bg-teal-50 p-4 rounded-lg">
-                        <div class="text-3xl">💡</div>
-                        <div>
-                            <h3 class="font-bold text-teal-900 text-lg">Giải pháp từ Forely</h3>
-                            <p class="text-teal-800 mt-1">Tích hợp API khảo sát của Agency. Forely lo phần "thu hút đáp viên" bằng phần thưởng Gacha hấp dẫn, Agency lo phần phân tích chuyên sâu. Forely trở thành "nhà cung cấp Traffic" chất lượng cao.</p>
+
+                        <div class="border-b border-slate-700 pb-4">
+                            <div class="flex justify-between items-end mb-1">
+                                <span class="text-slate-300">Chi phí trả thưởng (Tiền ra)</span>
+                                <span class="text-2xl font-black text-rose-400" id="sim-cost">0 VNĐ</span>
+                            </div>
+                            <p class="text-xs text-slate-500 text-right">Mua Voucher UrBox trả thưởng</p>
+                        </div>
+
+                        <div class="bg-slate-700/50 p-4 rounded-xl border border-slate-600">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-bold">Lợi Nhuận Gộp (Gross Profit)</span>
+                                <span class="text-3xl font-black text-white" id="sim-profit">0 VNĐ</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-2.5 mt-2">
+                                <div class="bg-indigo-500 h-2.5 rounded-full" id="sim-margin-bar" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-indigo-300 mt-2 text-right font-medium">Biên lợi nhuận: <span id="sim-margin-text">0%</span></p>
                         </div>
                     </div>
                 </div>
@@ -203,229 +276,401 @@
             </div>
         </section>
 
-        <!-- Section 4: Đối thủ & USP -->
-        <section class="glass-card rounded-2xl p-8">
-            <div class="mb-6 border-b border-slate-200 pb-4">
-                <h2 class="text-3xl font-bold text-slate-800 flex items-center gap-2">
-                    <span class="text-2xl">⚔️</span> Ma Trận Cạnh Tranh & Lợi Thế Độc Quyền
+        <!-- SECTION 3: PARI-MUTUEL -->
+        <section id="parimutuel" class="scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 flex items-center gap-3">
+                    <span class="text-3xl">⚖️</span> 2.4 Toán học "Đấu trí" (Pari-Mutuel)
                 </h2>
-                <p class="text-slate-500 mt-2">Định vị Forely trong "Đại dương xanh" bằng cách so sánh với các mô hình hiện tại, và 3 trụ cột công nghệ (USPs) tạo nên rào cản xâm nhập.</p>
+                <p class="text-slate-600 mt-3 text-lg">Mô hình an toàn nhất trong kinh tế học dự báo. Nền tảng chỉ là Trọng tài thu phí, không bao giờ phải chịu rủi ro trả thưởng. Trí tuệ đám đông tự quyết định lợi nhuận.</p>
             </div>
 
-            <!-- Competitive Matrix -->
-            <div class="overflow-x-auto mb-10 border border-slate-200 rounded-xl shadow-sm">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-100 text-slate-700 text-sm uppercase tracking-wider">
-                            <th class="p-4 border-b">Tiêu chí</th>
-                            <th class="p-4 border-b border-l">Khảo sát TT (SurveyMonkey)</th>
-                            <th class="p-4 border-b border-l">Web3 Prediction (PolyMarket)</th>
-                            <th class="p-4 border-b border-l bg-indigo-50 text-indigo-800 font-bold">FORELY (Lối đi riêng)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-4 border-b font-medium text-slate-800">Bản chất</td>
-                            <td class="p-4 border-b border-l text-slate-600">Công cụ (Tool) SaaS</td>
-                            <td class="p-4 border-b border-l text-slate-600">Sàn giao dịch dự báo phi tập trung</td>
-                            <td class="p-4 border-b border-l bg-indigo-50 text-indigo-900 font-bold">Mạng xã hội Khảo sát & Đấu trí</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-4 border-b font-medium text-slate-800">Động lực User</td>
-                            <td class="p-4 border-b border-l text-slate-600">Ép buộc / Xin xỏ</td>
-                            <td class="p-4 border-b border-l text-slate-600">Đầu tư kiếm lời bằng Crypto</td>
-                            <td class="p-4 border-b border-l bg-indigo-50 text-indigo-900 font-bold">Giải trí, Tôn vinh trí tuệ, Voucher</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-4 border-b font-medium text-slate-800">Tính hợp pháp</td>
-                            <td class="p-4 border-b border-l text-green-600 font-medium">Hoàn toàn hợp pháp</td>
-                            <td class="p-4 border-b border-l text-red-500 font-medium">Rủi ro pháp lý cao</td>
-                            <td class="p-4 border-b border-l bg-indigo-50 text-green-700 font-bold">Hợp pháp (B2B2C, Voucher ảo)</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-4 border-b font-medium text-slate-800">Trải nghiệm UX</td>
-                            <td class="p-4 border-b border-l text-slate-600">Nhàm chán, khô khan</td>
-                            <td class="p-4 border-b border-l text-slate-600">Phức tạp (Ví Metamask, Gas)</td>
-                            <td class="p-4 border-b border-l bg-indigo-50 text-indigo-900 font-bold">Web2 siêu mượt + Gamification</td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-4 font-medium text-slate-800">Chất lượng Data</td>
-                            <td class="p-4 border-l text-slate-600">Cao (nếu kiểm duyệt)</td>
-                            <td class="p-4 border-l text-slate-600">Cao (Skin in the game)</td>
-                            <td class="p-4 border-l bg-indigo-50 text-indigo-900 font-bold">Tương đối cao (AI lọc Spam)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <div class="glass-panel rounded-2xl p-6 sm:p-10">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    
+                    <!-- Controls -->
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="font-bold text-slate-800 mb-1">Thị trường Dự báo:</h3>
+                            <p class="text-lg font-medium text-indigo-700 p-3 bg-indigo-50 rounded-lg border border-indigo-100">"Giá cổ phiếu VNM có vượt mốc 75.000đ tuần này?"</p>
+                        </div>
 
-            <!-- USPs -->
-            <h3 class="text-xl font-bold text-slate-800 mb-4">Lợi thế Độc quyền (USPs)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                    <div class="text-3xl mb-3">🔗</div>
-                    <h4 class="font-bold text-slate-800 mb-2">UX Web2 - Lõi Web3</h4>
-                    <p class="text-sm text-slate-600">Thao tác dễ như lướt TikTok. Kết quả được băm (hash) lên Polygon Blockchain định kỳ, đảm bảo minh bạch tuyệt đối. Nhãn hàng không thể gian lận, nền tảng không thao túng.</p>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
-                    <div class="text-3xl mb-3">🎁</div>
-                    <h4 class="font-bold text-slate-800 mb-2">Cơ chế Gacha "Đốt" Thanh khoản</h4>
-                    <p class="text-sm text-slate-600">Không trả thưởng 1:1 gây lạm phát. Mở hộp quà may mắn giúp Forely kiểm soát tỷ lệ Payout, giữ biên lợi nhuận cao từ B2B mà user vẫn hào hứng.</p>
-                </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                                    <span>🔵 Phe [CÓ] đầu tư:</span>
+                                    <span id="pool-a-val" class="text-indigo-600">10,000 FP</span>
+                                </label>
+                                <input type="range" id="pool-a" min="1000" max="100000" step="1000" value="10000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
 
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
-                    <div class="text-3xl mb-3">🤖</div>
-                    <h4 class="font-bold text-slate-800 mb-2">Tích hợp Gen-AI Realtime</h4>
-                    <p class="text-sm text-slate-600">AI (Gemini) tự động tóm tắt tin tức, tạo Market để người dùng đấu trí, và tổng hợp báo cáo Insight gửi cho B2B ngay khi chiến dịch kết thúc, tiết kiệm chi phí vận hành.</p>
+                            <div>
+                                <label class="flex justify-between text-sm font-bold text-slate-700 mb-2">
+                                    <span>🟠 Phe [KHÔNG] đầu tư:</span>
+                                    <span id="pool-b-val" class="text-orange-600">30,000 FP</span>
+                                </label>
+                                <input type="range" id="pool-b" min="1000" max="100000" step="1000" value="30000" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm text-slate-600">
+                            <strong>Logic:</strong> Người dùng đang tự chia điểm cho nhau. Forely thu phí 5% trên Tổng Bể Điểm và đem "đốt", giúp chống lạm phát.
+                        </div>
+                    </div>
+
+                    <!-- Results / Output -->
+                    <div class="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-lg relative overflow-hidden">
+                        <!-- Decorative bg -->
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-slate-50 rounded-full"></div>
+                        
+                        <h4 class="font-bold text-slate-800 mb-6 relative z-10 text-xl border-b border-slate-100 pb-2">Kịch bản Trả thưởng</h4>
+                        
+                        <div class="space-y-4 relative z-10">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-500">Tổng Bể Điểm (A + B):</span>
+                                <span class="font-bold text-slate-800 text-lg" id="pm-total">40,000 FP</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center bg-rose-50 p-2 rounded text-rose-700">
+                                <span>Phí Nền tảng (5% Burned):</span>
+                                <span class="font-bold" id="pm-tax">- 2,000 FP</span>
+                            </div>
+
+                            <div class="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-700">
+                                <span class="font-medium">Bể Thưởng Thực Tế:</span>
+                                <span class="font-black text-xl" id="pm-reward">38,000 FP</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-slate-200 relative z-10">
+                            <p class="text-sm text-slate-500 mb-4 text-center uppercase tracking-widest font-bold">Tỷ suất sinh lời (ROI) Nếu Thắng</p>
+                            
+                            <div class="flex gap-4">
+                                <div class="flex-1 bg-indigo-50 border border-indigo-100 p-4 rounded-xl text-center">
+                                    <div class="text-xs font-bold text-indigo-800 mb-1">Cửa [CÓ]</div>
+                                    <div class="text-2xl font-black text-indigo-600" id="roi-a">x3.8</div>
+                                </div>
+                                <div class="flex-1 bg-orange-50 border border-orange-100 p-4 rounded-xl text-center">
+                                    <div class="text-xs font-bold text-orange-800 mb-1">Cửa [KHÔNG]</div>
+                                    <div class="text-2xl font-black text-orange-600" id="roi-b">x1.26</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </section>
 
+        <!-- SECTION 4: UX FLOWS -->
+        <section id="ux" class="scroll-mt-24">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 flex items-center gap-3">
+                    <span class="text-3xl">📱</span> 4.2 Các Luồng Trải nghiệm Cốt lõi (UX)
+                </h2>
+                <p class="text-slate-600 mt-3 text-lg">Thiết kế chuẩn Web2: Nhanh, mượt, không ma sát. Người dùng tham gia hệ thống kinh tế phức tạp qua các thao tác vuốt chạm đơn giản.</p>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-hidden flex flex-col md:flex-row">
+                <!-- Tab Menu -->
+                <div class="w-full md:w-1/3 bg-slate-50 border-r border-slate-200 p-4">
+                    <div class="flex flex-col space-y-2" id="ux-tabs">
+                        <button onclick="showFlow('onboarding')" id="tab-onboarding" class="text-left px-4 py-3 rounded-lg bg-indigo-600 text-white font-semibold transition-all shadow-md">
+                            1. Onboarding (Tân thủ)
+                        </button>
+                        <button onclick="showFlow('predict')" id="tab-predict" class="text-left px-4 py-3 rounded-lg text-slate-600 font-semibold hover:bg-slate-200 transition-all">
+                            2. Tham gia Đấu trí
+                        </button>
+                        <button onclick="showFlow('brand')" id="tab-brand" class="text-left px-4 py-3 rounded-lg text-slate-600 font-semibold hover:bg-slate-200 transition-all">
+                            3. Nhiệm vụ B2B
+                        </button>
+                        <button onclick="showFlow('gacha')" id="tab-gacha" class="text-left px-4 py-3 rounded-lg text-slate-600 font-semibold hover:bg-slate-200 transition-all">
+                            4. Mở Hộp Quà (Gacha)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Flow Content -->
+                <div class="w-full md:w-2/3 p-6 sm:p-10 bg-white">
+                    
+                    <!-- Flow 1 -->
+                    <div id="flow-onboarding" class="flow-content block animate-fade-in">
+                        <div class="inline-block bg-emerald-100 text-emerald-800 px-3 py-1 rounded text-xs font-bold tracking-wide mb-4">MỤC TIÊU: GIỮ CHÂN TRONG 3 PHÚT</div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6">Interactive Tutorial</h3>
+                        <div class="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
+                            
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-200 text-slate-500 group-[.is-active]:bg-indigo-600 group-[.is-active]:text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
+                                    1
+                                </div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-sm">
+                                    <h4 class="font-bold text-slate-800">Đăng nhập nhanh</h4>
+                                    <p class="text-sm text-slate-600">1 chạm qua Google/Apple. Không bắt KYC.</p>
+                                </div>
+                            </div>
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-200 text-slate-500 group-[.is-active]:bg-indigo-600 group-[.is-active]:text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">2</div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-sm">
+                                    <h4 class="font-bold text-slate-800">Quà tân thủ</h4>
+                                    <p class="text-sm text-slate-600">Nhận ngay +1000 FP với hiệu ứng pháo hoa.</p>
+                                </div>
+                            </div>
+                            <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-200 text-slate-500 group-[.is-active]:bg-indigo-600 group-[.is-active]:text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">3</div>
+                                <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-sm">
+                                    <h4 class="font-bold text-slate-800">Thực hành 1 chạm</h4>
+                                    <p class="text-sm text-slate-600">Dự báo 1 câu dễ ("Hôm nay thứ mấy?"). Bấm chọn -> Trúng thưởng -> Mở khóa App.</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Flow 2 -->
+                    <div id="flow-predict" class="flow-content hidden animate-fade-in">
+                        <div class="inline-block bg-indigo-100 text-indigo-800 px-3 py-1 rounded text-xs font-bold tracking-wide mb-4">MỤC TIÊU: KÍCH THÍCH TƯ DUY</div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6">Luồng Tham gia Đấu trí</h3>
+                        <ol class="list-decimal list-inside space-y-4 text-slate-700 font-medium">
+                            <li class="p-3 bg-slate-50 rounded-lg">Chọn Market từ Feed Trang chủ.</li>
+                            <li class="p-3 bg-slate-50 rounded-lg">Đọc tóm tắt do <span class="text-indigo-600 font-bold">AI (Gemini)</span> tạo ra và góc nhìn phản biện (Devil's Advocate).</li>
+                            <li class="p-3 bg-slate-50 rounded-lg">Người dùng quyết định chọn cửa [CÓ] hoặc [KHÔNG].</li>
+                            <li class="p-3 bg-indigo-50 border border-indigo-100 rounded-lg">Màn hình Numpad hiện ra: Nhập FP đầu tư. <i>UI hiển thị ngay ROI dự kiến.</i></li>
+                            <li class="p-3 bg-slate-50 rounded-lg">Xác nhận. Hiển thị Popup chia sẻ để lôi kéo thêm người cùng phe.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Flow 3 -->
+                    <div id="flow-brand" class="flow-content hidden animate-fade-in">
+                        <div class="inline-block bg-emerald-100 text-emerald-800 px-3 py-1 rounded text-xs font-bold tracking-wide mb-4">MỤC TIÊU: DATA CHẤT LƯỢNG CAO</div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6">Khảo sát Brand Zone</h3>
+                        <ol class="list-decimal list-inside space-y-4 text-slate-700 font-medium">
+                            <li class="p-3 bg-slate-50 rounded-lg">Chọn chiến dịch có sẵn. VD: "Khảo sát Vinamilk - Thưởng 500 FP".</li>
+                            <li class="p-3 bg-slate-50 rounded-lg">Hệ thống kiểm tra điều kiện (Độ tuổi, Khu vực).</li>
+                            <li class="p-3 bg-rose-50 border border-rose-100 rounded-lg">Thực hiện trắc nghiệm. <i>Tích hợp AI Anti-spam: Bấm Next quá nhanh < 2s bị cảnh báo.</i></li>
+                            <li class="p-3 bg-emerald-50 border border-emerald-100 rounded-lg">Hoàn thành. FP chuyển ngay vào ví. Ghi Log lên Xano.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Flow 4 -->
+                    <div id="flow-gacha" class="flow-content hidden animate-fade-in">
+                        <div class="inline-block bg-amber-100 text-amber-800 px-3 py-1 rounded text-xs font-bold tracking-wide mb-4">MỤC TIÊU: GIẢI PHÓNG DOPAMINE</div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-6">Mở Hộp Quà (Gacha)</h3>
+                        <ol class="list-decimal list-inside space-y-4 text-slate-700 font-medium">
+                            <li class="p-3 bg-slate-50 rounded-lg">Bấm "Mở 1 lần (500 FP)" hoặc "Mở 10 lần (5000 FP)".</li>
+                            <li class="p-3 bg-amber-50 border border-amber-100 rounded-lg">Animation: Màn hình tối lại, hộp quà rung lắc 3s tạo sự hồi hộp.</li>
+                            <li class="p-3 bg-slate-50 rounded-lg">
+                                <b>Nếu trượt/hoàn vốn:</b> Ánh sáng trắng. Hiện "+100 FP (Giải an ủi)". Kèm nút "Thử lại".
+                            </li>
+                            <li class="p-3 bg-slate-50 rounded-lg">
+                                <b>Nếu trúng Voucher:</b> Pháo hoa nổ rực rỡ. Hiện hình Voucher 50K. Kèm nút "Khoe lên Bang hội".
+                            </li>
+                            <li class="p-3 bg-rose-50 border border-rose-100 text-sm mt-4 rounded-lg">
+                                <i>Edge Case:</i> Nếu API UrBox sập không nhả code -> Vẫn hiện hiệu ứng trúng. Lưu status "Pending_Code" và gửi sau để không làm mất cảm xúc user.
+                            </li>
+                        </ol>
+                    </div>
+
+                </div>
+            </div>
+        </section>
     </main>
 
     <style>
         .animate-fade-in {
-            animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.4s ease-out forwards;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
 
-    <!-- JavaScript Logic -->
+    <!-- JS Logic -->
     <script>
-        // Data for Personas
-        const personaData = {
-            analyst: {
-                title: 'The Analyst (Nhà Phân Tích)',
-                icon: '📈',
-                color: '#4f46e5', // indigo-600
-                demo: 'Nam/Nữ, 18-35T, sinh viên kinh tế, NVVP, nhà đầu tư F0.',
-                behavior: 'Tham gia dự báo khó, đòi hỏi kiến thức. Đầu tư nhiều FP để bảo vệ nhận định.',
-                value: 'Tạo ra độ uy tín (Credibility) cho dự báo. Là bộ lọc thông tin chất lượng cao.'
+        // --- DATA & STATE ---
+        const gachaStates = {
+            normal: {
+                labels: ['Không trúng (60%)', 'Hoàn vốn FP (20%)', 'Voucher 20K (15%)', 'Voucher 100K (4.9%)', 'Jackpot (0.1%)'],
+                data: [60, 20, 15, 4.9, 0.1],
+                colors: ['#cbd5e1', '#94a3b8', '#38bdf8', '#818cf8', '#f59e0b']
             },
-            hunter: {
-                title: 'The Hunter (Dân Cày Điểm)',
-                icon: '🎯',
-                color: '#0ea5e9', // sky-500
-                demo: 'Học sinh, sinh viên, Gen Z, nhiều thời gian rảnh.',
-                behavior: 'Làm mọi nhiệm vụ Brand Zone nhanh nhất. Dự báo theo số đông để an toàn. Thích vòng quay Gacha.',
-                value: 'Tạo thanh khoản, DAU/MAU khủng và Traffic khổng lồ cho B2B (Cần AI lọc data rác).'
-            },
-            guild: {
-                title: 'The Guild Master (KOC/Admin)',
-                icon: '👑',
-                color: '#f59e0b', // amber-500
-                demo: 'Admin group Facebook (Coin, Chứng khoán, GenZ), KOC TikTok.',
-                behavior: 'Tạo Bang hội, share link lôi kéo thành viên vào cày điểm và thi đấu.',
-                value: 'Kênh User Acquisition với chi phí CAC gần như bằng 0 (80% sức mạnh lôi kéo).'
+            alert: {
+                labels: ['Không trúng (40%)', 'Hoàn vốn FP (50%)', 'Voucher 20K (5%)', 'Voucher 100K (4.9%)', 'Jackpot (0.1%)'],
+                data: [40, 50, 5, 4.9, 0.1],
+                colors: ['#cbd5e1', '#fcd34d', '#38bdf8', '#818cf8', '#f59e0b']
             }
         };
 
-        // Initialize Chart.js
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('personaChart').getContext('2d');
-            
-            const data = {
-                labels: ['The Hunter (60%)', 'The Analyst (30%)', 'The Guild Master (10%)'],
-                datasets: [{
-                    data: [60, 30, 10],
-                    backgroundColor: [
-                        personaData.hunter.color,
-                        personaData.analyst.color,
-                        personaData.guild.color
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#ffffff',
-                    hoverOffset: 10
-                }]
-            };
+        let currentGachaState = 'normal';
+        let gachaChartInstance = null;
 
-            const config = {
+        // --- GACHA CHART INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('gachaChart').getContext('2d');
+            
+            gachaChartInstance = new Chart(ctx, {
                 type: 'doughnut',
-                data: data,
+                data: {
+                    labels: gachaStates.normal.labels,
+                    datasets: [{
+                        data: gachaStates.normal.data,
+                        backgroundColor: gachaStates.normal.colors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 10
+                    }]
+                },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Essential for respecting chart-container height
-                    cutout: '65%',
+                    maintainAspectRatio: false, // Essential for chart-container
+                    cutout: '60%',
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { padding: 20, font: { family: "'Segoe UI', sans-serif" } }
-                        },
+                        legend: { position: 'right', labels: { padding: 15, font: { family: "'Inter', sans-serif" } } },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
-                                    return ' ' + context.label.split(' ')[0] + ': ' + context.parsed + '%';
-                                }
+                                label: function(context) { return ' Tỷ lệ: ' + context.parsed + '%'; }
                             }
-                        }
-                    },
-                    onClick: (event, elements) => {
-                        if (elements.length > 0) {
-                            const index = elements[0].index;
-                            const keys = ['hunter', 'analyst', 'guild'];
-                            updatePersonaDetails(keys[index]);
                         }
                     }
                 }
-            };
+            });
 
-            const personaChart = new Chart(ctx, config);
-
-            // Default selection
-            updatePersonaDetails('hunter');
+            // Init Pari-mutuel
+            updatePariMutuel();
         });
 
-        // Function to update details panel based on chart click
-        function updatePersonaDetails(key) {
-            const p = personaData[key];
-            const panel = document.getElementById('personaDetails');
+        // --- ANTI-INFLATION LOGIC ---
+        function setGachaState(state) {
+            currentGachaState = state;
             
-            panel.innerHTML = `
-                <div class="animate-fade-in">
-                    <div class="inline-block px-3 py-1 rounded-full text-white text-sm font-semibold mb-4" style="background-color: ${p.color}">
-                        ${p.icon} ${p.title}
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Nhân khẩu học</p>
-                            <p class="text-slate-700">${p.demo}</p>
-                        </div>
-                        <div>
-                            <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Hành vi trên App</p>
-                            <p class="text-slate-700">${p.behavior}</p>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-md border border-slate-100">
-                            <p class="text-xs uppercase tracking-wider text-indigo-600 font-bold mb-1">Giá trị mang lại</p>
-                            <p class="text-slate-800 font-medium">${p.value}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
+            // UI Toggle
+            const btnNormal = document.getElementById('btn-normal');
+            const btnAlert = document.getElementById('btn-alert');
+            const desc = document.getElementById('state-desc');
+
+            if (state === 'normal') {
+                btnNormal.className = "px-3 py-1.5 text-xs font-semibold rounded-md bg-white shadow text-slate-800 transition-all";
+                btnAlert.className = "px-3 py-1.5 text-xs font-semibold rounded-md text-slate-500 hover:text-slate-800 transition-all";
+                desc.innerHTML = "<strong>Trạng thái Xanh:</strong> Tỷ lệ chuẩn. Đảm bảo tỷ suất lợi nhuận mục tiêu ~64%.";
+                desc.className = "mb-4 text-sm bg-indigo-50 text-indigo-800 p-3 rounded-lg border border-indigo-100";
+            } else {
+                btnNormal.className = "px-3 py-1.5 text-xs font-semibold rounded-md text-slate-500 hover:text-slate-800 transition-all";
+                btnAlert.className = "px-3 py-1.5 text-xs font-semibold rounded-md bg-rose-500 shadow text-white transition-all";
+                desc.innerHTML = "<strong>Trạng thái Đỏ (Giờ Vàng):</strong> Tăng tỷ lệ hoàn vốn FP lên 50% để tạo ảo giác trúng thưởng, giảm tỷ lệ Voucher thật để bảo vệ ngân sách.";
+                desc.className = "mb-4 text-sm bg-rose-50 text-rose-800 p-3 rounded-lg border border-rose-100";
+            }
+
+            // Update Chart
+            gachaChartInstance.data.labels = gachaStates[state].labels;
+            gachaChartInstance.data.datasets[0].data = gachaStates[state].data;
+            gachaChartInstance.data.datasets[0].backgroundColor = gachaStates[state].colors;
+            gachaChartInstance.update();
         }
 
-        // Tab Logic for B2B Section
-        function switchTab(tabId) {
-            // Reset buttons
-            document.getElementById('btn-brand').className = "flex-1 py-3 px-4 rounded-lg font-semibold transition-colors bg-white text-slate-600 border-2 border-slate-200 hover:border-indigo-300";
-            document.getElementById('btn-agency').className = "flex-1 py-3 px-4 rounded-lg font-semibold transition-colors bg-white text-slate-600 border-2 border-slate-200 hover:border-indigo-300";
+        // --- GACHA SIMULATION LOGIC ---
+        function runSimulation() {
+            // Target numbers based on doc: 250M revenue, 89M cost, 161M profit.
+            // We'll animate them from 0.
             
-            // Hide all content
-            document.getElementById('content-brand').classList.add('hidden');
-            document.getElementById('content-brand').classList.remove('block');
-            document.getElementById('content-agency').classList.add('hidden');
-            document.getElementById('content-agency').classList.remove('block');
+            const revenueTarget = 250000000;
+            let costTarget = 89000000;
+            
+            // Adjust cost target based on state
+            if (currentGachaState === 'alert') {
+                // In alert state, 20k voucher drops to 5% (500 hits = 10m). 100k and 1m stay same (49m + 10m). Total = 69m.
+                costTarget = 69000000;
+            }
 
-            // Set active button & show content
-            const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.className = "flex-1 py-3 px-4 rounded-lg font-semibold transition-colors bg-indigo-600 text-white border-2 border-indigo-600";
+            const profitTarget = revenueTarget - costTarget;
+            const marginTarget = (profitTarget / revenueTarget) * 100;
+
+            animateValue("sim-revenue", 0, revenueTarget, 1000, " VNĐ");
+            animateValue("sim-cost", 0, costTarget, 1000, " VNĐ");
+            animateValue("sim-profit", 0, profitTarget, 1000, " VNĐ");
             
-            const activeContent = document.getElementById('content-' + tabId);
+            // Animate bar
+            const bar = document.getElementById('sim-margin-bar');
+            bar.style.transition = 'width 1s ease-out';
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = marginTarget + '%';
+            }, 50);
+
+            // Animate text
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / 1000, 1);
+                document.getElementById('sim-margin-text').innerText = (progress * marginTarget).toFixed(1) + '%';
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function animateValue(id, start, end, duration, suffix) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const current = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = current.toLocaleString('vi-VN') + suffix;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // --- PARI-MUTUEL CALCULATOR LOGIC ---
+        const inputA = document.getElementById('pool-a');
+        const inputB = document.getElementById('pool-b');
+
+        inputA.addEventListener('input', updatePariMutuel);
+        inputB.addEventListener('input', updatePariMutuel);
+
+        function updatePariMutuel() {
+            const valA = parseInt(inputA.value);
+            const valB = parseInt(inputB.value);
+            
+            document.getElementById('pool-a-val').innerText = valA.toLocaleString() + " FP";
+            document.getElementById('pool-b-val').innerText = valB.toLocaleString() + " FP";
+
+            const totalPool = valA + valB;
+            const tax = Math.floor(totalPool * 0.05);
+            const rewardPool = totalPool - tax;
+
+            document.getElementById('pm-total').innerText = totalPool.toLocaleString() + " FP";
+            document.getElementById('pm-tax').innerText = "- " + tax.toLocaleString() + " FP";
+            document.getElementById('pm-reward').innerText = rewardPool.toLocaleString() + " FP";
+
+            const roiA = (rewardPool / valA).toFixed(2);
+            const roiB = (rewardPool / valB).toFixed(2);
+
+            document.getElementById('roi-a').innerText = "x" + roiA;
+            document.getElementById('roi-b').innerText = "x" + roiB;
+        }
+
+        // --- UX TABS LOGIC ---
+        function showFlow(flowId) {
+            // Reset buttons
+            const buttons = document.querySelectorAll('#ux-tabs button');
+            buttons.forEach(btn => {
+                btn.className = "text-left px-4 py-3 rounded-lg text-slate-600 font-semibold hover:bg-slate-200 transition-all";
+            });
+
+            // Hide all contents
+            const contents = document.querySelectorAll('.flow-content');
+            contents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+
+            // Show active
+            const activeBtn = document.getElementById('tab-' + flowId);
+            activeBtn.className = "text-left px-4 py-3 rounded-lg bg-indigo-600 text-white font-semibold transition-all shadow-md";
+            
+            const activeContent = document.getElementById('flow-' + flowId);
             activeContent.classList.remove('hidden');
             activeContent.classList.add('block');
         }
