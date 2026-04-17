@@ -406,3 +406,413 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đà Nẵng Adventure - 24/04 đến 27/04</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Cấu hình màu tùy chỉnh cho Tailwind (Ocean Blue Theme) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Styles & Animations */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        .tab-btn.active {
+            background-color: #0284c7; /* sky-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: scale(1.02);
+        }
+        
+        .tab-btn:not(.active) {
+            color: #475569; /* slate-600 */
+        }
+        
+        .tab-btn:not(.active):hover {
+            background-color: #f8fafc; /* slate-50 */
+        }
+
+        /* Checkbox Custom styling */
+        .checklist-item input:checked + div {
+            background-color: #0ea5e9;
+            border-color: #0ea5e9;
+            color: white;
+        }
+        
+        .checklist-item input:checked ~ span {
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-12">
+
+    <!-- HERO SECTION -->
+    <div class="relative h-64 md:h-80 w-full overflow-hidden">
+        <img 
+            src="https://images.unsplash.com/photo-1559506274-129aa24e6b54?auto=format&fit=crop&w=1920&q=80" 
+            alt="Da Nang Cover" 
+            class="absolute inset-0 w-full h-full object-cover object-center"
+        >
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 max-w-6xl mx-auto flex flex-col justify-end h-full">
+            <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm font-medium w-max mb-3">
+                <i data-lucide="heart" class="w-4 h-4 text-red-400 fill-current"></i>
+                <span>Du lịch với Em Yêu</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 shadow-sm">
+                Đà Nẵng - Hội An - Huế
+            </h1>
+            <p class="text-slate-200 text-lg md:text-xl flex items-center">
+                <i data-lucide="calendar-days" class="w-5 h-5 mr-2"></i> 24/04 - 27/04 (4 Ngày 3 Đêm)
+            </p>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-2rem] relative z-10">
+        
+        <!-- TOP STATS CARDS -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center">
+                <div class="bg-amber-50 p-2.5 rounded-lg mr-3">
+                    <i data-lucide="sun" class="w-6 h-6 text-amber-500"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Thời tiết</p>
+                    <p class="font-bold text-slate-800">28 - 34°C</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center">
+                <div class="bg-sky-50 p-2.5 rounded-lg mr-3">
+                    <i data-lucide="map-pin" class="w-6 h-6 text-sky-500"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Điểm đến</p>
+                    <p class="font-bold text-slate-800">10+ Địa điểm</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center col-span-2 md:col-span-2">
+                <div class="bg-indigo-50 p-2.5 rounded-lg mr-3">
+                    <i data-lucide="wallet" class="w-6 h-6 text-indigo-600"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Dự toán chi phí (Ko gồm VMB)</p>
+                    <p class="font-bold text-slate-800">~4.500.000 VNĐ / Người</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- MAIN ITINERARY COLUMN -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- TABS -->
+                <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-100 flex flex-wrap w-full" id="tabs-container">
+                    <!-- Tabs will be injected here by JS -->
+                </div>
+
+                <!-- DAY CONTENT -->
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 min-h-[500px]">
+                    <div id="day-content" class="fade-in">
+                        <!-- Content injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="space-y-6">
+                
+                <!-- Checklist Widget -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 sticky top-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center pb-3 border-b border-slate-100">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 mr-2 text-sky-500"></i>
+                        Checklist Hành Lý
+                    </h3>
+                    <div class="space-y-3" id="checklist-container">
+                        <!-- Checklist items will be injected by JS -->
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <div class="w-full bg-slate-100 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-sky-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <p id="progress-text" class="text-right text-xs text-slate-500 mt-2 font-medium">
+                            Hoàn thành 0/8
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Note Widget -->
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100">
+                    <h3 class="text-lg font-bold text-amber-900 mb-2 flex items-center">
+                        <i data-lucide="camera" class="w-5 h-5 mr-2 text-amber-600"></i>
+                        Tips Chụp Ảnh
+                    </h3>
+                    <p class="text-sm text-amber-800/80 leading-relaxed">
+                        Chuyến đi này có cả biển xanh (Đà Nẵng), lồng đèn vàng (Hội An) và tường rêu đỏ (Huế). "Em yêu" nên chuẩn bị <strong>váy maxi bay bổng</strong> cho biển, <strong>đầm vintage/áo dài</strong> khi đi Hội An và <strong>áo dài/cổ phục</strong> khi chụp hình tại Đại Nội Huế để có những bức hình lung linh nhất!
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT DATA & LOGIC -->
+    <script>
+        // Data
+        const itineraryData = [
+            {
+                date: '24/04',
+                title: 'Xin Chào Thành Phố Biển',
+                subtitle: 'Biển Mỹ Khê & Hải Sản Tươi Sống',
+                tips: [
+                    'Nên mặc đồ thoải mái, chuẩn bị sẵn đồ bơi để tắm biển Mỹ Khê.',
+                    'Dọc đường Võ Nguyên Giáp rất nhiều quán hải sản, nên hỏi giá trước khi gọi món nếu vào quán lạ.',
+                    'Nếu đi đông vào cuối tuần, nên gọi đặt bàn trước tại các quán nổi tiếng như Bé Mặn.'
+                ],
+                events: [
+                    { time: '15:00 - 17:30', title: 'Tới Đà Nẵng & Dạo biển', desc: 'Di chuyển từ sân bay về khách sạn nhận phòng. Sau đó ra tắm biển Mỹ Khê và ngắm hoàng hôn.', price: '', type: 'transport', img: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?auto=format&fit=crop&w=600&q=80' },
+                    { time: '18:30 - 21:00', title: 'Tiệc nhậu hải sản', desc: 'Ăn tối hải sản tươi sống dọc đường Võ Nguyên Giáp. Gợi ý: Quán Bé Mặn hoặc Năm Rảnh.', price: '~400k - 500k/người', type: 'food' },
+                    { time: '21:00 - 22:30', title: 'Cầu Rồng & Chợ đêm', desc: 'Dạo mát ven sông Hàn, ngắm Cầu Rồng phun lửa/nước (nếu trúng tối T7, CN).', price: '', type: 'visit' }
+                ]
+            },
+            {
+                date: '25/04',
+                title: 'Lên Rừng - Xuống Phố',
+                subtitle: 'Sơn Trà, Ngũ Hành Sơn & Hội An',
+                tips: [
+                    'Đi xe máy lên Sơn Trà cần chú ý tay lái vững vì đường khá dốc.',
+                    'Mang giày thể thao êm chân để khám phá hang động tại Ngũ Hành Sơn và đi bộ quanh phố cổ Hội An.',
+                    'Hội An đẹp nhất vào buổi chiều muộn khi các lồng đèn bắt đầu thắp sáng.'
+                ],
+                events: [
+                    { time: '08:00 - 11:30', title: 'Bán đảo Sơn Trà & Linh Ứng', desc: 'Ngắm toàn cảnh Đà Nẵng từ trên cao. Viếng tượng Phật Bà Quan Âm cao 67m.', price: '', type: 'visit', img: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80' },
+                    { time: '12:00 - 13:30', title: 'Đặc sản Bánh tráng cuốn', desc: 'Thưởng thức bánh tráng cuốn thịt heo hai đầu da. Gợi ý: Quán Trần hoặc Quán Mậu.', price: '~150k/người', type: 'food' },
+                    { time: '14:30 - 17:30', title: 'Ngũ Hành Sơn & Hội An', desc: 'Khám phá hang động Ngũ Hành Sơn. Sau đó di chuyển vào Hội An thăm Chùa Cầu, Nhà cổ.', price: 'Vé NHS: 40k | Hội An: 80k', type: 'visit', img: 'https://images.unsplash.com/photo-1550652611-18e38d4be10f?auto=format&fit=crop&w=600&q=80' },
+                    { time: '18:00 - 21:00', title: 'Dạo đêm & Hoa đăng', desc: 'Ăn tối Cao Lầu/Cơm gà. Đi thuyền thả hoa đăng trên sông Hoài thơ mộng, sau đó quay về Đà Nẵng.', price: 'Thuyền: 150k-200k', type: 'food' }
+                ]
+            },
+            {
+                date: '26/04',
+                title: 'Hành Trình Di Sản Huế',
+                subtitle: 'Đèo Hải Vân, Đại Nội & Lăng Tẩm',
+                tips: [
+                    'Nên xuất phát sớm. Trải nghiệm đi qua Đèo Hải Vân ngắm vịnh Lăng Cô rất đẹp.',
+                    'Tại Đại Nội Huế, rất nên thuê Hướng dẫn viên tại điểm để nghe các câu chuyện lịch sử.',
+                    'Trang phục kín đáo khi vào thăm Đại Nội và các Chùa/Lăng tẩm.'
+                ],
+                events: [
+                    { time: '07:30 - 12:00', title: 'Khởi hành & Thăm Đại Nội', desc: 'Vượt đèo Hải Vân ra Huế. Khám phá Hoàng thành, Tử Cấm Thành.', price: 'Vé Đại Nội: 200k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1582298538104-1296bdc97fc7?auto=format&fit=crop&w=600&q=80' },
+                    { time: '12:30 - 14:00', title: 'Ăn trưa đặc sản Huế', desc: 'Thưởng thức Bún bò Huế chuẩn vị hoặc các loại Bánh bèo, nậm, lọc.', price: '~100k/người', type: 'food' },
+                    { time: '14:30 - 17:30', title: 'Thiên Mụ & Lăng Khải Định', desc: 'Viếng chùa Thiên Mụ bên bờ sông Hương. Chiêm ngưỡng kiến trúc tinh xảo của Lăng Khải Định.', price: 'Vé Lăng: 150k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1601002347895-e2f3d6c1f103?auto=format&fit=crop&w=600&q=80' },
+                    { time: '18:00 - 20:00', title: 'Quay về Đà Nẵng', desc: 'Lên xe quay trở lại Đà Nẵng nghỉ ngơi sau một ngày đi lại khá nhiều.', price: '', type: 'transport' }
+                ]
+            },
+            {
+                date: '27/04',
+                title: 'Tạm Biệt Thành Phố Đáng Sống',
+                subtitle: 'Foodtour & Mua sắm đặc sản',
+                tips: [
+                    'Nên ra Chợ Cồn để trải nghiệm thiên đường ẩm thực miền Trung.',
+                    'Đóng gói hành lý cẩn thận nếu có mua các loại hải sản khô, chả bò, mắm nêm.',
+                    'Có mặt tại sân bay ít nhất 2 tiếng trước giờ khởi hành.'
+                ],
+                events: [
+                    { time: '08:30 - 11:30', title: 'Ăn sáng & Phá đảo Chợ Cồn', desc: 'Ăn sáng Mì Quảng. Dạo Chợ Cồn ăn vặt (kem bơ, ốc hút...) và mua sắm đặc sản chả bò, mực rim me.', price: '', type: 'food' },
+                    { time: '12:00 - 13:30', title: 'Cà phê & Trả phòng', desc: 'Thưởng thức một ly cà phê muối, sau đó về khách sạn sắp xếp hành lý và làm thủ tục check-out.', price: '', type: 'visit' },
+                    { time: '14:00', title: 'Di chuyển ra sân bay', desc: 'Lên taxi di chuyển ra sân bay Đà Nẵng, kết thúc chuyến đi tuyệt vời.', price: '', type: 'transport' }
+                ]
+            }
+        ];
+
+        const checklistData = [
+            "Vé máy bay & CCCD/Passport",
+            "Đồ bơi & Kính râm (Tắm biển Mỹ Khê)",
+            "Giày thể thao (Đi Ngũ Hành Sơn & Hội An)",
+            "Quần áo kín đáo (Đi Chùa, Đại Nội Huế)",
+            "Kem chống nắng (Rất quan trọng)",
+            "Áo khoác mỏng/Áo chống nắng",
+            "Tiền mặt (Ăn vặt tại chợ Cồn, Hội An)",
+            "Thuốc men, Urgo, Sạc dự phòng"
+        ];
+
+        let activeDayIndex = 0;
+        let checkedItemsCount = 0;
+
+        // Helper func to get icon based on type
+        function getEventIcon(type) {
+            switch(type) {
+                case 'transport': return '<i data-lucide="car" class="w-5 h-5 text-indigo-500"></i>';
+                case 'food': return '<i data-lucide="utensils" class="w-5 h-5 text-amber-500"></i>';
+                case 'visit': return '<i data-lucide="camera" class="w-5 h-5 text-sky-500"></i>';
+                default: return '<i data-lucide="map-pin" class="w-5 h-5 text-gray-500"></i>';
+            }
+        }
+
+        // Render Tabs
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = itineraryData.map((day, idx) => `
+                <button 
+                    onclick="changeDay(${idx})" 
+                    class="tab-btn flex-1 min-w-[100px] text-center py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 ${idx === activeDayIndex ? 'active' : ''}">
+                    ${day.date}
+                </button>
+            `).join('');
+        }
+
+        // Render Content for Selected Day
+        function renderContent() {
+            const data = itineraryData[activeDayIndex];
+            const contentDiv = document.getElementById('day-content');
+            
+            // Trigger animation
+            contentDiv.classList.remove('fade-in');
+            void contentDiv.offsetWidth; // trigger reflow
+            contentDiv.classList.add('fade-in');
+
+            let tipsHtml = data.tips.map(tip => `
+                <li class="flex items-start text-sky-900/80 text-sm md:text-base">
+                    <i data-lucide="chevron-right" class="w-4 h-4 mr-1 mt-1 flex-shrink-0 text-sky-600"></i>
+                    <span>${tip}</span>
+                </li>
+            `).join('');
+
+            let eventsHtml = data.events.map(event => `
+                <div class="relative pl-8 md:pl-10 group">
+                    <div class="absolute -left-[21px] top-1 w-10 h-10 bg-white rounded-full border-[3px] border-sky-200 flex items-center justify-center shadow-sm z-10 transition-transform group-hover:scale-110 group-hover:border-sky-500">
+                        ${getEventIcon(event.type)}
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-5">
+                        <div class="flex-1">
+                            <div class="inline-flex items-center bg-sky-50 text-sky-700 text-xs font-bold px-3 py-1 rounded-full mb-2 border border-sky-100">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5"></i>
+                                ${event.time}
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-800 mb-2 leading-tight">${event.title}</h4>
+                            <p class="text-slate-600 text-[15px] leading-relaxed mb-4">${event.desc}</p>
+                            ${event.price ? `
+                                <div class="inline-flex items-center text-sm font-medium text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg">
+                                    <i data-lucide="wallet" class="w-4 h-4 mr-2 text-slate-500"></i>
+                                    ${event.price}
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${event.img ? `
+                            <div class="w-full md:w-48 h-32 md:h-auto flex-shrink-0 rounded-xl overflow-hidden shadow-sm">
+                                <img src="${event.img}" alt="${event.title}" class="w-full h-full object-cover transform transition-transform duration-500 hover:scale-105">
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            contentDiv.innerHTML = `
+                <div class="mb-8 border-b border-slate-100 pb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800">${data.title}</h2>
+                    <p class="text-sky-600 font-medium text-lg mt-1">${data.subtitle}</p>
+                </div>
+                <div class="bg-sky-50 rounded-xl p-5 mb-10 border border-sky-100/50">
+                    <h3 class="flex items-center text-sky-800 font-bold mb-3 text-lg">
+                        <i data-lucide="info" class="w-5 h-5 mr-2"></i>
+                        Mẹo nhỏ cho ngày hôm nay
+                    </h3>
+                    <ul class="space-y-2">${tipsHtml}</ul>
+                </div>
+                <div class="relative border-l-2 border-sky-100 ml-4 md:ml-6 space-y-10 pb-4">
+                    ${eventsHtml}
+                </div>
+            `;
+            
+            // Re-initialize Lucide icons for new DOM elements
+            lucide.createIcons();
+        }
+
+        // Change Tab Logic
+        window.changeDay = function(index) {
+            activeDayIndex = index;
+            renderTabs();
+            renderContent();
+        }
+
+        // Render Checklist
+        function renderChecklist() {
+            const container = document.getElementById('checklist-container');
+            container.innerHTML = checklistData.map((item, idx) => `
+                <label class="checklist-item flex items-center space-x-3 cursor-pointer group">
+                    <input type="checkbox" class="hidden" onchange="updateProgress(this)">
+                    <div class="w-6 h-6 rounded-md flex items-center justify-center border border-slate-300 transition-colors group-hover:border-sky-400">
+                        <i data-lucide="check" class="w-4 h-4 opacity-0 transition-opacity"></i>
+                    </div>
+                    <span class="text-[15px] select-none transition-all text-slate-700">${item}</span>
+                </label>
+            `).join('');
+            
+            // CSS fix for checklist icon visibility
+            const style = document.createElement('style');
+            style.textContent = `
+                .checklist-item input:checked + div i { opacity: 1; }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Update Progress Bar
+        window.updateProgress = function(checkbox) {
+            if(checkbox.checked) {
+                checkedItemsCount++;
+            } else {
+                checkedItemsCount--;
+            }
+            
+            const total = checklistData.length;
+            const percentage = (checkedItemsCount / total) * 100;
+            
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').innerText = `Hoàn thành ${checkedItemsCount}/${total}`;
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTabs();
+            renderContent();
+            renderChecklist();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
