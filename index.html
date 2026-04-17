@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch trình du lịch Ninh Bình (30/04 - 03/05)</title>
+    <title>Lịch trình du lịch Đà Nẵng - Hội An - Huế (24/04 - 27/04)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for Icons -->
@@ -13,7 +13,7 @@
     <style>
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f4fbf7; /* Xanh ngọc nhạt */
+            background-color: #f0f4f8; 
             color: #1e293b;
         }
         .smooth-scroll { scroll-behavior: smooth; }
@@ -31,31 +31,31 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         
-        /* Màu sắc buổi (Tone thiên nhiên Ninh Bình) */
+        /* Màu sắc buổi */
         .card-sang { border-left: 4px solid #f59e0b; }
         .card-trua { border-left: 4px solid #10b981; }
-        .card-chieu { border-left: 4px solid #14b8a6; } /* Teal */
-        .card-toi { border-left: 4px solid #64748b; } /* Slate */
+        .card-chieu { border-left: 4px solid #3b82f6; } 
+        .card-toi { border-left: 4px solid #8b5cf6; } 
     </style>
 </head>
 <body class="smooth-scroll">
 
     <!-- Hero Section -->
     <header class="relative h-[50vh] min-h-[400px] flex items-center justify-center bg-cover bg-center bg-no-repeat overflow-hidden" 
-            style="background-image: url('https://images.unsplash.com/photo-1620802051772-23c72b22ec3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
+            style="background-image: url('https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');">
         <!-- Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-b from-green-900/80 via-emerald-900/60 to-slate-900/95 z-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/50 to-slate-900/90 z-0"></div>
         
         <div class="relative z-10 text-center px-4 max-w-3xl mx-auto transform translate-y-4">
             <span class="inline-flex items-center gap-2 py-1.5 px-5 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold mb-6 tracking-widest uppercase border border-white/30 shadow-lg">
-                <i class="fas fa-leaf text-green-400"></i> Kỳ Nghỉ Lễ Khám Phá Di Sản
+                <i class="fas fa-compass text-amber-300"></i> Khám Phá Di Sản Miền Trung
             </span>
             <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight drop-shadow-2xl">
-                Hành Trình Ninh Bình
+                Đà Nẵng <span class="text-amber-400">•</span> Hội An <span class="text-amber-400">•</span> Huế
             </h1>
             <div class="flex flex-wrap justify-center items-center gap-3 mt-4">
-                <span class="flex items-center bg-emerald-500/80 text-white px-5 py-2.5 rounded-xl backdrop-blur-sm shadow-lg font-semibold text-sm md:text-base border border-emerald-400/50">
-                    <i class="far fa-calendar-alt text-emerald-100 mr-2"></i> 30/04 - 03/05
+                <span class="flex items-center bg-blue-500/80 text-white px-5 py-2.5 rounded-xl backdrop-blur-sm shadow-lg font-semibold text-sm md:text-base border border-blue-400/50">
+                    <i class="far fa-calendar-alt text-blue-100 mr-2"></i> 24/04 - 27/04
                 </span>
                 <span class="flex items-center bg-amber-500/80 text-white px-5 py-2.5 rounded-xl backdrop-blur-sm shadow-lg font-semibold text-sm md:text-base border border-amber-400/50">
                     <i class="far fa-clock text-amber-100 mr-2"></i> 4 Ngày 3 Đêm
@@ -65,13 +65,13 @@
     </header>
 
     <!-- Sticky Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg shadow-md border-b border-emerald-100 transition-all duration-300" id="navbar">
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg shadow-md border-b border-slate-200 transition-all duration-300" id="navbar">
         <div class="max-w-5xl mx-auto px-4 py-3 flex overflow-x-auto gap-3 md:justify-center no-scrollbar items-center">
             <span class="text-slate-400 font-medium text-sm hidden md:inline-block mr-2"><i class="fas fa-map-signs"></i> Phân đoạn:</span>
-            <a href="#day1" class="whitespace-nowrap px-5 py-2 rounded-full bg-emerald-50 hover:bg-emerald-500 hover:text-white text-sm font-bold text-emerald-700 transition-colors shadow-sm border border-emerald-100"><i class="fas fa-plane-arrival mr-1"></i> 30/04 - Ngày 1</a>
-            <a href="#day2" class="whitespace-nowrap px-5 py-2 rounded-full bg-emerald-50 hover:bg-teal-500 hover:text-white text-sm font-bold text-teal-700 transition-colors shadow-sm border border-teal-100"><i class="fas fa-mountain mr-1"></i> 01/05 - Ngày 2</a>
-            <a href="#day3" class="whitespace-nowrap px-5 py-2 rounded-full bg-emerald-50 hover:bg-green-500 hover:text-white text-sm font-bold text-green-700 transition-colors shadow-sm border border-green-100"><i class="fas fa-vihara mr-1"></i> 02/05 - Ngày 3</a>
-            <a href="#day4" class="whitespace-nowrap px-5 py-2 rounded-full bg-emerald-50 hover:bg-amber-500 hover:text-white text-sm font-bold text-amber-700 transition-colors shadow-sm border border-amber-100"><i class="fas fa-plane-departure mr-1"></i> 03/05 - Ngày 4</a>
+            <a href="#day1" class="whitespace-nowrap px-5 py-2 rounded-full bg-slate-50 hover:bg-blue-500 hover:text-white text-sm font-bold text-blue-700 transition-colors shadow-sm border border-blue-100"><i class="fas fa-plane-arrival mr-1"></i> 24/04 - Ngày 1</a>
+            <a href="#day2" class="whitespace-nowrap px-5 py-2 rounded-full bg-slate-50 hover:bg-teal-500 hover:text-white text-sm font-bold text-teal-700 transition-colors shadow-sm border border-teal-100"><i class="fas fa-lantern mr-1"></i> 25/04 - Ngày 2</a>
+            <a href="#day3" class="whitespace-nowrap px-5 py-2 rounded-full bg-slate-50 hover:bg-purple-500 hover:text-white text-sm font-bold text-purple-700 transition-colors shadow-sm border border-purple-100"><i class="fas fa-archway mr-1"></i> 26/04 - Ngày 3</a>
+            <a href="#day4" class="whitespace-nowrap px-5 py-2 rounded-full bg-slate-50 hover:bg-emerald-500 hover:text-white text-sm font-bold text-emerald-700 transition-colors shadow-sm border border-emerald-100"><i class="fas fa-plane-departure mr-1"></i> 27/04 - Ngày 4</a>
         </div>
     </nav>
 
@@ -81,45 +81,112 @@
         <!-- NGÀY 1 -->
         <section id="day1" class="scroll-mt-24 mb-16 relative">
             <!-- Day Header Card -->
-            <div class="bg-white rounded-3xl overflow-hidden shadow-lg mb-10 border border-emerald-100 relative group">
-                <img src="https://images.unsplash.com/photo-1583417643501-1406f527c975?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Cố đô Hoa Lư" class="w-full h-48 md:h-72 object-cover group-hover:scale-105 transition duration-1000">
-                <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-emerald-900/40 to-transparent"></div>
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg mb-10 border border-blue-100 relative group">
+                <img src="https://images.unsplash.com/photo-1555921015-5532091f6026?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Đà Nẵng" class="w-full h-48 md:h-72 object-cover group-hover:scale-105 transition duration-1000">
+                <div class="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/40 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full">
                     <div class="flex justify-between items-end">
                         <div>
-                            <span class="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">Ngày 1 - 30/04</span>
-                            <h2 class="text-3xl md:text-5xl font-extrabold text-white drop-shadow-md">Chạm Ngõ Cố Đô</h2>
+                            <span class="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">Ngày 1 - 24/04</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold text-white drop-shadow-md">Xin Chào Đà Nẵng</h2>
                         </div>
                         <div class="hidden md:block bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl text-white text-right border border-white/30">
                             <p class="text-xs uppercase tracking-wide opacity-80">Hoạt động chính</p>
-                            <p class="font-bold">Tuyệt Tình Cốc, Hoa Lư</p>
+                            <p class="font-bold">Biển Mỹ Khê, Ăn Hải Sản</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Timeline container -->
-            <div class="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-emerald-400 before:to-teal-400">
+            <div class="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-blue-400 before:to-teal-400">
+                
+                <!-- Chiều -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                        <i class="fas fa-plane-arrival"></i>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-chieu flex flex-col overflow-hidden">
+                        <div class="h-32 sm:h-40 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Máy bay" class="w-full h-full object-cover">
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-blue-600 shadow-sm flex items-center gap-1"><i class="fas fa-suitcase-rolling"></i> Đến nơi</div>
+                        </div>
+                        <div class="p-6 flex-1 bg-gradient-to-b from-blue-50/50 to-white">
+                            <div class="flex items-center gap-2 mb-2 text-blue-600 font-bold text-sm bg-blue-100/50 inline-block px-3 py-1 rounded-full">
+                                <i class="far fa-clock"></i> 15:00 - 17:30
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Đến Đà Nẵng & Check-in</h3>
+                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Đáp chuyến bay xuống sân bay Quốc tế Đà Nẵng. Di chuyển bằng taxi/Grab về khách sạn nhận phòng, cất hành lý. Nghỉ ngơi nhẹ nhàng, ra tắm biển Mỹ Khê và dạo bộ ngắm hoàng hôn tuyệt đẹp trên bãi biển.</p>
+                            <div class="space-y-2 text-sm bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                                <div class="flex items-start gap-2"><i class="fas fa-car mt-1 text-slate-400"></i><span class="text-slate-700"><strong>Di chuyển:</strong> Sân bay Đà Nẵng nằm ngay sát trung tâm thành phố. Đi Grab về khu vực biển Mỹ Khê chỉ mất 15-20 phút (~100k).</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tối -->
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                        <i class="fas fa-fish"></i>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-toi flex flex-col overflow-hidden">
+                        <div class="h-32 sm:h-40 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Hải sản" class="w-full h-full object-cover">
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-indigo-600 shadow-sm flex items-center gap-1"><i class="fas fa-utensils"></i> Tiệc nhậu</div>
+                        </div>
+                        <div class="p-6 flex-1 bg-gradient-to-b from-indigo-50/50 to-white">
+                            <div class="flex items-center gap-2 mb-2 text-indigo-600 font-bold text-sm bg-indigo-100/50 inline-block px-3 py-1 rounded-full">
+                                <i class="far fa-clock"></i> 18:30 - 21:00
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Đại Tiệc Hải Sản Ven Biển</h3>
+                            <p class="text-slate-600 mb-3 leading-relaxed text-sm">Thưởng thức hải sản tươi sống đánh bắt trong ngày tại các "thủ phủ" quán nhậu dọc đường Võ Nguyên Giáp hoặc Nguyễn Văn Thoại. Vừa cụng ly vừa đón gió biển mát rượi.</p>
+                            <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-sm">
+                                <div class="flex items-start gap-2 mb-2"><i class="fas fa-store mt-1 text-orange-500"></i><span class="text-slate-700"><strong>Gợi ý quán:</strong> Hải sản Bé Mặn, Năm Rảnh, Lão Đại.</span></div>
+                                <div class="flex items-start gap-2"><i class="fas fa-star mt-1 text-red-500"></i><span class="text-slate-700"><strong>Món "Must-try":</strong> Chíp chíp hấp sả, mực nháy hấp hành, tôm sú nướng muối ớt.</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NGÀY 2 -->
+        <section id="day2" class="scroll-mt-24 mb-16 relative">
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg mb-10 border border-teal-100 relative group">
+                <img src="https://images.unsplash.com/photo-1559508551-44bff1de756b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Hội An" class="w-full h-48 md:h-72 object-cover group-hover:scale-105 transition duration-1000" style="object-position: center 20%;">
+                <div class="absolute inset-0 bg-gradient-to-t from-teal-900/90 via-teal-900/40 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <span class="bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">Ngày 2 - 25/04</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold text-white drop-shadow-md">Nét Đẹp Thời Gian: Hội An</h2>
+                        </div>
+                        <div class="hidden md:block bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl text-white text-right border border-white/30">
+                            <p class="text-xs uppercase tracking-wide opacity-80">Hoạt động chính</p>
+                            <p class="font-bold">Sơn Trà, Ngũ Hành Sơn, Phố Cổ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-teal-400 before:to-purple-400">
                 
                 <!-- Sáng -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-amber-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-plane-arrival"></i>
+                        <i class="fas fa-mountain-sun"></i>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-sang flex flex-col overflow-hidden">
                         <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Di chuyển Limousine" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-amber-600 shadow-sm flex items-center gap-1"><i class="fas fa-bus-alt"></i> Di chuyển</div>
+                            <img src="https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Chùa Linh Ứng Sơn Trà" class="w-full h-full object-cover">
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-amber-600 shadow-sm flex items-center gap-1"><i class="fas fa-camera"></i> Ngắm cảnh</div>
                         </div>
                         <div class="p-6 flex-1 bg-gradient-to-b from-amber-50/50 to-white">
                             <div class="flex items-center gap-2 mb-2 text-amber-600 font-bold text-sm bg-amber-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 07:00 - 11:30
+                                <i class="far fa-clock"></i> 08:00 - 11:30
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Bay HCM - Hà Nội & Đi Ninh Bình</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Đáp sân bay Nội Bài, lấy hành lý và lên xe Limousine thẳng về trung tâm Ninh Bình.</p>
-                            <div class="space-y-2 text-sm bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                                <div class="flex items-start gap-2"><i class="fas fa-info-circle mt-1 text-amber-500"></i><span class="text-slate-700">Đã có vé máy bay. Bạn nên đặt trước xe Limousine đón ở Nội Bài. Thời gian di chuyển xe khoảng 2 tiếng.</span></div>
-                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Bán đảo Sơn Trà & Chùa Linh Ứng</h3>
+                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Ăn sáng với bún chả cá. Thuê xe máy chạy dọc đường biển lên Bán đảo Sơn Trà ngắm khỉ hoang dã. Viếng Chùa Linh Ứng, chiêm bái Tượng Phật Bà cao 67m ngắm trọn vẹn vịnh Đà Nẵng từ trên cao.</p>
                         </div>
                     </div>
                 </div>
@@ -131,104 +198,96 @@
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-trua flex flex-col overflow-hidden">
                         <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Đặc sản Dê Núi" class="w-full h-full object-cover">
+                            <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bánh tráng cuốn thịt heo" class="w-full h-full object-cover">
                             <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-emerald-600 shadow-sm flex items-center gap-1"><i class="fas fa-star"></i> Đặc sản</div>
                         </div>
                         <div class="p-6 flex-1 bg-gradient-to-b from-emerald-50/50 to-white">
                             <div class="flex items-center gap-2 mb-2 text-emerald-600 font-bold text-sm bg-emerald-100/50 inline-block px-3 py-1 rounded-full">
                                 <i class="far fa-clock"></i> 12:00 - 13:30
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Ăn Trưa & Nhận Phòng</h3>
-                            <p class="text-slate-600 mb-3 leading-relaxed text-sm">Tới homestay/khách sạn nhận phòng, cất hành lý và nghỉ ngơi sau chuyến bay. Thưởng thức đặc sản Cơm cháy - Thịt dê Ninh Bình để nạp lại sức lực.</p>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Đặc Sản Bánh Tráng Thịt Heo</h3>
+                            <p class="text-slate-600 mb-3 leading-relaxed text-sm">Nghỉ ngơi và nạp năng lượng bằng món bánh tráng cuốn thịt heo hai đầu da với mắm nêm đậm đà trứ danh, ăn kèm vô vàn loại rau rừng tươi rói.</p>
+                            <div class="inline-block bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg text-sm font-medium border border-emerald-100">
+                                <i class="fas fa-map-marker-alt mr-1"></i> Quán Trần hoặc Quán Mậu
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Chiều -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-teal-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-archway"></i>
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                        <i class="fas fa-gopuram"></i>
                     </div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-chieu flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1688195861491-4422e1b85fa1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tuyệt Tình Cốc" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-teal-600 shadow-sm flex items-center gap-1"><i class="fas fa-camera-retro"></i> Check-in</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-chieu p-6 bg-gradient-to-b from-blue-50/50 to-white">
+                        <div class="flex items-center gap-2 mb-2 text-blue-600 font-bold text-sm bg-blue-100/50 inline-block px-3 py-1 rounded-full">
+                            <i class="far fa-clock"></i> 14:30 - 17:30
                         </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-teal-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-teal-600 font-bold text-sm bg-teal-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 14:30 - 17:30
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Cố Đô Hoa Lư & Tuyệt Tình Cốc</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Thăm đền vua Đinh, vua Lê tại khu di tích lịch sử Cố đô. Sau đó, ngắm hồ nước xanh ngắt, bình yên lọt thỏm giữa thung lũng đá tại Tuyệt Tình Cốc (Động Am Tiên). Hai địa điểm nằm gần nhau dễ dàng di chuyển.</p>
-                            <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-sm">
-                                <div class="flex items-start gap-2"><i class="fas fa-ticket-alt mt-1 text-teal-500"></i><span class="text-slate-700"><strong>Vé tham quan:</strong> Hoa Lư: 20k/người. Tuyệt Tình Cốc: 20k/người.</span></div>
-                            </div>
-                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Ngũ Hành Sơn & Phố Cổ Hội An</h3>
+                        <p class="text-slate-600 mb-4 leading-relaxed text-sm">Trên đường từ Đà Nẵng vào Hội An, ghé khám phá hang động tại Ngũ Hành Sơn (~40k). Sau đó tới Hội An, đi dạo check-in Chùa Cầu, Nhà cổ, hội quán. Càng về chiều nắng càng đẹp để chụp ảnh những bức tường vàng đặc trưng.</p>
                     </div>
                 </div>
 
                 <!-- Tối -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-pizza-slice"></i>
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                        <i class="fas fa-lantern"></i>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-toi flex flex-col overflow-hidden">
                         <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1550650125-97e390c50d4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Phố cổ Hoa Lư ban đêm" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-slate-600 shadow-sm flex items-center gap-1"><i class="fas fa-moon"></i> Dạo đêm</div>
+                            <img src="https://images.unsplash.com/photo-1550650125-97e390c50d4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Đèn lồng Hội An" class="w-full h-full object-cover">
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-indigo-600 shadow-sm flex items-center gap-1"><i class="fas fa-ship"></i> Lãng mạn</div>
                         </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-slate-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-slate-600 font-bold text-sm bg-slate-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 18:30 - 21:00
+                        <div class="p-6 flex-1 bg-gradient-to-b from-indigo-50/50 to-white">
+                            <div class="flex items-center gap-2 mb-2 text-indigo-600 font-bold text-sm bg-indigo-100/50 inline-block px-3 py-1 rounded-full">
+                                <i class="far fa-clock"></i> 18:00 - 21:00
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Pizza Sen & Phố Cổ Hoa Lư</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Đổi vị bữa tối cực chất tại <strong>Pizza Sen Phố cổ Hoa Lư</strong>. Sau đó, thư thái dạo phố cổ Hoa Lư về đêm, chiêm ngưỡng không gian kiến trúc truyền thống được thắp đèn lồng đỏ rất rực rỡ và đẹp mắt.</p>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Hội An Lên Đèn & Thả Hoa Đăng</h3>
+                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Hội An đẹp nhất về đêm. Thưởng thức Cao Lầu hoặc Cơm gà Bà Buội. Nhâm nhi ly nước Mót thảo mộc. Thuê thuyền mộc ra giữa sông Hoài thả hoa đăng cầu bình an. Khuya lên xe quay lại Đà Nẵng nghỉ ngơi.</p>
+                            <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-sm">
+                                <div class="flex items-start gap-2"><i class="fas fa-ship mt-1 text-indigo-500"></i><span class="text-slate-700"><strong>Thuyền sông Hoài:</strong> ~150k/thuyền. Mua trực tiếp tại bến Bạch Đằng.</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- NGÀY 2 -->
-        <section id="day2" class="scroll-mt-24 mb-16 relative">
-            <div class="bg-white rounded-3xl overflow-hidden shadow-lg mb-10 border border-teal-100 relative group">
-                <img src="https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Tràng An" class="w-full h-48 md:h-72 object-cover group-hover:scale-105 transition duration-1000" style="object-position: center 30%;">
-                <div class="absolute inset-0 bg-gradient-to-t from-teal-900/90 via-teal-900/40 to-transparent"></div>
+        <!-- NGÀY 3 -->
+        <section id="day3" class="scroll-mt-24 mb-16 relative">
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg mb-10 border border-purple-100 relative group">
+                <img src="https://images.unsplash.com/photo-1620023024840-7ab3f146be48?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Đại Nội Huế" class="w-full h-48 md:h-72 object-cover group-hover:scale-105 transition duration-1000">
+                <div class="absolute inset-0 bg-gradient-to-t from-purple-900/90 via-purple-900/40 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full">
                     <div class="flex justify-between items-end">
                         <div>
-                            <span class="bg-teal-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">Ngày 2 - 01/05</span>
-                            <h2 class="text-3xl md:text-5xl font-extrabold text-white drop-shadow-md">Kiệt Tác Tràng An & Ngọa Long</h2>
+                            <span class="bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">Ngày 3 - 26/04</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold text-white drop-shadow-md">Âm Hưởng Cố Đô Huế</h2>
                         </div>
                         <div class="hidden md:block bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl text-white text-right border border-white/30">
                             <p class="text-xs uppercase tracking-wide opacity-80">Hoạt động chính</p>
-                            <p class="font-bold">Tràng An, Hang Múa</p>
+                            <p class="font-bold">Đại Nội, Lăng Khải Định</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-teal-400 before:to-green-500">
+            <div class="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-purple-400 before:to-emerald-400">
                 
                 <!-- Sáng -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-amber-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-ship"></i>
+                        <i class="fas fa-route"></i>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-sang flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bến thuyền Tràng An" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-red-500 text-white px-2.5 py-1 rounded-md text-xs font-bold shadow-sm flex items-center gap-1"><i class="fas fa-fire"></i> Must Do</div>
-                        </div>
                         <div class="p-6 flex-1 bg-gradient-to-b from-amber-50/50 to-white">
                             <div class="flex items-center gap-2 mb-2 text-amber-600 font-bold text-sm bg-amber-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 08:00 - 12:00
+                                <i class="far fa-clock"></i> 07:30 - 12:00
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Ngồi Thuyền Khám Phá Tràng An</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Đi thuyền tham quan các hang động xuyên thủy và chiêm ngưỡng bối cảnh phim trường Kong: Skull Island hùng vĩ. Khuyên bạn nên <strong>chọn tuyến 2 hoặc 3</strong> để ngắm cảnh đẹp nhất.</p>
-                            <div class="space-y-2 text-sm bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                                <div class="flex items-start gap-2"><i class="fas fa-ticket-alt mt-1 text-amber-500"></i><span class="text-slate-700"><strong>Giá vé:</strong> 250k/người. Mua trực tiếp tại quầy. (Ngày lễ 1/5 sẽ rất đông nên bắt buộc phải đi sớm).</span></div>
-                                <div class="flex items-start gap-2"><i class="fas fa-sun mt-1 text-orange-400"></i><span class="text-slate-700"><strong>Lưu ý:</strong> Nên mang theo nón lá/ô và thoa kem chống nắng.</span></div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Đèo Hải Vân & Đại Nội Huế</h3>
+                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Bắt đầu hành trình ra Huế, yêu cầu tài xế đi đường đèo Hải Vân ngắm cảnh vịnh Lăng Cô từ trên cao. Đến Huế tham quan Đại Nội - Hoàng Thành của 13 vị vua triều Nguyễn.</p>
+                            <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-sm">
+                                <div class="flex items-start gap-2"><i class="fas fa-ticket-alt mt-1 text-purple-500"></i><span class="text-slate-700"><strong>Đại Nội:</strong> Vé ~200k/người. Quần thể rất rộng nên cân nhắc thuê HDV đi cùng.</span></div>
                             </div>
                         </div>
                     </div>
@@ -240,289 +299,117 @@
                         <i class="fas fa-bowl-food"></i>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-trua flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ăn trưa" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-emerald-600 shadow-sm flex items-center gap-1"><i class="fas fa-utensils"></i> Bữa trưa</div>
-                        </div>
                         <div class="p-6 flex-1 bg-gradient-to-b from-emerald-50/50 to-white">
                             <div class="flex items-center gap-2 mb-2 text-emerald-600 font-bold text-sm bg-emerald-100/50 inline-block px-3 py-1 rounded-full">
                                 <i class="far fa-clock"></i> 12:30 - 14:00
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Ăn Trưa & Nghỉ Ngơi</h3>
-                            <p class="text-slate-600 leading-relaxed text-sm">Sau hơn 2-3 tiếng ngồi thuyền dạo trên mặt nước, bạn dùng bữa trưa tại các nhà hàng ngay khu vực Tràng An để nạp lại năng lượng và nghỉ ngơi một chút.</p>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Ẩm Thực Cố Đô</h3>
+                            <p class="text-slate-600 mb-3 leading-relaxed text-sm">Trải nghiệm ăn trưa với tô Bún bò Huế gốc mắm ruốc thơm lừng hoặc các loại bánh bèo, nậm, lọc đặc trưng.</p>
+                            <div class="inline-block bg-orange-100 text-orange-700 px-3 py-1.5 rounded-lg text-sm font-medium">
+                                <i class="fas fa-utensils mr-1"></i> Bún bò Mụ Rơi / Bánh Bà Đỏ
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Chiều -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-teal-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-mountain"></i>
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                        <i class="fas fa-place-of-worship"></i>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-chieu flex flex-col overflow-hidden">
                         <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1658461748259-7157ccf726cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Đỉnh Hang Múa" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-teal-600 shadow-sm flex items-center gap-1"><i class="fas fa-hiking"></i> Vận động</div>
+                            <img src="https://images.unsplash.com/photo-1620023024840-7ab3f146be48?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Lăng tẩm Huế" class="w-full h-full object-cover">
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-blue-600 shadow-sm flex items-center gap-1"><i class="fas fa-landmark"></i> Lịch sử</div>
                         </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-teal-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-teal-600 font-bold text-sm bg-teal-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 15:00 - 17:30
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Chinh Phục Hang Múa (Mua Caves)</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Leo chinh phục 500 bậc thang đá rêu phong để lên tới đỉnh núi Ngọa Long. Từ đây, ngắm nhìn toàn cảnh bức tranh sơn thủy Tam Cốc uốn lượn tuyệt đẹp.</p>
-                            <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-sm">
-                                <div class="flex items-start gap-2 mb-2"><i class="fas fa-ticket-alt mt-1 text-teal-500"></i><span class="text-slate-700"><strong>Vé tham quan:</strong> 100k/người. Mua tại cổng.</span></div>
-                                <div class="flex items-start gap-2"><i class="fas fa-sun mt-1 text-orange-500"></i><span class="text-slate-700"><strong>Mẹo vặt:</strong> Nên đi vào tầm chiều để bắt trọn khoảnh khắc hoàng hôn lãng mạn.</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tối -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-music"></i>
-                    </div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-toi flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Quán Pub Acoustic" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-slate-600 shadow-sm flex items-center gap-1"><i class="fas fa-glass-cheers"></i> Giải trí</div>
-                        </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-slate-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-slate-600 font-bold text-sm bg-slate-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 18:30 - 21:30
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Dạo Phố Đi Bộ Tam Cốc</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Ăn tối và trải nghiệm không khí náo nhiệt tại phố đi bộ Tam Cốc - nơi được ví như "khu phố Tây" thu nhỏ giữa lòng Ninh Bình với cực kỳ nhiều quán pub nhỏ, cafe acoustic chơi nhạc rất "chill".</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- NGÀY 3 -->
-        <section id="day3" class="scroll-mt-24 mb-16 relative">
-            <div class="bg-white rounded-3xl overflow-hidden shadow-lg mb-10 border border-green-100 relative group">
-                <img src="https://images.unsplash.com/photo-1592650742183-b789a74c43ee?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Chùa Bái Đính" class="w-full h-48 md:h-72 object-cover group-hover:scale-105 transition duration-1000">
-                <div class="absolute inset-0 bg-gradient-to-t from-green-900/90 via-green-900/40 to-transparent"></div>
-                <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full">
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">Ngày 3 - 02/05</span>
-                            <h2 class="text-3xl md:text-5xl font-extrabold text-white drop-shadow-md">Linh Thiêng & Thiên Nhiên</h2>
-                        </div>
-                        <div class="hidden md:block bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl text-white text-right border border-white/30">
-                            <p class="text-xs uppercase tracking-wide opacity-80">Hoạt động chính</p>
-                            <p class="font-bold">Chùa Bái Đính, Thung Nham</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-green-500 before:to-amber-500">
-                
-                <!-- Sáng -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-amber-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-vihara"></i>
-                    </div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-sang flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1592650742183-b789a74c43ee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Chùa Bái Đính" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-amber-600 shadow-sm flex items-center gap-1"><i class="fas fa-praying-hands"></i> Chiêm bái</div>
-                        </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-amber-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-amber-600 font-bold text-sm bg-amber-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 08:00 - 11:30
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Tham Quan Chùa Bái Đính</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Thăm ngôi chùa lập nhiều kỷ lục Việt Nam và Châu Á. Đặc biệt ghi điểm với bức Tượng Phật đồng khổng lồ và hành lang La Hán dài vô tận. Cần sử dụng xe điện vì quần thể rất rộng.</p>
-                            <div class="space-y-2 text-sm bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                                <div class="flex items-start gap-2"><i class="fas fa-ticket-alt mt-1 text-amber-500"></i><span class="text-slate-700"><strong>Chi phí:</strong> Miễn phí vé vào cổng. Vé xe điện: 60k/vòng. Vé lên đỉnh bảo tháp: 50k.</span></div>
-                                <div class="flex items-start gap-2"><i class="fas fa-headphones mt-1 text-blue-500"></i><span class="text-slate-700"><strong>Gợi ý:</strong> Nên thuê hướng dẫn viên tại điểm để nghe thuyết minh về điển tích sẽ thú vị hơn.</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Trưa -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-emerald-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-utensils"></i>
-                    </div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-trua flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1626804475297-4160aeebba58?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Gà đồi nướng" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-emerald-600 shadow-sm flex items-center gap-1"><i class="fas fa-utensils"></i> Bữa trưa</div>
-                        </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-emerald-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-emerald-600 font-bold text-sm bg-emerald-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 12:00 - 13:30
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Ăn Trưa Đặc Sản Gà Đồi</h3>
-                            <p class="text-slate-600 leading-relaxed text-sm">Thưởng thức bữa trưa với các món từ gà đồi săn chắc hoặc thịt dê núi để lấy sức cho hành trình sinh thái buổi chiều.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Chiều -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-teal-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-dove"></i>
-                    </div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-chieu flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Vườn chim Thung Nham" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-teal-600 shadow-sm flex items-center gap-1"><i class="fas fa-leaf"></i> Sinh thái</div>
-                        </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-teal-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-teal-600 font-bold text-sm bg-teal-100/50 inline-block px-3 py-1 rounded-full">
+                        <div class="p-6 flex-1 bg-gradient-to-b from-blue-50/50 to-white">
+                            <div class="flex items-center gap-2 mb-2 text-blue-600 font-bold text-sm bg-blue-100/50 inline-block px-3 py-1 rounded-full">
                                 <i class="far fa-clock"></i> 14:30 - 17:30
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Đầm Vân Long hoặc Vườn Chim Thung Nham</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm"><strong>Vân Long:</strong> Ngồi thuyền tre hoang sơ ngắm loài voọc quần đùi trắng quý hiếm. <br><strong>Thung Nham:</strong> Đi xuồng máy len lỏi xem hàng ngàn cánh chim ríu rít về tổ lúc hoàng hôn buông xuống (Khuyên đi).</p>
-                            <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-sm">
-                                <div class="flex items-start gap-2 mb-2"><i class="fas fa-ticket-alt mt-1 text-teal-600"></i><span class="text-slate-700"><strong>Giá vé:</strong> Vân Long: ~100k/thuyền. Thung Nham: 150k (đã gồm thuyền).</span></div>
-                                <div class="flex items-start gap-2"><i class="far fa-clock mt-1 text-orange-500"></i><span class="text-slate-700">Thung Nham đi vào tầm chiều tà là lúc chim về tổ đẹp nhất.</span></div>
-                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Chùa Thiên Mụ & Lăng Khải Định</h3>
+                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Viếng Chùa Thiên Mụ cổ kính bên bờ sông Hương. Tham quan Lăng Khải Định với kiến trúc đỉnh cao giao thoa Á - Âu và nghệ thuật ghép sành sứ. Mua ít mè xửng, trà cung đình làm quà rồi khởi hành về lại Đà Nẵng.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Tối -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-star"></i>
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                        <i class="fas fa-bridge-water"></i>
                     </div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-toi flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1559841644-08984562005a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Ốc núi" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-slate-600 shadow-sm flex items-center gap-1"><i class="fas fa-utensils"></i> Đặc sản</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-toi p-6 bg-gradient-to-b from-indigo-50/50 to-white">
+                        <div class="flex items-center gap-2 mb-2 text-indigo-600 font-bold text-sm bg-indigo-100/50 inline-block px-3 py-1 rounded-full">
+                            <i class="far fa-clock"></i> 18:30 - 21:00
                         </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-slate-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-slate-600 font-bold text-sm bg-slate-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 19:00 - 21:00
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Ăn Tối & Tự Do</h3>
-                            <p class="text-slate-600 leading-relaxed text-sm">Thưởng thức món Ốc núi Ninh Bình (nếu đúng đầu mùa mưa, ốc rất béo, ngọt và giòn). Sau bữa tối, tự do nghỉ ngơi thư giãn chuẩn bị cho ngày cuối cùng.</p>
-                        </div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Về Lại Đà Nẵng Chill</h3>
+                        <p class="text-slate-600 mb-3 leading-relaxed text-sm">Ăn tối nhẹ nhàng với Mì Quảng ếch Bếp Trang. Dành buổi tối dạo mát bên bờ sông Hàn, ngắm Cầu Rồng phun lửa (nếu trúng cuối tuần), tản bộ Cầu Tình Yêu hoặc thưởng thức Chè sầu Liên nổi tiếng.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- NGÀY 4 -->
-        <section id="day4" class="scroll-mt-24">
-            <div class="bg-white rounded-3xl overflow-hidden shadow-lg mb-10 border border-amber-100 relative group">
-                <img src="https://images.unsplash.com/photo-1620802051772-23c72b22ec3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Sông Ngô Đồng Tam Cốc" class="w-full h-48 md:h-72 object-cover group-hover:scale-105 transition duration-1000" style="object-position: center 60%;">
-                <div class="absolute inset-0 bg-gradient-to-t from-amber-900/90 via-amber-900/40 to-transparent"></div>
+        <section id="day4" class="scroll-mt-24 mb-16 relative">
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg mb-10 border border-emerald-100 relative group">
+                <img src="https://images.unsplash.com/photo-1588612543940-b8c74db7dfae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Chợ Hàn Đà Nẵng" class="w-full h-48 md:h-72 object-cover group-hover:scale-105 transition duration-1000" style="object-position: center 60%;">
+                <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-emerald-900/40 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full">
                     <div class="flex justify-between items-end">
                         <div>
-                            <span class="bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">Ngày 4 - 03/05</span>
-                            <h2 class="text-3xl md:text-5xl font-extrabold text-white drop-shadow-md">Sắc Vàng Tam Cốc</h2>
+                            <span class="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block shadow-md">Ngày 4 - 27/04</span>
+                            <h2 class="text-3xl md:text-5xl font-extrabold text-white drop-shadow-md">Tạm Biệt Miền Trung</h2>
                         </div>
                         <div class="hidden md:block bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl text-white text-right border border-white/30">
                             <p class="text-xs uppercase tracking-wide opacity-80">Hoạt động chính</p>
-                            <p class="font-bold">Tam Cốc, Chùa Bích Động</p>
+                            <p class="font-bold">Mua sắm, Ra Sân Bay</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-amber-400 before:to-transparent">
+            <div class="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-emerald-400 before:to-transparent">
                 
                 <!-- Sáng -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-amber-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-water"></i>
+                        <i class="fas fa-shopping-bag"></i>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-sang flex flex-col overflow-hidden">
                         <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1620802051772-23c72b22ec3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tam Cốc mùa lúa" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-amber-600 shadow-sm flex items-center gap-1"><i class="fas fa-camera"></i> Khuyên đi</div>
+                            <img src="https://images.unsplash.com/photo-1596422846543-74c6e271a39a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Đặc sản" class="w-full h-full object-cover">
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-amber-600 shadow-sm flex items-center gap-1"><i class="fas fa-gift"></i> Mua quà</div>
                         </div>
                         <div class="p-6 flex-1 bg-gradient-to-b from-amber-50/50 to-white">
                             <div class="flex items-center gap-2 mb-2 text-amber-600 font-bold text-sm bg-amber-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 08:30 - 11:00
+                                <i class="far fa-clock"></i> 08:30 - 11:30
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Tam Cốc - Chùa Bích Động</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Đi thuyền lướt trên dòng sông Ngô Đồng ngắm lúa (nếu đang dịp mùa vàng ươm). Bức tranh sơn thủy cực tình. Sau đó thăm Chùa Bích Động cổ kính lọt thỏm trong hang đá rêu phong (được mệnh danh là Nam Thiên Đệ Nhị Động).</p>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Phá Đảo Chợ Hàn / Chợ Cồn</h3>
+                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Ghé chợ truyền thống mua sắm các loại đặc sản miền Trung: chả bò, mực rim me, cá bò khô, mắm nêm, bánh khô mè. Nhớ trải nghiệm ẩm thực đường phố cực đỉnh tại khu ăn uống của chợ Cồn trước khi về nhé.</p>
                             <div class="space-y-2 text-sm bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-                                <div class="flex items-start gap-2"><i class="fas fa-ticket-alt mt-1 text-amber-500"></i><span class="text-slate-700"><strong>Tam Cốc:</strong> Vé tham quan 120k + Tiền thuyền 150k/2 người.</span></div>
-                                <div class="flex items-start gap-2"><i class="fas fa-smile-beam mt-1 text-emerald-500"></i><span class="text-slate-700"><strong>Bích Động:</strong> Miễn phí vé vào tham quan.</span></div>
+                                <div class="flex items-start gap-2"><i class="fas fa-money-bill-wave mt-1 text-amber-500"></i><span class="text-slate-700"><strong>Kinh nghiệm:</strong> Nhớ dạo quanh tham khảo giá và trả giá hợp lý nếu mua sắm trong lồng chợ.</span></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Trưa -->
+                <!-- Trưa & Chiều -->
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-emerald-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-shopping-bag"></i>
+                        <i class="fas fa-plane-departure"></i>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-trua flex flex-col overflow-hidden">
                         <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1608686207856-001b95cf60ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Quà tặng" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-emerald-600 shadow-sm flex items-center gap-1"><i class="fas fa-gift"></i> Mua sắm</div>
+                            <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Máy bay" class="w-full h-full object-cover">
+                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-emerald-600 shadow-sm flex items-center gap-1"><i class="fas fa-plane"></i> Về nhà</div>
                         </div>
                         <div class="p-6 flex-1 bg-gradient-to-b from-emerald-50/50 to-white">
                             <div class="flex items-center gap-2 mb-2 text-emerald-600 font-bold text-sm bg-emerald-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 11:30 - 13:00
+                                <i class="far fa-clock"></i> 11:30 - 15:00
                             </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Check-out & Ăn Trưa</h3>
-                            <p class="text-slate-600 leading-relaxed text-sm">Về khách sạn thu xếp hành lý, làm thủ tục trả phòng. Mua sắm ít cơm cháy, rượu nếp làm quà và dùng bữa trưa nhanh trước khi lên xe.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Chiều -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-10">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-teal-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-bus"></i>
-                    </div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-chieu flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Xe Limousine cao tốc" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-teal-600 shadow-sm flex items-center gap-1"><i class="fas fa-road"></i> Lên đường</div>
-                        </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-teal-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-teal-600 font-bold text-sm bg-teal-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 13:30 - 16:30
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Di Chuyển Về Hà Nội - Sân Bay</h3>
-                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Xe Limousine đến đón bạn đi thẳng ra sân bay Nội Bài để làm thủ tục bay. Bạn bắt buộc phải đặt xe trước để tránh hết vé dịp lễ.</p>
-                            <div class="bg-red-50 p-4 rounded-xl border border-red-200 shadow-sm">
-                                <div class="flex items-start gap-3">
-                                    <i class="fas fa-exclamation-triangle mt-0.5 text-red-600 text-lg"></i>
-                                    <div>
-                                        <p class="text-red-600 text-sm font-bold">Lưu ý cực kỳ quan trọng:</p>
-                                        <p class="text-red-600 text-sm">Trừ hao tắc đường kéo dài ngày cuối nghỉ lễ trên cao tốc Pháp Vân - Cầu Giẽ, bạn cần đi từ 13h30 để kịp giờ bay buổi tối.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tối -->
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-4">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-500 text-white shadow-lg shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                        <i class="fas fa-plane-departure"></i>
-                    </div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white rounded-2xl shadow-md border border-slate-100 itinerary-card card-toi flex flex-col overflow-hidden">
-                        <div class="h-32 sm:h-40 relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Máy bay" class="w-full h-full object-cover">
-                            <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-md text-xs font-bold text-slate-600 shadow-sm flex items-center gap-1"><i class="fas fa-plane"></i> Bay đêm</div>
-                        </div>
-                        <div class="p-6 flex-1 bg-gradient-to-b from-slate-50/50 to-white">
-                            <div class="flex items-center gap-2 mb-2 text-slate-600 font-bold text-sm bg-slate-100/50 inline-block px-3 py-1 rounded-full">
-                                <i class="far fa-clock"></i> 19:00 - 21:00
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Bay Về TP.HCM</h3>
-                            <p class="text-slate-600 mb-3 leading-relaxed text-sm">Làm thủ tục máy bay, ăn tối nhẹ tại sân bay Nội Bài và cất cánh bay về Tân Sơn Nhất. Kết thúc chuyến đi kỳ nghỉ lễ tuyệt vời.</p>
-                            <div class="inline-block bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg text-sm font-medium border border-slate-200">
-                                <i class="fas fa-clock mr-1"></i> Có mặt tại sân bay trước 2 tiếng.
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 mt-2">Trả Phòng & Ra Sân Bay</h3>
+                            <p class="text-slate-600 mb-4 leading-relaxed text-sm">Về khách sạn làm thủ tục trả phòng. Thưởng thức món Bánh xèo nem lụi Bà Dưỡng cho bữa trưa cuối cùng tại miền Trung. Sau đó bắt xe ra sân bay làm thủ tục bay về TP. HCM.</p>
+                            <div class="bg-red-50 p-3 rounded-xl border border-red-100 shadow-sm text-sm">
+                                <div class="flex items-start gap-2"><i class="fas fa-exclamation-triangle mt-1 text-red-500"></i><span class="text-slate-700 font-medium">Bạn nên có mặt tại sân bay tối thiểu 2 tiếng trước giờ khởi hành nhé.</span></div>
                             </div>
                         </div>
                     </div>
@@ -532,38 +419,11 @@
 
     </main>
 
-    <!-- Footer Summary / Tips -->
-    <section class="max-w-5xl mx-auto px-4 py-8 mb-12">
-        <div class="bg-gradient-to-br from-emerald-900 to-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
-            <!-- Decorative circle -->
-            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl"></div>
-            
-            <h3 class="text-2xl md:text-3xl font-extrabold text-amber-400 mb-8 flex items-center relative z-10"><i class="fas fa-lightbulb text-3xl mr-4 text-amber-300"></i> Bí Kíp Sống Còn Cho Dịp Lễ 30/4</h3>
-            
-            <div class="grid md:grid-cols-3 gap-8 text-slate-200 text-sm relative z-10">
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 hover:bg-white/20 transition duration-300">
-                    <div class="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 mb-4 text-2xl"><i class="fas fa-users-slash"></i></div>
-                    <h4 class="font-bold text-white mb-3 text-lg">Chiến Thuật "Tránh Đông"</h4>
-                    <p class="leading-relaxed">Tràng An, Hang Múa, Bái Đính sẽ đón lượng khách khổng lồ. <strong>Quy tắc vàng:</strong> Luôn có mặt tại cửa kiểm soát vé lúc 7h00 - 7h30 sáng ngay khi vừa mở cửa, hoặc đi vào khung giờ muộn (từ 15h00 chiều). Tránh đi vào khung 9h-11h và 14h vì rất đông đoàn tour lớn.</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 hover:bg-white/20 transition duration-300">
-                    <div class="w-12 h-12 bg-teal-500/20 rounded-full flex items-center justify-center text-teal-400 mb-4 text-2xl"><i class="fas fa-sun"></i></div>
-                    <h4 class="font-bold text-white mb-3 text-lg">Chống Nắng & Thể Lực</h4>
-                    <p class="leading-relaxed">Tháng 4, tháng 5 Ninh Bình rất nắng và oi. Đặc thù lịch trình này phải ngồi đò ngoài trời (2-3 tiếng) không có mái che và leo 500 bậc núi đá dốc. Chuẩn bị sẵn <strong>ô/nón lá, áo chống nắng, kem chống nắng, giày thể thao có độ bám, thuốc xịt muỗi</strong> và chai nước lọc bên người.</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10 hover:bg-white/20 transition duration-300">
-                    <div class="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center text-emerald-400 mb-4 text-2xl"><i class="fas fa-motorcycle"></i></div>
-                    <h4 class="font-bold text-white mb-3 text-lg">Phương Tiện Di Chuyển Lân Cận</h4>
-                    <p class="leading-relaxed">Các điểm tham quan nổi tiếng như Tràng An, Hang Múa, Tuyệt Tình Cốc, Tam Cốc nằm quây quần trong bán kính khoảng 5-10km. Bạn nên <strong>thuê xe máy (khoảng 120k/ngày)</strong> ngay tại homestay để tự do lượn lờ qua các con đường xuyên núi lúa chín cực kỳ "chill" và chủ động giờ giấc.</p>
-                </div>
-            </div>
-            
-            <div class="mt-12 text-center border-t border-emerald-700/50 pt-8 relative z-10">
-                <p class="text-emerald-100 font-medium text-lg">Chúc bạn có một kỳ nghỉ lễ thật trọn vẹn và gom được những album ảnh tuyệt đẹp tại vùng đất Cố Đô! <i class="fas fa-camera-retro text-amber-400 mx-1"></i> <i class="fas fa-heart text-red-400"></i></p>
-            </div>
-        </div>
-    </section>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 text-center py-8">
+        <p class="text-lg font-medium text-white mb-2">Chuyến đi Đà Nẵng - Hội An - Huế (24/04 - 27/04)</p>
+        <p class="text-sm opacity-80">Chúc bạn có một chuyến đi trải nghiệm văn hóa và ẩm thực thật trọn vẹn! <i class="fas fa-heart text-red-500 ml-1"></i></p>
+    </footer>
 
     <script>
         // Smooth scrolling cho menu
@@ -588,10 +448,8 @@
             if (window.scrollY > 100) {
                 nav.classList.add('shadow-lg');
                 nav.classList.remove('shadow-md');
-                nav.classList.remove('border-emerald-100');
             } else {
                 nav.classList.add('shadow-md');
-                nav.classList.add('border-emerald-100');
                 nav.classList.remove('shadow-lg');
             }
         });
