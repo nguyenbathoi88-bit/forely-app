@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ninh Bình Adventure - 30/04 đến 03/05</title>
+    <title>Ninh Bình Adventure - Bản Cập Nhật</title>
     
-    <!-- Tailwind CSS (via CDN for quick prototyping) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons (via unpkg) -->
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Cấu hình màu tùy chỉnh cho Tailwind -->
@@ -32,7 +32,7 @@
     </script>
     
     <style>
-        /* Custom Styles & Animations */
+        /* CSS Tùy chỉnh & Hiệu ứng chuyển động */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         .tab-btn.active {
@@ -50,7 +50,7 @@
             background-color: #f8fafc; /* slate-50 */
         }
 
-        /* Checkbox Custom styling */
+        /* Tùy chỉnh hiển thị cho Checklist */
         .checklist-item input:checked + div {
             background-color: #10b981;
             border-color: #10b981;
@@ -74,7 +74,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 pb-12">
 
-    <!-- HERO SECTION -->
+    <!-- PHẦN HEADER / BANNER -->
     <div class="relative h-64 md:h-80 w-full overflow-hidden">
         <img 
             src="https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1920&q=80" 
@@ -85,7 +85,7 @@
         <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 max-w-6xl mx-auto flex flex-col justify-end h-full">
             <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm font-medium w-max mb-3">
                 <i data-lucide="heart" class="w-4 h-4 text-red-400 fill-current"></i>
-                <span>Du lịch với Em Yêu</span>
+                <span>Du lịch với Em Yêu (Đã Update)</span>
             </div>
             <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 shadow-sm">
                 Ninh Bình Adventure
@@ -98,7 +98,7 @@
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-2rem] relative z-10">
         
-        <!-- TOP STATS CARDS -->
+        <!-- THỐNG KÊ NHANH (STATS CARDS) -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
             <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center">
                 <div class="bg-blue-50 p-2.5 rounded-lg mr-3">
@@ -131,33 +131,33 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- MAIN ITINERARY COLUMN -->
+            <!-- CỘT LỊCH TRÌNH CHÍNH -->
             <div class="lg:col-span-2 space-y-6">
                 
-                <!-- TABS -->
+                <!-- THANH CHỌN NGÀY (TABS) -->
                 <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-100 flex flex-wrap w-full" id="tabs-container">
-                    <!-- Tabs will be injected here by JS -->
+                    <!-- Tabs được tạo bằng JS -->
                 </div>
 
-                <!-- DAY CONTENT -->
+                <!-- NỘI DUNG TỪNG NGÀY -->
                 <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 min-h-[500px]">
                     <div id="day-content" class="fade-in">
-                        <!-- Content injected by JS -->
+                        <!-- Nội dung được chèn bằng JS -->
                     </div>
                 </div>
             </div>
 
-            <!-- SIDEBAR -->
+            <!-- CỘT TIỆN ÍCH (SIDEBAR) -->
             <div class="space-y-6">
                 
-                <!-- Checklist Widget -->
+                <!-- Tiện ích Checklist -->
                 <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 sticky top-6">
                     <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center pb-3 border-b border-slate-100">
                         <i data-lucide="check-circle-2" class="w-5 h-5 mr-2 text-emerald-500"></i>
                         Checklist Hành Lý
                     </h3>
                     <div class="space-y-3" id="checklist-container">
-                        <!-- Checklist items will be injected by JS -->
+                        <!-- Checklist được chèn bằng JS -->
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-100">
                         <div class="w-full bg-slate-100 rounded-full h-2.5">
@@ -169,7 +169,7 @@
                     </div>
                 </div>
 
-                <!-- Note Widget -->
+                <!-- Tiện ích Ghi chú -->
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
                     <h3 class="text-lg font-bold text-blue-900 mb-2 flex items-center">
                         <i data-lucide="camera" class="w-5 h-5 mr-2 text-blue-600"></i>
@@ -184,55 +184,55 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT DATA & LOGIC -->
+    <!-- DỮ LIỆU & LOGIC JAVASCRIPT -->
     <script>
-        // Data
+        // Dữ liệu Lịch trình đã được CẬP NHẬT
         const itineraryData = [
             {
                 date: '30/04',
                 title: 'Hành trình Cố Đô',
                 subtitle: 'Di chuyển & Khám phá Hoa Lư',
                 tips: [
-                    'Đặt xe Limousine từ Nội Bài về Ninh Bình (Bình Minh, Duy Khang...) trước 1-2 tuần.',
+                    'Nên đặt trước xe Limousine (di chuyển khoảng 2 tiếng).',
                     'Nên mặc trang phục lịch sự, kín đáo khi thăm đền vua Đinh - Lê.',
                     'Chuẩn bị mũ/nón vì khu vực Cố đô khá rộng và nhiều nắng.'
                 ],
                 events: [
-                    { time: '07:00 - 11:30', title: 'Bay HCM-HN & Limousine', desc: 'Đáp Nội Bài, lấy hành lý và đi xe thẳng về khách sạn Ninh Bình.', price: '~250k-300k/người', type: 'transport', img: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80' },
+                    { time: '07:00 - 11:30', title: 'Bay HCM-HN & Limousine', desc: 'Đáp Nội Bài, lấy hành lý và đi xe thẳng về Ninh Bình.', price: '~250k-300k/người', type: 'transport', img: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80' },
                     { time: '12:00 - 13:30', title: 'Ăn trưa & Nhận phòng', desc: 'Đặc sản Cơm cháy - Thịt dê Ninh Bình. Nghỉ ngơi.', price: '~200k/người', type: 'food' },
-                    { time: '14:30 - 17:30', title: 'Cố đô Hoa Lư - Tuyệt Tình Cốc', desc: 'Thăm đền vua Đinh, vua Lê. Di chuyển ngắm hồ nước tại Am Tiên.', price: 'Vé: 40k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1583417646193-27f12ebbc9bc?auto=format&fit=crop&w=600&q=80' },
-                    { time: '18:30 - 21:00', title: 'Phố cổ Hoa Lư', desc: 'Dạo phố cổ về đêm thắp đèn lồng. Ăn tối Pizza Sen.', price: '~150k - 200k', type: 'food' }
+                    { time: '14:30 - 17:30', title: 'Cố đô Hoa Lư - Tuyệt Tình Cốc', desc: 'Thăm đền vua Đinh, vua Lê. Di chuyển ngắm hồ nước tại Động Am Tiên. Địa điểm gần nhau dễ di chuyển.', price: 'Vé: 40k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1583417646193-27f12ebbc9bc?auto=format&fit=crop&w=600&q=80' },
+                    { time: '18:30 - 21:00', title: 'Ăn tối & Phố cổ Hoa Lư', desc: 'Ăn tối ở Pizza Sen. Dạo phố cổ Hoa Lư về đêm thắp đèn lồng rất đẹp.', price: '~150k - 200k', type: 'food' }
                 ]
             },
             {
                 date: '01/05',
-                title: 'Di sản & Hoàng hôn',
-                subtitle: 'Tràng An & Hang Múa',
+                title: 'Di sản & Thiên nhiên',
+                subtitle: 'Tràng An & Thung Nham / Vân Long',
                 tips: [
-                    'TRỌNG ĐIỂM: Có mặt ở bến Tràng An lúc 7:00 - 7:30 sáng để không phải đợi thuyền dưới nắng.',
+                    'TRỌNG ĐIỂM: Có mặt ở bến Tràng An lúc sớm để không phải đợi thuyền dưới nắng.',
                     'Mang theo ô che nắng, kem chống nắng, xịt muỗi.',
-                    'Hang Múa có 500 bậc đá, NÊN mang giày thể thao bám tốt.'
+                    'Thung Nham/Vân Long đi buổi chiều tà là khoảng thời gian đẹp nhất để ngắm thiên nhiên.'
                 ],
                 events: [
-                    { time: '07:30 - 11:30', title: 'Danh thắng Tràng An', desc: 'Ngồi thuyền ngắm cảnh quan. Nên chọn Tuyến 2 hoặc Tuyến 3.', price: 'Vé: 250k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=600&q=80' },
-                    { time: '12:00 - 14:00', title: 'Ăn trưa & Nghỉ ngơi', desc: 'Nghỉ ngơi lấy sức để chiều leo núi.', price: '~150k/người', type: 'food' },
-                    { time: '14:30 - 17:30', title: 'Hang Múa - Ngọa Long', desc: 'Leo núi từ 15:30 để đón hoàng hôn lúc 17:00. Chụp ảnh tháp.', price: 'Vé: 100k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1600854655938-1e4e6d4999ab?auto=format&fit=crop&w=600&q=80' },
-                    { time: '18:30 - 21:30', title: 'Dạo phố Tam Cốc', desc: 'Ăn tối và trải nghiệm không khí náo nhiệt phố đi bộ.', price: 'Tùy chọn', type: 'food' }
+                    { time: '08:00 - 12:00', title: 'Danh thắng Tràng An', desc: 'Đi thuyền tham quan các hang động và phim trường Kong. Ngắm cảnh quan di sản.', price: 'Vé: 250k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=600&q=80' },
+                    { time: '12:00 - 14:00', title: 'Ăn trưa & Nghỉ ngơi', desc: 'Ăn trưa nhẹ nhàng, nghỉ ngơi lấy sức sau chuyến đi thuyền dài.', price: '~150k/người', type: 'food' },
+                    { time: '14:30 - 17:30', title: 'Đầm Vân Long hoặc Thung Nham', desc: 'Đi thuyền khám phá thiên nhiên hoang sơ. Thung Nham ngắm chim về tổ rất hợp đi buổi chiều tà.', price: 'Vân Long: 100k | Thung Nham: 150k', type: 'visit', img: 'https://images.unsplash.com/photo-1444084316824-dc26d6657664?auto=format&fit=crop&w=600&q=80' },
+                    { time: '18:30 - 21:30', title: 'Dạo phố Tam Cốc', desc: 'Ăn tối và trải nghiệm không khí náo nhiệt tại phố đi bộ Tam Cốc. Nhiều quán pub và cafe chill.', price: 'Tùy chọn', type: 'food' }
                 ]
             },
             {
                 date: '02/05',
-                title: 'Tâm linh & Thiên nhiên',
-                subtitle: 'Bái Đính & Thung Nham',
+                title: 'Tâm linh & Hoàng hôn',
+                subtitle: 'Bái Đính & Đỉnh Ngọa Long (Hang Múa)',
                 tips: [
-                    'Bái Đính rộng 500ha, bắt buộc mua vé xe điện để tiết kiệm sức lực.',
-                    'Thung Nham đi buổi chiều (15:00-17:00) ngắm cánh chim về tổ.'
+                    'Bái Đính rộng nên cần mua vé xe điện. Nên thuê hướng dẫn viên tại điểm để nghe thuyết minh.',
+                    'Lưu ý: Leo Hang Múa cần chuẩn bị nước suối và giày thể thao có độ bám tốt.'
                 ],
                 events: [
-                    { time: '08:00 - 11:30', title: 'Chùa Bái Đính', desc: 'Chiêm bái ngôi chùa giữ nhiều kỷ lục VN.', price: 'Xe điện + Tháp: 110k', type: 'visit', img: 'https://images.unsplash.com/photo-1620021305417-704944d567bb?auto=format&fit=crop&w=600&q=80' },
-                    { time: '12:00 - 13:30', title: 'Ăn trưa gà đồi', desc: 'Thưởng thức món gà đồi nướng than hoa hoặc dê.', price: '~200k/người', type: 'food' },
-                    { time: '14:30 - 17:30', title: 'Vườn chim Thung Nham', desc: 'Đi thuyền thăm hang động và Vườn Chim cuối ngày.', price: 'Trọn gói: ~150k', type: 'visit', img: 'https://images.unsplash.com/photo-1444084316824-dc26d6657664?auto=format&fit=crop&w=600&q=80' },
-                    { time: '19:00 - 21:00', title: 'Ăn tối & Tự do', desc: 'Ăn nhẹ buổi tối, thưởng thức ốc núi (nếu có).', price: '~100k/người', type: 'food' }
+                    { time: '08:00 - 11:30', title: 'Chùa Bái Đính', desc: 'Thăm ngôi chùa lớn nhất Việt Nam với nhiều kỷ lục (Tượng Phật đồng, hành lang La Hán).', price: 'Xe điện: 60k + Tháp: 50k', type: 'visit', img: 'https://images.unsplash.com/photo-1620021305417-704944d567bb?auto=format&fit=crop&w=600&q=80' },
+                    { time: '12:00 - 13:30', title: 'Ăn trưa đặc sản', desc: 'Thưởng thức các món từ gà đồi hoặc dê núi để nạp năng lượng.', price: '~200k/người', type: 'food' },
+                    { time: '14:30 - 17:30', title: 'Hang Múa (Mua Caves)', desc: 'Chinh phục 500 bậc đá để ngắm toàn cảnh Tam Cốc từ đỉnh núi Ngọa Long. Nên đi tầm chiều để ngắm hoàng hôn.', price: 'Vé: 100k/người (mua tại cổng)', type: 'visit', img: 'https://images.unsplash.com/photo-1600854655938-1e4e6d4999ab?auto=format&fit=crop&w=600&q=80' },
+                    { time: '19:00 - 21:00', title: 'Ăn tối & Tự do', desc: 'Thưởng thức đặc sản ốc núi Ninh Bình (nếu đúng mùa).', price: '~150k/người', type: 'food' }
                 ]
             },
             {
@@ -241,20 +241,20 @@
                 subtitle: 'Nghỉ ngơi & Mua sắm',
                 tips: [
                     'Kiểm tra kỹ giấy tờ tùy thân trước khi check-out.',
-                    'Mua cơm cháy, mắm tép Gia Viễn về làm quà.'
+                    'Gợi ý mua quà: Cơm cháy chà bông, mắm tép Gia Viễn.'
                 ],
                 events: [
-                    { time: '08:00 - 10:00', title: 'Ăn sáng & Mua sắm', desc: 'Ăn sáng thong thả, dạo chợ mua quà.', price: '', type: 'food' },
-                    { time: '10:00 - 12:00', title: 'Trả phòng & Về Hà Nội', desc: 'Lên xe Limousine di chuyển về Nội Bài.', price: '~250k/người', type: 'transport' }
+                    { time: '08:00 - 10:00', title: 'Ăn sáng & Mua sắm', desc: 'Ăn sáng thong thả, dạo mua quà đặc sản mang về.', price: '', type: 'food' },
+                    { time: '10:00 - 12:00', title: 'Trả phòng & Về Hà Nội', desc: 'Lên xe Limousine di chuyển về Nội Bài, kết thúc chuyến đi tuyệt vời.', price: '~250k/người', type: 'transport' }
                 ]
             }
         ];
 
         const checklistData = [
             "Vé máy bay & CCCD/Passport",
-            "Giày thể thao (leo Hang Múa)",
+            "Giày thể thao (Bắt buộc cho leo Hang Múa)",
             "Quần áo dài (đi Bái Đính, Hoa Lư)",
-            "Kem chống nắng & Mũ rộng vành",
+            "Kem chống nắng & Mũ/Nón lá",
             "Xịt chống muỗi/côn trùng",
             "Tiền mặt (mua vé/ăn vặt)",
             "Thuốc men cơ bản",
@@ -264,7 +264,7 @@
         let activeDayIndex = 0;
         let checkedItemsCount = 0;
 
-        // Helper func to get icon based on type
+        // Hàm lấy icon theo loại hoạt động
         function getEventIcon(type) {
             switch(type) {
                 case 'transport': return '<i data-lucide="car" class="w-5 h-5 text-blue-500"></i>';
@@ -274,7 +274,7 @@
             }
         }
 
-        // Render Tabs
+        // Render Thanh Tabs
         function renderTabs() {
             const container = document.getElementById('tabs-container');
             container.innerHTML = itineraryData.map((day, idx) => `
@@ -286,12 +286,12 @@
             `).join('');
         }
 
-        // Render Content for Selected Day
+        // Render Nội dung của Ngày được chọn
         function renderContent() {
             const data = itineraryData[activeDayIndex];
             const contentDiv = document.getElementById('day-content');
             
-            // Trigger animation
+            // Kích hoạt hiệu ứng animation
             contentDiv.classList.remove('fade-in');
             void contentDiv.offsetWidth; // trigger reflow
             contentDiv.classList.add('fade-in');
@@ -349,18 +349,18 @@
                 </div>
             `;
             
-            // Re-initialize Lucide icons for new DOM elements
+            // Re-initialize Lucide icons
             lucide.createIcons();
         }
 
-        // Change Tab Logic
+        // Logic chuyển ngày
         window.changeDay = function(index) {
             activeDayIndex = index;
             renderTabs();
             renderContent();
         }
 
-        // Render Checklist
+        // Render Widget Checklist
         function renderChecklist() {
             const container = document.getElementById('checklist-container');
             container.innerHTML = checklistData.map((item, idx) => `
@@ -373,7 +373,7 @@
                 </label>
             `).join('');
             
-            // CSS fix for checklist icon visibility
+            // CSS fix cho checkbox icon
             const style = document.createElement('style');
             style.textContent = `
                 .checklist-item input:checked + div i { opacity: 1; }
@@ -381,7 +381,7 @@
             document.head.appendChild(style);
         }
 
-        // Update Progress Bar
+        // Cập nhật thanh tiến trình Checklist
         window.updateProgress = function(checkbox) {
             if(checkbox.checked) {
                 checkedItemsCount++;
@@ -396,7 +396,7 @@
             document.getElementById('progress-text').innerText = `Hoàn thành ${checkedItemsCount}/${total}`;
         }
 
-        // Init
+        // Khởi tạo ban đầu
         document.addEventListener('DOMContentLoaded', () => {
             renderTabs();
             renderContent();
