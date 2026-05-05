@@ -1,39 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ninh Bình Adventure - Final Update</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ninh Bình Adventure - 30/04 đến 03/05</title>
-
-    <!-- Tailwind CSS -->
+    
     <!-- Tailwind CSS (via CDN for quick prototyping) -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Lucide Icons (via unpkg) -->
-<script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Cấu hình màu tùy chỉnh chxo Tailwind -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <!-- Cấu hình màu tùy chỉnh cho Tailwind -->
-<script>
-tailwind.config = {
-theme: {
-@@ -32,29 +32,40 @@
-</script>
-
-<style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
         /* Custom Styles & Animations */
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-.tab-btn.active {
-            background-color: #059669;
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        .tab-btn.active {
             background-color: #059669; /* emerald-600 */
-color: white;
-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-transform: scale(1.02);
-}
-
-        .tab-btn:not(.active) { color: #475569; }
-        .tab-btn:not(.active):hover { background-color: #f8fafc; }
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: scale(1.02);
+        }
+        
         .tab-btn:not(.active) {
             color: #475569; /* slate-600 */
         }
@@ -43,220 +51,207 @@ transform: scale(1.02);
         }
 
         /* Checkbox Custom styling */
-.checklist-item input:checked + div {
-background-color: #10b981;
-border-color: #10b981;
-color: white;
-}
+        .checklist-item input:checked + div {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
         
-.checklist-item input:checked ~ span {
-color: #94a3b8;
-text-decoration: line-through;
-}
+        .checklist-item input:checked ~ span {
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
 
-        .fade-in { animation: fadeIn 0.4s ease-in-out; }
         .fade-in {
             animation: fadeIn 0.4s ease-in-out;
         }
 
-@keyframes fadeIn {
-from { opacity: 0; transform: translateY(10px); }
-to { opacity: 1; transform: translateY(0); }
-@@ -70,14 +81,14 @@
-alt="Ninh Binh Cover" 
-class="absolute inset-0 w-full h-full object-cover object-center"
->
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900x/40 to-transparent"></div>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-12">
+
+    <!-- HERO SECTION -->
+    <div class="relative h-64 md:h-80 w-full overflow-hidden">
+        <img 
+            src="https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1920&q=80" 
+            alt="Ninh Binh Cover" 
+            class="absolute inset-0 w-full h-full object-cover object-center"
+        >
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
-<div class="absolute bottom-0 left-0 w-full p-6 md:p-10 max-w-6xl mx-auto flex flex-col justify-end h-full">
-<div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm font-medium w-max mb-3">
-                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 fill-current"></i>
-                <span>Lịch trình CHỐT KẾT QUẢ</span>
+        <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 max-w-6xl mx-auto flex flex-col justify-end h-full">
+            <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-sm font-medium w-max mb-3">
                 <i data-lucide="heart" class="w-4 h-4 text-red-400 fill-current"></i>
                 <span>Du lịch với Em Yêu</span>
-</div>
-<h1 class="text-3xl md:text-5xl font-bold text-white mb-2 shadow-sm">
-                Ninh Bình & Em Yêu
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 shadow-sm">
                 Ninh Bình Adventure
-</h1>
-<p class="text-slate-200 text-lg md:text-xl flex items-center">
-<i data-lucide="calendar-days" class="w-5 h-5 mr-2"></i> 30/04 - 03/05 (4 Ngày 3 Đêm)
-@@ -87,7 +98,7 @@ <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 shadow-sm">
+            </h1>
+            <p class="text-slate-200 text-lg md:text-xl flex items-center">
+                <i data-lucide="calendar-days" class="w-5 h-5 mr-2"></i> 30/04 - 03/05 (4 Ngày 3 Đêm)
+            </p>
+        </div>
+    </div>
 
-<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-2rem] relative z-10">
-
-        <!-- THỐNG KÊ NHANH -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-2rem] relative z-10">
+        
         <!-- TOP STATS CARDS -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
-<div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center">
-<div class="bg-blue-50 p-2.5 rounded-lg mr-3">
-@@ -120,28 +131,33 @@ <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 shadow-sm">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8">
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center">
+                <div class="bg-blue-50 p-2.5 rounded-lg mr-3">
+                    <i data-lucide="sun" class="w-6 h-6 text-blue-500"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Thời tiết</p>
+                    <p class="font-bold text-slate-800">26 - 32°C</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center">
+                <div class="bg-green-50 p-2.5 rounded-lg mr-3">
+                    <i data-lucide="map-pin" class="w-6 h-6 text-green-500"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Điểm đến</p>
+                    <p class="font-bold text-slate-800">8+ Địa điểm</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex items-center col-span-2 md:col-span-2">
+                <div class="bg-emerald-50 p-2.5 rounded-lg mr-3">
+                    <i data-lucide="wallet" class="w-6 h-6 text-emerald-600"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-wider">Dự toán chi phí (Ko gồm VMB)</p>
+                    <p class="font-bold text-slate-800">~3.500.000 VNĐ / Người</p>
+                </div>
+            </div>
+        </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            <!-- CỘT LỊCH TRÌNH -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
             <!-- MAIN ITINERARY COLUMN -->
-<div class="lg:col-span-2 space-y-6">
-
+            <div class="lg:col-span-2 space-y-6">
+                
                 <!-- TABS -->
-<div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-100 flex flex-wrap w-full" id="tabs-container">
+                <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-100 flex flex-wrap w-full" id="tabs-container">
                     <!-- Tabs will be injected here by JS -->
-</div>
+                </div>
 
                 <!-- DAY CONTENT -->
-<div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 min-h-[500px]">
-<div id="day-content" class="fade-in">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100 min-h-[500px]">
+                    <div id="day-content" class="fade-in">
                         <!-- Content injected by JS -->
-</div>
-</div>
-</div>
+                    </div>
+                </div>
+            </div>
 
-            <!-- CỘT SIDEBAR -->
             <!-- SIDEBAR -->
-<div class="space-y-6">
-
-                <!-- Checklist -->
+            <div class="space-y-6">
+                
                 <!-- Checklist Widget -->
-<div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 sticky top-6">
-<h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center pb-3 border-b border-slate-100">
-<i data-lucide="check-circle-2" class="w-5 h-5 mr-2 text-emerald-500"></i>
-Checklist Hành Lý
-</h3>
-<div class="space-y-3" id="checklist-container">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 sticky top-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center pb-3 border-b border-slate-100">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 mr-2 text-emerald-500"></i>
+                        Checklist Hành Lý
+                    </h3>
+                    <div class="space-y-3" id="checklist-container">
                         <!-- Checklist items will be injected by JS -->
-</div>
-<div class="mt-6 pt-4 border-t border-slate-100">
-<div class="w-full bg-slate-100 rounded-full h-2.5">
-@@ -153,98 +169,102 @@ <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center pb-3 border-b
-</div>
-</div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <div class="w-full bg-slate-100 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <p id="progress-text" class="text-right text-xs text-slate-500 mt-2 font-medium">
+                            Hoàn thành 0/8
+                        </p>
+                    </div>
+                </div>
 
-                <!-- Tips -->
-                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-100">
-                    <h3 class="text-lg font-bold text-amber-900 mb-2 flex items-center">
-                        <i data-lucide="info" class="w-5 h-5 mr-2 text-amber-600"></i>
-                        Lưu ý Lịch Trình Mới
                 <!-- Note Widget -->
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
                     <h3 class="text-lg font-bold text-blue-900 mb-2 flex items-center">
                         <i data-lucide="camera" class="w-5 h-5 mr-2 text-blue-600"></i>
                         Tips Chụp Ảnh
-</h3>
-                    <p class="text-sm text-amber-800/80 leading-relaxed">
-                        Chiều 30/4 đi <strong>Tràng An</strong> lưu ý nên có mặt trước 15:00 vì bến thuyền thường ngừng bán vé sớm vào cuối ngày. Đi buổi chiều sẽ có lợi thế là ngắm hoàng hôn trên sông cực kỳ lãng mạn và đỡ mệt hơn đi buổi trưa.
+                    </h3>
                     <p class="text-sm text-blue-800/80 leading-relaxed">
                         Ninh Bình có tông màu chủ đạo là xanh rêu và xám đá. Để ảnh nổi bật, "em yêu" nên chuẩn bị các trang phục có màu <strong>Trắng, Vàng, Đỏ hoặc Cam đất</strong>. Đừng quên mang theo một chiếc nón lá hoặc mượn nón lá tại bến thuyền để có những bức ảnh nên thơ nhất nhé!
-</p>
-</div>
+                    </p>
+                </div>
 
-</div>
-</div>
-</div>
+            </div>
+        </div>
+    </div>
 
     <!-- JAVASCRIPT DATA & LOGIC -->
-<script>
-        // DỮ LIỆU ĐƯỢC LẤY CHÍNH XÁC TỪ ẢNH MỚI NHẤT
+    <script>
         // Data
-const itineraryData = [
-{
-date: '30/04',
-                title: 'Xin chào Ninh Bình & Tràng An',
-                subtitle: 'Di chuyển & Khám phá Di sản',
+        const itineraryData = [
+            {
+                date: '30/04',
                 title: 'Hành trình Cố Đô',
                 subtitle: 'Di chuyển & Khám phá Hoa Lư',
-tips: [
-                    'Nên đặt trước xe Limousine. Thời gian di chuyển xe khoảng 2 tiếng.',
-                    'Đến bến Tràng An vào đầu giờ chiều để kịp mua vé và đi tuyến dài.'
+                tips: [
                     'Đặt xe Limousine từ Nội Bài về Ninh Bình (Bình Minh, Duy Khang...) trước 1-2 tuần.',
                     'Nên mặc trang phục lịch sự, kín đáo khi thăm đền vua Đinh - Lê.',
                     'Chuẩn bị mũ/nón vì khu vực Cố đô khá rộng và nhiều nắng.'
-],
-events: [
-                    { time: '07:00 - 11:30', title: 'Bay HCM - Hà Nội. Di chuyển Ninh Bình', desc: 'Đáp sân bay Nội Bài, lấy hành lý và đi xe Limousine thẳng về Ninh Bình.', price: 'Đã có VMB', type: 'transport', img: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80' },
-                    { time: '12:00 - 13:30', title: 'Ăn trưa & Nhận phòng', desc: 'Thưởng thức đặc sản Cơm cháy - Thịt dê Ninh Bình. Nghỉ ngơi sau chuyến bay.', price: '', type: 'food' },
-                    { time: '14:30 - 17:30', title: 'Quần thể Danh thắng Tràng An', desc: 'Đi thuyền tham quan các hang động và phim trường Kong. Ngắm cảnh chiều tà.', price: 'Mua tại bến: 250k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=600&q=80' },
-                    { time: '18:30 - 21:00', title: 'Ăn tối & Phố cổ Hoa Lư', desc: 'Ăn tối ở Pizza Sen Phố cổ Hoa Lư. Dạo phố cổ Hoa Lư về đêm (thắp đèn rất đẹp).', price: '', type: 'food' }
+                ],
+                events: [
                     { time: '07:00 - 11:30', title: 'Bay HCM-HN & Limousine', desc: 'Đáp Nội Bài, lấy hành lý và đi xe thẳng về khách sạn Ninh Bình.', price: '~250k-300k/người', type: 'transport', img: 'https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=600&q=80' },
                     { time: '12:00 - 13:30', title: 'Ăn trưa & Nhận phòng', desc: 'Đặc sản Cơm cháy - Thịt dê Ninh Bình. Nghỉ ngơi.', price: '~200k/người', type: 'food' },
                     { time: '14:30 - 17:30', title: 'Cố đô Hoa Lư - Tuyệt Tình Cốc', desc: 'Thăm đền vua Đinh, vua Lê. Di chuyển ngắm hồ nước tại Am Tiên.', price: 'Vé: 40k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1583417646193-27f12ebbc9bc?auto=format&fit=crop&w=600&q=80' },
                     { time: '18:30 - 21:00', title: 'Phố cổ Hoa Lư', desc: 'Dạo phố cổ về đêm thắp đèn lồng. Ăn tối Pizza Sen.', price: '~150k - 200k', type: 'food' }
-]
-},
-{
-date: '01/05',
-                title: 'Cố đô & Khám phá Thiên nhiên',
-                subtitle: 'Hoa Lư, Tuyệt Tình Cốc & Thung Nham',
+                ]
+            },
+            {
+                date: '01/05',
                 title: 'Di sản & Thiên nhiên',
                 subtitle: 'Tràng An & Thung Nham',
-tips: [
-                    'Sáng đi Cố đô rất mát mẻ, khu vực Hoa Lư và Am Tiên (Tuyệt Tình Cốc) gần nhau.',
-                    'Buổi chiều đi Thung Nham là khung giờ hoàn hảo để ngắm đàn chim bay về tổ.'
+                tips: [
                     'TRỌNG ĐIỂM: Có mặt ở bến Tràng An lúc 7:00 - 7:30 sáng để không phải đợi thuyền dưới nắng.',
                     'Mang theo ô che nắng, kem chống nắng, xịt muỗi.',
                     'Thung Nham đi buổi chiều (15:00-17:00) ngắm cánh chim về tổ rất đẹp.'
-],
-events: [
-                    { time: '08:00 - 12:00', title: 'Cố đô Hoa Lư - Tuyệt Tình Cốc (Động Am Tiên)', desc: 'Thăm đền vua Đinh, vua Lê. Ngắm hồ nước xanh ngắt tại Tuyệt Tình Cốc.', price: 'Hoa Lư: 20k | Am Tiên: 20k', type: 'visit', img: 'https://images.unsplash.com/photo-1583417646193-27f12ebbc9bc?auto=format&fit=crop&w=600&q=80' },
-                    { time: '12:00 - 13:30', title: 'Nghỉ ngơi & Ăn trưa', desc: 'Tìm một quán ăn địa phương và nạp lại năng lượng.', price: '', type: 'food' },
-                    { time: '14:30 - 17:30', title: 'Đầm Vân Long hoặc Thung Nham', desc: 'Vân Long hoang sơ tĩnh lặng. Hoặc đi Thung Nham ngắm chim về tổ lúc hoàng hôn (Khuyến nghị).', price: 'Thung Nham: 150k (đã gồm thuyền)', type: 'visit', img: 'https://images.unsplash.com/photo-1444084316824-dc26d6657664?auto=format&fit=crop&w=600&q=80' },
-                    { time: '18:30 - 21:30', title: 'Dạo phố Tam Cốc', desc: 'Ăn tối và trải nghiệm không khí náo nhiệt tại phố đi bộ Tam Cốc. Nhiều quán pub/cafe chill.', price: '', type: 'food' }
+                ],
+                events: [
                     { time: '07:30 - 11:30', title: 'Danh thắng Tràng An', desc: 'Ngồi thuyền ngắm cảnh quan. Nên chọn Tuyến 2 hoặc Tuyến 3.', price: 'Vé: 250k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=600&q=80' },
                     { time: '12:00 - 14:00', title: 'Ăn trưa & Nghỉ ngơi', desc: 'Nghỉ ngơi lấy sức để chiều tham quan.', price: '~150k/người', type: 'food' },
                     { time: '14:30 - 17:30', title: 'Vườn chim Thung Nham', desc: 'Đi thuyền thăm hang động và Vườn Chim cuối ngày.', price: 'Trọn gói: ~150k', type: 'visit', img: 'https://images.unsplash.com/photo-1444084316824-dc26d6657664?auto=format&fit=crop&w=600&q=80' },
                     { time: '18:30 - 21:30', title: 'Dạo phố Tam Cốc', desc: 'Ăn tối và trải nghiệm không khí náo nhiệt phố đi bộ.', price: 'Tùy chọn', type: 'food' }
-]
-},
-{
-date: '02/05',
-                title: 'Tâm linh & Hoàng hôn rực rỡ',
-                subtitle: 'Chùa Bái Đính & Hang Múa',
+                ]
+            },
+            {
+                date: '02/05',
                 title: 'Tâm linh & Hoàng hôn',
                 subtitle: 'Bái Đính & Hang Múa',
-tips: [
-                    'Chùa Bái Đính rất rộng, nên thuê xe điện (60k/vòng).',
-                    'Chuẩn bị thể lực và giày thể thao để chiều chinh phục 500 bậc thang Hang Múa.'
+                tips: [
                     'Bái Đính rộng 500ha, bắt buộc mua vé xe điện để tiết kiệm sức lực.',
                     'Hang Múa có 500 bậc đá, NÊN mang giày thể thao bám tốt.'
-],
-events: [
-                    { time: '08:00 - 11:30', title: 'Chùa Bái Đính', desc: 'Thăm ngôi chùa lớn nhất Việt Nam với nhiều kỷ lục (Tượng Phật đồng, hành lang La Hán).', price: 'Vào miễn phí. Xe điện: 60k | Tháp: 50k', type: 'visit', img: 'https://images.unsplash.com/photo-1620021305417-704944d567bb?auto=format&fit=crop&w=600&q=80' },
-                    { time: '12:00 - 13:30', title: 'Ăn trưa đặc sản', desc: 'Thưởng thức các món từ gà đồi hoặc dê núi.', price: '', type: 'food' },
-                    { time: '14:30 - 17:30', title: 'Hang Múa (Mua Caves)', desc: 'Chinh phục 500 bậc đá để ngắm toàn cảnh Tam Cốc từ đỉnh núi Ngọa Long. Tầm chiều ngắm hoàng hôn.', price: '100k/người. Mua tại cổng.', type: 'visit', img: 'https://images.unsplash.com/photo-1600854655938-1e4e6d4999ab?auto=format&fit=crop&w=600&q=80' },
-                    { time: '19:00 - 21:00', title: 'Ăn tối & Tự do', desc: 'Thưởng thức ốc núi Ninh Bình (nếu đúng mùa).', price: '', type: 'food' }
+                ],
+                events: [
                     { time: '08:00 - 11:30', title: 'Chùa Bái Đính', desc: 'Chiêm bái ngôi chùa giữ nhiều kỷ lục VN.', price: 'Xe điện + Tháp: 110k', type: 'visit', img: 'https://images.unsplash.com/photo-1620021305417-704944d567bb?auto=format&fit=crop&w=600&q=80' },
                     { time: '12:00 - 13:30', title: 'Ăn trưa gà đồi', desc: 'Thưởng thức món gà đồi nướng than hoa hoặc dê.', price: '~200k/người', type: 'food' },
                     { time: '14:30 - 17:30', title: 'Hang Múa - Ngọa Long', desc: 'Leo núi từ 15:30 để đón hoàng hôn lúc 17:00. Chụp ảnh tháp.', price: 'Vé: 100k/người', type: 'visit', img: 'https://images.unsplash.com/photo-1600854655938-1e4e6d4999ab?auto=format&fit=crop&w=600&q=80' },
                     { time: '19:00 - 21:00', title: 'Ăn tối & Tự do', desc: 'Ăn nhẹ buổi tối, thưởng thức ốc núi (nếu có).', price: '~100k/người', type: 'food' }
-]
-},
-{
-date: '03/05',
-title: 'Tạm biệt Ninh Bình',
-subtitle: 'Nghỉ ngơi & Mua sắm',
-tips: [
-                    'Đóng gói hành lý cẩn thận, đặc biệt là các chai mắm tép để tránh đổ.',
-                    'Có mặt tại sân bay ít nhất 2 tiếng trước giờ bay.'
+                ]
+            },
+            {
+                date: '03/05',
+                title: 'Tạm biệt Ninh Bình',
+                subtitle: 'Nghỉ ngơi & Mua sắm',
+                tips: [
                     'Kiểm tra kỹ giấy tờ tùy thân trước khi check-out.',
                     'Mua cơm cháy, mắm tép Gia Viễn về làm quà.'
-],
-events: [
-                    { time: '08:00 - 10:00', title: 'Ăn sáng & Mua sắm', desc: 'Ăn sáng thong thả, dạo mua quà đặc sản mang về (cơm cháy, mắm tép).', price: '', type: 'food' },
-                    { time: '10:00 - 12:00', title: 'Trả phòng & Về Hà Nội', desc: 'Lên xe Limousine di chuyển về Nội Bài, kết thúc chuyến đi tuyệt vời.', price: '', type: 'transport' }
+                ],
+                events: [
                     { time: '08:00 - 10:00', title: 'Ăn sáng & Mua sắm', desc: 'Ăn sáng thong thả, dạo chợ mua quà.', price: '', type: 'food' },
                     { time: '10:00 - 12:00', title: 'Trả phòng & Về Hà Nội', desc: 'Lên xe Limousine di chuyển về Nội Bài.', price: '~250k/người', type: 'transport' }
-]
-}
-];
+                ]
+            }
+        ];
 
-const checklistData = [
-"Vé máy bay & CCCD/Passport",
-            "Giày thể thao (Leo Hang Múa 500 bậc)",
-            "Quần áo dài (Đi Bái Đính, Hoa Lư)",
-            "Kem chống nắng, kính râm",
-            "Xịt chống muỗi (Đi Thung Nham)",
-            "Tiền mặt lẻ (mua nước, xe điện)",
-            "Thuốc tiêu hóa, băng gâu (Urgo)",
-            "Máy ảnh & Sạc dự phòng"
+        const checklistData = [
+            "Vé máy bay & CCCD/Passport",
             "Giày thể thao (leo Hang Múa)",
             "Quần áo dài (đi Bái Đính, Hoa Lư)",
             "Kem chống nắng & Mũ rộng vành",
@@ -264,108 +259,150 @@ const checklistData = [
             "Tiền mặt (mua vé/ăn vặt)",
             "Thuốc men cơ bản",
             "Sạc dự phòng & Máy ảnh"
-];
+        ];
 
-let activeDayIndex = 0;
-let checkedItemsCount = 0;
+        let activeDayIndex = 0;
+        let checkedItemsCount = 0;
 
         // Helper func to get icon based on type
-function getEventIcon(type) {
-switch(type) {
-case 'transport': return '<i data-lucide="car" class="w-5 h-5 text-blue-500"></i>';
-@@ -254,6 +274,7 @@ <h3 class="text-lg font-bold text-amber-900 mb-2 flex items-center">
-}
-}
+        function getEventIcon(type) {
+            switch(type) {
+                case 'transport': return '<i data-lucide="car" class="w-5 h-5 text-blue-500"></i>';
+                case 'food': return '<i data-lucide="utensils" class="w-5 h-5 text-orange-500"></i>';
+                case 'visit': return '<i data-lucide="mountain-snow" class="w-5 h-5 text-green-500"></i>';
+                default: return '<i data-lucide="map-pin" class="w-5 h-5 text-gray-500"></i>';
+            }
+        }
 
         // Render Tabs
-function renderTabs() {
-const container = document.getElementById('tabs-container');
-container.innerHTML = itineraryData.map((day, idx) => `
-@@ -265,17 +286,19 @@ <h3 class="text-lg font-bold text-amber-900 mb-2 flex items-center">
-           `).join('');
-}
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = itineraryData.map((day, idx) => `
+                <button 
+                    onclick="changeDay(${idx})" 
+                    class="tab-btn flex-1 min-w-[100px] text-center py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 ${idx === activeDayIndex ? 'active' : ''}">
+                    ${day.date}
+                </button>
+            `).join('');
+        }
 
         // Render Content for Selected Day
-function renderContent() {
-const data = itineraryData[activeDayIndex];
-const contentDiv = document.getElementById('day-content');
-
+        function renderContent() {
+            const data = itineraryData[activeDayIndex];
+            const contentDiv = document.getElementById('day-content');
+            
             // Trigger animation
-contentDiv.classList.remove('fade-in');
-            void contentDiv.offsetWidth; 
+            contentDiv.classList.remove('fade-in');
             void contentDiv.offsetWidth; // trigger reflow
-contentDiv.classList.add('fade-in');
+            contentDiv.classList.add('fade-in');
 
-let tipsHtml = data.tips.map(tip => `
-                <li class="flex items-start text-emerald-900/80 text-sm md:text-base">
-                    <i data-lucide="chevron-right" class="w-4 h-4 mr-1 mt-1 flex-shrink-0 text-emerald-600"></i>
+            let tipsHtml = data.tips.map(tip => `
                 <li class="flex items-start text-amber-900/80 text-sm md:text-base">
                     <i data-lucide="chevron-right" class="w-4 h-4 mr-1 mt-1 flex-shrink-0 text-amber-600"></i>
-                   <span>${tip}</span>
-               </li>
-           `).join('');
-@@ -314,9 +337,9 @@ <h4 class="text-xl font-bold text-slate-800 mb-2 leading-tight">${event.title}</
-                   <h2 class="text-2xl md:text-3xl font-bold text-slate-800">${data.title}</h2>
-                   <p class="text-emerald-600 font-medium text-lg mt-1">${data.subtitle}</p>
-               </div>
-                <div class="bg-emerald-50 rounded-xl p-5 mb-10 border border-emerald-100/50">
-                    <h3 class="flex items-center text-emerald-800 font-bold mb-3 text-lg">
-                        <i data-lucide="lightbulb" class="w-5 h-5 mr-2"></i>
+                    <span>${tip}</span>
+                </li>
+            `).join('');
+
+            let eventsHtml = data.events.map(event => `
+                <div class="relative pl-8 md:pl-10 group">
+                    <div class="absolute -left-[21px] top-1 w-10 h-10 bg-white rounded-full border-[3px] border-emerald-200 flex items-center justify-center shadow-sm z-10 transition-transform group-hover:scale-110 group-hover:border-emerald-500">
+                        ${getEventIcon(event.type)}
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-5">
+                        <div class="flex-1">
+                            <div class="inline-flex items-center bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full mb-2 border border-emerald-100">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 mr-1.5"></i>
+                                ${event.time}
+                            </div>
+                            <h4 class="text-xl font-bold text-slate-800 mb-2 leading-tight">${event.title}</h4>
+                            <p class="text-slate-600 text-[15px] leading-relaxed mb-4">${event.desc}</p>
+                            ${event.price ? `
+                                <div class="inline-flex items-center text-sm font-medium text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg">
+                                    <i data-lucide="wallet" class="w-4 h-4 mr-2 text-slate-500"></i>
+                                    ${event.price}
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${event.img ? `
+                            <div class="w-full md:w-48 h-32 md:h-auto flex-shrink-0 rounded-xl overflow-hidden shadow-sm">
+                                <img src="${event.img}" alt="${event.title}" class="w-full h-full object-cover transform transition-transform duration-500 hover:scale-105">
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            contentDiv.innerHTML = `
+                <div class="mb-8 border-b border-slate-100 pb-6">
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800">${data.title}</h2>
+                    <p class="text-emerald-600 font-medium text-lg mt-1">${data.subtitle}</p>
+                </div>
                 <div class="bg-amber-50 rounded-xl p-5 mb-10 border border-amber-100/50">
                     <h3 class="flex items-center text-amber-800 font-bold mb-3 text-lg">
                         <i data-lucide="info" class="w-5 h-5 mr-2"></i>
-                       Mẹo nhỏ cho ngày hôm nay
-                   </h3>
-                   <ul class="space-y-2">${tipsHtml}</ul>
-@@ -326,15 +349,18 @@ <h3 class="flex items-center text-emerald-800 font-bold mb-3 text-lg">
-               </div>
-           `;
-
+                        Mẹo nhỏ cho ngày hôm nay
+                    </h3>
+                    <ul class="space-y-2">${tipsHtml}</ul>
+                </div>
+                <div class="relative border-l-2 border-emerald-100 ml-4 md:ml-6 space-y-10 pb-4">
+                    ${eventsHtml}
+                </div>
+            `;
+            
             // Re-initialize Lucide icons for new DOM elements
-lucide.createIcons();
-}
+            lucide.createIcons();
+        }
 
         // Change Tab Logic
-window.changeDay = function(index) {
-activeDayIndex = index;
-renderTabs();
-renderContent();
-}
+        window.changeDay = function(index) {
+            activeDayIndex = index;
+            renderTabs();
+            renderContent();
+        }
 
         // Render Checklist
-function renderChecklist() {
-const container = document.getElementById('checklist-container');
-container.innerHTML = checklistData.map((item, idx) => `
-@@ -347,14 +373,21 @@ <h3 class="flex items-center text-emerald-800 font-bold mb-3 text-lg">
-               </label>
-           `).join('');
-
+        function renderChecklist() {
+            const container = document.getElementById('checklist-container');
+            container.innerHTML = checklistData.map((item, idx) => `
+                <label class="checklist-item flex items-center space-x-3 cursor-pointer group">
+                    <input type="checkbox" class="hidden" onchange="updateProgress(this)">
+                    <div class="w-6 h-6 rounded-md flex items-center justify-center border border-slate-300 transition-colors group-hover:border-emerald-400">
+                        <i data-lucide="check" class="w-4 h-4 opacity-0 transition-opacity"></i>
+                    </div>
+                    <span class="text-[15px] select-none transition-all text-slate-700">${item}</span>
+                </label>
+            `).join('');
+            
             // CSS fix for checklist icon visibility
-const style = document.createElement('style');
-            style.textContent = `.checklist-item input:checked + div i { opacity: 1; }`;
+            const style = document.createElement('style');
             style.textContent = `
                 .checklist-item input:checked + div i { opacity: 1; }
             `;
-document.head.appendChild(style);
-}
+            document.head.appendChild(style);
+        }
 
         // Update Progress Bar
-window.updateProgress = function(checkbox) {
-            if(checkbox.checked) checkedItemsCount++;
-            else checkedItemsCount--;
+        window.updateProgress = function(checkbox) {
             if(checkbox.checked) {
                 checkedItemsCount++;
             } else {
                 checkedItemsCount--;
             }
-
-const total = checklistData.length;
-const percentage = (checkedItemsCount / total) * 100;
-@@ -363,6 +396,7 @@ <h3 class="flex items-center text-emerald-800 font-bold mb-3 text-lg">
-document.getElementById('progress-text').innerText = `Hoàn thành ${checkedItemsCount}/${total}`;
-}
+            
+            const total = checklistData.length;
+            const percentage = (checkedItemsCount / total) * 100;
+            
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').innerText = `Hoàn thành ${checkedItemsCount}/${total}`;
+        }
 
         // Init
-document.addEventListener('DOMContentLoaded', () => {
-renderTabs();
-renderContent();
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTabs();
+            renderContent();
+            renderChecklist();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
