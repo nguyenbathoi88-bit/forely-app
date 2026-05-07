@@ -5326,3 +5326,578 @@ Hôm nay, Ngân hàng Nhà nước thông báo sẽ tiến hành đấu thầu v
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Forely - Polymarket Việt Nam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .prob-bar-yes { background-color: #10b981; }
+        .prob-bar-no { background-color: #ef4444; }
+        
+        .market-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            transition: transform 0.1s;
+        }
+        .market-card:active { transform: scale(0.98); }
+
+        .slide-left {
+            animation: slideInLeft 0.3s forwards;
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .survey-option input:checked + div {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .survey-option input:checked + div .radio-circle {
+            border-color: #3b82f6;
+            background-color: #3b82f6;
+        }
+        .survey-option input:checked + div .radio-circle::after {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            margin: 3px auto;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen shadow-2xl relative overflow-x-hidden no-scrollbar">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-40 bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-800 px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white font-black text-xl">F</div>
+            <span class="font-extrabold text-xl tracking-tight text-white">Forely</span>
+        </div>
+        <div class="bg-slate-800 px-3 py-1.5 rounded-lg flex items-center gap-2 border border-slate-700 transition-transform duration-200" id="fp-container">
+            <span class="text-blue-400 font-bold text-sm" id="global-fp">2,450</span>
+            <span class="text-xs font-bold text-slate-400">FP</span>
+        </div>
+    </header>
+
+    <main class="pb-24 pt-4 px-4 overflow-y-auto no-scrollbar">
+
+        <!-- TAB 1: SÀN ĐẤU TRÍ (POLYMARKET FEED) -->
+        <div id="tab-home" class="tab-content active space-y-5">
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                <button class="px-4 py-1.5 bg-blue-600 text-white rounded-full text-xs font-bold whitespace-nowrap">🔥 Trending</button>
+                <button class="px-4 py-1.5 bg-slate-800 text-slate-300 rounded-full text-xs font-bold whitespace-nowrap border border-slate-700">📈 Kinh tế VN</button>
+                <button class="px-4 py-1.5 bg-slate-800 text-slate-300 rounded-full text-xs font-bold whitespace-nowrap border border-slate-700">🎤 Showbiz</button>
+                <button class="px-4 py-1.5 bg-slate-800 text-slate-300 rounded-full text-xs font-bold whitespace-nowrap border border-slate-700">⚽ Thể thao</button>
+            </div>
+
+            <!-- Market 1 -->
+            <div class="market-card rounded-2xl p-4 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-[10px]">🎤</div>
+                        <span class="text-xs font-semibold text-slate-400">Giải trí • Kết thúc: 15/09/2024</span>
+                    </div>
+                    <span class="text-xs font-medium text-slate-500">Vol: 1.2M FP</span>
+                </div>
+                
+                <h3 class="font-bold text-lg leading-tight">Chung kết "Anh Trai Say Hi" có đạt 1 triệu người xem trực tiếp trên YouTube?</h3>
+                
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-emerald-500">CÓ 72%</span>
+                        <span class="text-rose-500">KHÔNG 28%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden flex">
+                        <div class="h-full prob-bar-yes" style="width: 72%"></div>
+                        <div class="h-full prob-bar-no" style="width: 28%"></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="openTradeModal('Anh Trai Say Hi', 'CÓ', 72)" class="flex-1 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 font-bold hover:bg-emerald-500/20 flex justify-between px-4 items-center">
+                        <span>Mua CÓ</span>
+                        <span>72 FP</span>
+                    </button>
+                    <button onclick="openTradeModal('Anh Trai Say Hi', 'KHÔNG', 28)" class="flex-1 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 font-bold hover:bg-rose-500/20 flex justify-between px-4 items-center">
+                        <span>Mua KHÔNG</span>
+                        <span>28 FP</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Market 2 -->
+            <div class="market-card rounded-2xl p-4 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-[10px]">📈</div>
+                        <span class="text-xs font-semibold text-slate-400">Tài chính • Kết thúc: 31/12/2024</span>
+                    </div>
+                    <span class="text-xs font-medium text-slate-500">Vol: 4.5M FP</span>
+                </div>
+                
+                <h3 class="font-bold text-lg leading-tight">Chỉ số VN-Index có vượt mốc 1.400 điểm trong năm 2024?</h3>
+                
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-emerald-500">CÓ 35%</span>
+                        <span class="text-rose-500">KHÔNG 65%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden flex">
+                        <div class="h-full prob-bar-yes" style="width: 35%"></div>
+                        <div class="h-full prob-bar-no" style="width: 65%"></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="openTradeModal('VN-Index', 'CÓ', 35)" class="flex-1 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 font-bold hover:bg-emerald-500/20 flex justify-between px-4 items-center">
+                        <span>Mua CÓ</span>
+                        <span>35 FP</span>
+                    </button>
+                    <button onclick="openTradeModal('VN-Index', 'KHÔNG', 65)" class="flex-1 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 font-bold hover:bg-rose-500/20 flex justify-between px-4 items-center">
+                        <span>Mua KHÔNG</span>
+                        <span>65 FP</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Market 3 -->
+             <div class="market-card rounded-2xl p-4 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center text-[10px]">🥇</div>
+                        <span class="text-xs font-semibold text-slate-400">Đời sống • Kết thúc: 30/06/2024</span>
+                    </div>
+                    <span class="text-xs font-medium text-slate-500">Vol: 800K FP</span>
+                </div>
+                
+                <h3 class="font-bold text-lg leading-tight">Giá vàng miếng SJC có chạm mốc 95 triệu đồng/lượng?</h3>
+                
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span class="text-emerald-500">CÓ 88%</span>
+                        <span class="text-rose-500">KHÔNG 12%</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-700 rounded-full overflow-hidden flex">
+                        <div class="h-full prob-bar-yes" style="width: 88%"></div>
+                        <div class="h-full prob-bar-no" style="width: 12%"></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="openTradeModal('Vàng SJC', 'CÓ', 88)" class="flex-1 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 font-bold hover:bg-emerald-500/20 flex justify-between px-4 items-center">
+                        <span>Mua CÓ</span>
+                        <span>88 FP</span>
+                    </button>
+                    <button onclick="openTradeModal('Vàng SJC', 'KHÔNG', 12)" class="flex-1 py-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 font-bold hover:bg-rose-500/20 flex justify-between px-4 items-center">
+                        <span>Mua KHÔNG</span>
+                        <span>12 FP</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: BRAND ZONE & KHẢO SÁT (SURVEY) -->
+        <div id="tab-brand" class="tab-content space-y-6">
+            <div class="border-b border-slate-800 pb-4">
+                <h2 class="text-2xl font-black text-white">Nhiệm Vụ Nhãn Hàng</h2>
+                <p class="text-sm text-slate-400">Hoàn thành khảo sát để kiếm vốn FP giao dịch.</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Survey Card -->
+                <div class="bg-[#1e293b] border border-slate-700 rounded-2xl p-4 flex gap-4 items-center cursor-pointer hover:bg-slate-800 transition-colors" onclick="startSurvey()">
+                    <div class="w-14 h-14 bg-blue-900/50 rounded-xl flex items-center justify-center shrink-0 border border-blue-500/30">
+                        <span class="text-2xl">☕</span>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-sm text-white">Khảo sát Gen Z & Cà phê</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">Phúc Long, Highlands • 20 câu</p>
+                        <div class="flex items-center gap-2 mt-2">
+                            <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-blue-500 h-full w-1/3"></div>
+                            </div>
+                            <span class="text-[10px] text-slate-500">Còn 300 slot</span>
+                        </div>
+                    </div>
+                    <div class="bg-blue-600 text-white px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap">
+                        +1,000 FP
+                    </div>
+                </div>
+
+                <div class="bg-[#1e293b] border border-slate-700 rounded-2xl p-4 flex gap-4 items-center opacity-50">
+                    <div class="w-14 h-14 bg-slate-800 rounded-xl flex items-center justify-center shrink-0 border border-slate-600">
+                        <span class="text-2xl">🛵</span>
+                    </div>
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-sm text-white">Thói quen dùng App Đặt xe</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">Grab, Be, Xanh SM</p>
+                    </div>
+                    <div class="bg-slate-700 text-slate-400 px-3 py-2 rounded-xl text-xs font-bold">
+                        ĐÃ ĐÓNG
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-gacha" class="tab-content space-y-8">
+            <div class="text-center space-y-2 mt-4">
+                <h2 class="text-2xl font-black text-white">Quay Thưởng May Mắn</h2>
+                <p class="text-sm text-slate-400 px-10">Dùng FP để đổi lấy Voucher thật từ các thương hiệu.</p>
+            </div>
+            <div class="flex justify-center py-10">
+                <div class="w-48 h-48 bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl flex items-center justify-center text-6xl shadow-[0_0_40px_rgba(59,130,246,0.3)]">
+                    🎁
+                </div>
+            </div>
+            <button class="w-full py-4 bg-blue-600 text-white font-black rounded-2xl text-lg opacity-50 cursor-not-allowed">
+                TÍNH NĂNG ĐANG BẢO TRÌ
+            </button>
+        </div>
+
+        <div id="tab-profile" class="tab-content space-y-6">
+            <h2 class="text-2xl font-black text-white mt-4">Ví & Lịch Sử</h2>
+            <div class="bg-[#1e293b] border border-slate-700 rounded-2xl p-5">
+                <h3 class="font-bold text-slate-300 text-sm mb-4">Lợi nhuận dự báo (7 ngày)</h3>
+                <div class="h-40 w-full">
+                    <canvas id="profileChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SURVEY FULLSCREEN OVERLAY -->
+    <div id="survey-modal" class="fixed inset-0 z-[100] bg-[#0f172a] hidden flex flex-col">
+        <div class="px-4 py-4 border-b border-slate-800 flex items-center justify-between bg-[#1e293b]">
+            <button onclick="closeSurvey()" class="text-slate-400 font-medium text-sm">✕ Hủy bỏ</button>
+            <div class="text-sm font-bold text-slate-300"><span id="q-current">1</span> / 20</div>
+            <div class="text-blue-500 font-bold text-sm">+1,000 FP</div>
+        </div>
+        
+        <div class="w-full h-1 bg-slate-800">
+            <div id="survey-progress" class="h-full bg-blue-500 transition-all duration-300" style="width: 5%;"></div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 flex flex-col relative" id="question-container">
+            <!-- Questions rendered here via JS -->
+        </div>
+
+        <div class="p-4 border-t border-slate-800 bg-[#1e293b] pb-safe">
+            <button id="btn-next-q" onclick="nextQuestion()" class="w-full py-4 bg-blue-600 text-white font-bold rounded-xl disabled:opacity-50 disabled:bg-slate-700 transition-colors" disabled>
+                CHỌN ĐÁP ÁN ĐỂ TIẾP TỤC
+            </button>
+        </div>
+    </div>
+
+    <!-- POLYMARKET TRADE MODAL -->
+    <div id="trade-modal" class="fixed inset-0 z-[90] bg-black/60 backdrop-blur-sm flex items-end justify-center hidden">
+        <div class="bg-[#1e293b] w-full max-w-md rounded-t-3xl p-6 border-t border-slate-700 space-y-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm text-slate-400 font-medium">Mua cổ phiếu</p>
+                    <h3 class="font-bold text-lg text-white mt-1" id="trade-title">VN-Index</h3>
+                </div>
+                <button onclick="closeModal('trade-modal')" class="text-slate-400 text-2xl">&times;</button>
+            </div>
+            
+            <div class="flex justify-between items-center bg-[#0f172a] p-4 rounded-xl border border-slate-800">
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-1">Lựa chọn</p>
+                    <p class="font-black text-xl" id="trade-option">CÓ</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-1">Giá 1 Cổ phiếu</p>
+                    <p class="font-black text-xl text-white"><span id="trade-price">35</span> <span class="text-sm text-slate-400">FP</span></p>
+                </div>
+                <div class="text-center">
+                    <p class="text-xs text-slate-500 mb-1">Cơ hội nhận</p>
+                    <p class="font-black text-xl text-blue-400">100 <span class="text-sm">FP</span></p>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-sm font-medium text-slate-400 mb-3">Số lượng cổ phiếu muốn mua:</p>
+                <div class="flex items-center gap-4">
+                    <input type="number" id="trade-amount" class="flex-1 bg-[#0f172a] border border-slate-700 p-4 rounded-xl font-bold text-xl text-white outline-none focus:border-blue-500" value="10" min="1" oninput="calculateTotal()">
+                    <div class="w-1/3 text-right">
+                        <p class="text-xs text-slate-500">Tổng thanh toán</p>
+                        <p class="font-black text-xl text-white"><span id="trade-total">350</span> FP</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="confirmTrade()" id="btn-confirm-trade" class="w-full py-4 bg-blue-600 text-white font-black rounded-xl shadow-lg">
+                XÁC NHẬN MUA
+            </button>
+        </div>
+    </div>
+
+    <!-- BOTTOM TAB NAVIGATION -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-[#1e293b]/95 backdrop-blur-lg border-t border-slate-800 px-4 py-2 flex justify-between items-center z-[80] safe-area-bottom">
+        <button onclick="switchTab('home')" id="nav-btn-home" class="flex flex-col items-center gap-1 flex-1 text-blue-500 transition-all">
+            <span class="text-xl">📈</span>
+            <span class="text-[10px] font-bold tracking-tight">Thị trường</span>
+        </button>
+        <button onclick="switchTab('brand')" id="nav-btn-brand" class="flex flex-col items-center gap-1 flex-1 text-slate-500 transition-all">
+            <span class="text-xl">📋</span>
+            <span class="text-[10px] font-bold tracking-tight">Khảo sát</span>
+        </button>
+        <button onclick="switchTab('gacha')" id="nav-btn-gacha" class="flex flex-col items-center gap-1 flex-1 text-slate-500 transition-all">
+            <span class="text-xl">🎁</span>
+            <span class="text-[10px] font-bold tracking-tight">Đổi thưởng</span>
+        </button>
+        <button onclick="switchTab('profile')" id="nav-btn-profile" class="flex flex-col items-center gap-1 flex-1 text-slate-500 transition-all">
+            <span class="text-xl">👤</span>
+            <span class="text-[10px] font-bold tracking-tight">Ví của tôi</span>
+        </button>
+    </nav>
+
+    <!-- SCRIPTS -->
+    <script>
+        let userFP = 2450;
+        let profileChart = null;
+        let currentTradePrice = 0;
+
+        // --- POLYMARKET TRADE LOGIC ---
+        function openTradeModal(title, option, price) {
+            currentTradePrice = price;
+            document.getElementById('trade-title').innerText = title;
+            
+            const optionEl = document.getElementById('trade-option');
+            optionEl.innerText = option;
+            optionEl.className = `font-black text-xl ${option === 'CÓ' ? 'text-emerald-500' : 'text-rose-500'}`;
+            
+            document.getElementById('trade-price').innerText = price;
+            document.getElementById('trade-amount').value = 10;
+            calculateTotal();
+            
+            document.getElementById('trade-modal').classList.remove('hidden');
+        }
+
+        function calculateTotal() {
+            const amount = parseInt(document.getElementById('trade-amount').value) || 0;
+            const total = amount * currentTradePrice;
+            document.getElementById('trade-total').innerText = total.toLocaleString();
+            
+            const btn = document.getElementById('btn-confirm-trade');
+            if(total > userFP) {
+                btn.innerText = "SỐ DƯ KHÔNG ĐỦ";
+                btn.classList.replace('bg-blue-600', 'bg-slate-600');
+                btn.disabled = true;
+            } else {
+                btn.innerText = "XÁC NHẬN MUA";
+                btn.classList.replace('bg-slate-600', 'bg-blue-600');
+                btn.disabled = false;
+            }
+        }
+
+        function confirmTrade() {
+            const total = parseInt(document.getElementById('trade-total').innerText.replace(/,/g, ''));
+            updateFP(-total);
+            closeModal('trade-modal');
+            showToast('Giao dịch thành công! Đã lưu vào Portfolio.');
+        }
+
+        // --- 20-QUESTION SURVEY LOGIC ---
+        const surveyQuestions = [
+            { q: "Bạn thuộc nhóm tuổi nào?", options: ["Dưới 18 tuổi", "Từ 18 - 24 tuổi (Gen Z)", "Từ 25 - 34 tuổi (Millennials)", "Trên 35 tuổi"] },
+            { q: "Giới tính của bạn là gì?", options: ["Nam", "Nữ", "Khác"] },
+            { q: "Thu nhập trung bình hàng tháng của bạn là bao nhiêu?", options: ["Dưới 5 triệu", "5 - 10 triệu", "10 - 20 triệu", "Trên 20 triệu"] },
+            { q: "Bạn có thường xuyên uống cà phê/trà sữa ở ngoài không?", options: ["Hàng ngày", "2-3 lần/tuần", "Vài lần một tháng", "Hiếm khi/Không bao giờ"] },
+            { q: "Thương hiệu nào dưới đây bạn ghé thăm nhiều nhất trong 1 tháng qua?", options: ["Highlands Coffee", "Phúc Long", "The Coffee House", "Katinat / Phê La"] },
+            { q: "Mức giá bạn sẵn sàng chi trả cho 1 ly nước là bao nhiêu?", options: ["Dưới 35.000đ", "35.000đ - 55.000đ", "55.000đ - 75.000đ", "Trên 75.000đ"] },
+            { q: "Yếu tố nào quan trọng NHẤT khi bạn chọn quán?", options: ["Hương vị đồ uống", "Không gian quán (Decor, view)", "Giá cả và Khuyến mãi", "Vị trí gần nhà/công ty"] },
+            { q: "Bạn thường đi uống nước cùng ai?", options: ["Đi một mình", "Với bạn bè/người yêu", "Với đối tác/đồng nghiệp", "Với gia đình"] },
+            { q: "Thời gian trung bình bạn ngồi lại quán là bao lâu?", options: ["Dưới 30 phút (Take-away)", "30 phút - 1 tiếng", "1 - 3 tiếng", "Ngồi làm việc cả buổi"] },
+            { q: "Bạn thường biết đến một quán mới thông qua đâu?", options: ["TikTok Review", "Facebook/Instagram", "Bạn bè giới thiệu", "Đi ngang qua thấy"] },
+            { q: "Bạn chuộng hình thức thanh toán nào nhất khi đi cafe?", options: ["Chuyển khoản / Quét mã QR", "Ví điện tử (MoMo, ZaloPay)", "Tiền mặt", "Thẻ tín dụng/ghi nợ"] },
+            { q: "Bạn có sử dụng ứng dụng giao đồ ăn để đặt nước không?", options: ["Có, rất thường xuyên", "Thỉnh thoảng", "Chỉ dùng app riêng của nhãn hàng", "Không, tôi thích ra tận nơi"] },
+            { q: "Bạn nghĩ sao về ống hút giấy/cốc giấy bảo vệ môi trường?", options: ["Rất thích, ưu tiên quán có đồ giấy", "Bình thường", "Không thích vì dễ mềm nát, hỏng vị", "Không quan tâm"] },
+            { q: "Bạn có thường xuyên sử dụng chương trình Khách hàng thân thiết (Tích điểm) không?", options: ["Luôn luôn dùng", "Có tải app nhưng hay quên tích", "Chỉ dùng khi nhân viên nhắc", "Không quan tâm"] },
+            { q: "Yếu tố nào khiến bạn KHÔNG BAO GIỜ quay lại một quán?", options: ["Nhân viên thái độ tệ", "Đồ uống quá dở/không vệ sinh", "Không gian ồn ào/nhà vệ sinh bẩn", "Tăng giá vô lý"] },
+            { q: "Bạn thích loại đồ uống nào nhất vào buổi sáng?", options: ["Cà phê truyền thống (Đen/Sữa đá)", "Cà phê pha máy (Latte, Americano)", "Trà sữa / Trà trái cây", "Nước ép / Khác"] },
+            { q: "Bạn có xu hướng ăn kèm bánh ngọt khi gọi nước không?", options: ["Luôn luôn gọi kèm", "Thỉnh thoảng nếu đói", "Rất hiếm khi", "Không bao giờ"] },
+            { q: "Theo bạn, nhãn hàng nào đang có hình ảnh 'Trẻ trung, năng động' nhất?", options: ["Katinat", "Phê La", "The Coffee House", "Highlands Coffee"] },
+            { q: "Bạn có sẵn sàng mua merchandise (Bình nước, ly sứ, túi tote) của quán không?", options: ["Có, nếu thiết kế đẹp", "Có, nếu là phiên bản giới hạn", "Chỉ mua khi được tặng kèm/giảm giá sâu", "Không có nhu cầu"] },
+            { q: "Đánh giá mức độ hài lòng chung của bạn về thị trường F&B Việt Nam hiện tại (1-5 sao)?", options: ["⭐⭐⭐⭐⭐ (Rất tuyệt)", "⭐⭐⭐⭐ (Tốt)", "⭐⭐⭐ (Bình thường)", "⭐⭐ (Cần cải thiện nhiều)"] }
+        ];
+
+        let currentQIndex = 0;
+        let userAnswers = [];
+
+        function startSurvey() {
+            currentQIndex = 0;
+            userAnswers = [];
+            document.getElementById('survey-modal').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const container = document.getElementById('question-container');
+            const qData = surveyQuestions[currentQIndex];
+            const isLast = currentQIndex === surveyQuestions.length - 1;
+
+            document.getElementById('q-current').innerText = currentQIndex + 1;
+            document.getElementById('survey-progress').style.width = `${((currentQIndex + 1) / 20) * 100}%`;
+            
+            const btnNext = document.getElementById('btn-next-q');
+            btnNext.disabled = true;
+            btnNext.innerText = isLast ? "HOÀN THÀNH & NHẬN 1000 FP" : "CÂU TIẾP THEO";
+
+            let optionsHtml = '';
+            qData.options.forEach((opt, idx) => {
+                optionsHtml += `
+                    <label class="survey-option block cursor-pointer">
+                        <input type="radio" name="q_option" value="${idx}" class="hidden" onchange="enableNextBtn()">
+                        <div class="border border-slate-700 bg-[#0f172a] rounded-xl p-4 flex items-center gap-3 transition-all">
+                            <div class="radio-circle w-5 h-5 rounded-full border-2 border-slate-600 flex-shrink-0"></div>
+                            <span class="text-sm font-medium text-slate-200">${opt}</span>
+                        </div>
+                    </label>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="slide-left w-full max-w-sm mx-auto my-auto">
+                    <h3 class="text-xl font-bold text-white mb-6 leading-relaxed">${currentQIndex + 1}. ${qData.q}</h3>
+                    <div class="space-y-3">
+                        ${optionsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function enableNextBtn() {
+            document.getElementById('btn-next-q').disabled = false;
+        }
+
+        function nextQuestion() {
+            const selected = document.querySelector('input[name="q_option"]:checked');
+            if(selected) userAnswers.push(selected.value);
+
+            if (currentQIndex < surveyQuestions.length - 1) {
+                currentQIndex++;
+                renderQuestion();
+            } else {
+                finishSurvey();
+            }
+        }
+
+        function finishSurvey() {
+            closeSurvey();
+            updateFP(1000);
+            showToast('🎉 Đã hoàn thành 20 câu khảo sát. Nhận +1,000 FP!');
+            
+            const card = document.querySelector('#tab-brand .space-y-4').children[0];
+            card.classList.add('opacity-50', 'pointer-events-none');
+            const btn = card.querySelector('.bg-blue-600');
+            btn.innerText = "ĐÃ HOÀN THÀNH";
+            btn.classList.replace('bg-blue-600', 'bg-slate-700');
+        }
+
+        function closeSurvey() {
+            document.getElementById('survey-modal').classList.add('hidden');
+        }
+
+        // --- GENERAL LOGIC ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.replace('text-blue-500', 'text-slate-500');
+            });
+            document.getElementById('nav-btn-' + tabId).classList.replace('text-slate-500', 'text-blue-500');
+
+            if (tabId === 'profile') initChart();
+        }
+
+        function updateFP(amount) {
+            userFP += amount;
+            document.getElementById('global-fp').innerText = userFP.toLocaleString();
+            const container = document.getElementById('fp-container');
+            container.classList.add('scale-110', 'bg-blue-900/50');
+            setTimeout(() => container.classList.remove('scale-110', 'bg-blue-900/50'), 300);
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-20 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-5 py-3 rounded-xl text-sm font-bold z-[200] shadow-2xl whitespace-nowrap slide-left';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, -20px)';
+                toast.style.transition = 'all 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // --- CHART INITIALIZATION ---
+        function initChart() {
+            if (profileChart) return;
+            const ctx = document.getElementById('profileChart').getContext('2d');
+            profileChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                    datasets: [{
+                        label: 'Lợi nhuận FP',
+                        data: [120, -50, 300, 450, -200, 800, 150],
+                        backgroundColor: function(context) {
+                            const value = context.dataset.data[context.dataIndex];
+                            return value < 0 ? '#ef4444' : '#10b981';
+                        },
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { display: false }, 
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } } 
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
