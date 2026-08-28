@@ -1,0 +1,33 @@
+# --- Node / web ---
+node_modules/
+dist/
+*.log
+.env
+.env.*
+.DS_Store
+
+# --- Capacitor: thư mục native sinh bằng `npx cap add` thì NÊN track,
+#     nhưng loại mọi thứ máy build sinh ra ---
+android/.gradle/
+android/.idea/
+android/app/build/
+android/build/
+android/local.properties
+android/app/release/
+ios/App/Pods/
+ios/App/build/
+ios/App/DerivedData/
+ios/App/App.xcworkspace/xcuserdata/
+
+# --- Tauri (desktop) ---
+desktop/node_modules/
+desktop/src-tauri/target/
+desktop/src-tauri/gen/
+
+# --- Khóa ký app: TUYỆT ĐỐI không đưa lên git ---
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist

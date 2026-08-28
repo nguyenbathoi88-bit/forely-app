@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Forely</title>
+<!--
+  Trang du phong (webDir) cua app.
+  Binh thuong app chay che do remote (capacitor.config.ts -> server.url = https://forely.vn)
+  nen trang nay hau nhu khong hien. No xuat hien khi build thu khong co server.url,
+  hoac lam cho dung neu sau nay chuyen sang shell offline (giai doan 2).
+-->
+<style>
+  :root { --bg: #134e39; --fg: #ffffff; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 24px;
+  }
+  .wrap { max-width: 320px; }
+  .logo { font-size: 40px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+  .tag { opacity: .75; font-size: 14px; margin-bottom: 28px; }
+  .msg { font-size: 15px; line-height: 1.5; opacity: .9; margin-bottom: 20px; }
+  button {
+    background: var(--fg); color: var(--bg); border: 0; border-radius: 10px;
+    padding: 12px 28px; font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">Forely</div>
+    <div class="tag">Du doan &amp; Nghien cuu thi truong</div>
+    <div class="msg" id="msg">Can ket noi mang de su dung Forely.<br>Vui long kiem tra Wi-Fi/4G roi thu lai.</div>
+    <button onclick="location.replace('https://forely.vn')">Thu lai</button>
+  </div>
+</body>
+</html>

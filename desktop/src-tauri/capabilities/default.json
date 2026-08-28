@@ -1,0 +1,6 @@
+{
+  "identifier": "default",
+  "description": "Cua so chinh chi hien web forely.vn, khong cap quyen API he thong nao.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}
