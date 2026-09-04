@@ -1,0 +1,88 @@
+# Build APK Android de CAI THU NGAY tren dien thoai (sideload) — khong can tai khoan Google Play.
+#   - Tab Actions > "Run workflow"   -> build, dinh APK vao release android-v0.1.0
+#   - hoac push tag "android-v*"     -> tuong tu
+# APK nay la ban DEBUG (Android tu ky). Cai truc tiep duoc; ban nop Google Play sau nay
+# la .aab ky bang keystore rieng — xem ROADMAP.md.
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag release (de trong = chi tai tu muc Artifacts)"
+        required: false
+        default: "android-v0.1.0"
+  push:
+    tags: ["android-v*"]
+
+permissions:
+  contents: write
+
+env:
+  RELEASE_TAG: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || inputs.tag || '' }}
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Cai dependency
+        run: npm install
+
+      - name: Lay dau hieu thuong hieu tu production + sinh icon/splash
+        run: |
+          python3 -m pip install --quiet --disable-pip-version-check pillow
+          curl -fsSL https://forely.vn/assets/brand/forely-icon-512.png -o /tmp/icon-src.png
+          python3 tools/gen-android-assets.py /tmp/icon-src.png
+
+      - name: Sinh nen tang Android
+        run: npx cap add android
+
+      - name: Ap icon + splash (nen Forest #0F3A36)
+        run: >
+          npx @capacitor/assets generate --android
+          --iconBackgroundColor '#0F3A36'
+          --iconBackgroundColorDark '#0F3A36'
+          --splashBackgroundColor '#0F3A36'
+          --splashBackgroundColorDark '#0F3A36'
+
+      - name: Dong bo cau hinh vao du an Android
+        run: npx cap sync android
+
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+
+      - name: Dat ten co dinh
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Forely-Android.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Forely-Android-APK
+          path: Forely-Android.apk
+          retention-days: 30
+
+      - name: Dinh vao release de co link tai co dinh
+        if: env.RELEASE_TAG != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "$RELEASE_TAG" >/dev/null 2>&1 || \
+            gh release create "$RELEASE_TAG" \
+              --title "Forely cho Android $RELEASE_TAG" \
+              --notes "Ban thu nghiem cai truc tiep tren dien thoai Android (sideload). Tai file Forely-Android.apk bang trinh duyet cua may, bam file de cai; neu may hoi thi cho phep 'Cai ung dung tu nguon nay'. Ung dung mo thang forely.vn nen tai khoan va diem FP dung chung voi ban web."
+          gh release upload "$RELEASE_TAG" Forely-Android.apk --clobber
